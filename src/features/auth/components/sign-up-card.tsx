@@ -1,6 +1,6 @@
 'use client'
 
-import { GitHubIcon, GoogleIcon } from '@/app/assets/icons'
+import { GitHubIcon, GoogleIcon } from '@/assets/icons'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -19,14 +19,20 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import {
+  signUpSchema,
+  type SignUpFormData
+} from '@/features/auth/schemas/auth-schemas'
+import { useSignUp } from '@/features/auth/server/use-sign-up'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { PasswordInput } from './password-input'
-import { signUpSchema, type SignUpFormData } from './schemas/auth-schemas'
 
 export const SignUpCard = () => {
+  // HOOKS
+  const { mutate } = useSignUp()
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -37,15 +43,16 @@ export const SignUpCard = () => {
     }
   })
 
+  // CONST
   const {
     control,
     handleSubmit,
     formState: { isSubmitting }
   } = form
 
+  // HANDLERS
   const onSubmit = (data: SignUpFormData) => {
-    console.log('Sign up data:', data)
-    // Handle sign up logic here
+    mutate({ json: data })
   }
 
   return (
@@ -180,7 +187,7 @@ export const SignUpCard = () => {
         <div className='text-center text-sm text-muted-foreground'>
           ¿Ya tienes una cuenta?{' '}
           <Link
-            href='/auth?tab=sign-in'
+            href='/?tab=sign-in'
             className='text-orange-600 hover:underline font-medium'
           >
             Iniciar Sesión

@@ -24,7 +24,7 @@ import { useForm } from 'react-hook-form'
 import {
   resetPasswordSchema,
   type ResetPasswordFormData
-} from './schemas/auth-schemas'
+} from '../schemas/auth-schemas'
 
 export const ResetPasswordCard = () => {
   const form = useForm<ResetPasswordFormData>({

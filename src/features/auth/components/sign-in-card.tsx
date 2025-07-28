@@ -1,4 +1,4 @@
-import { GitHubIcon, GoogleIcon } from '@/app/assets/icons'
+import { GitHubIcon, GoogleIcon } from '@/assets/icons'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -18,14 +18,20 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import {
+  signInSchema,
+  type SignInFormData
+} from '@/features/auth/schemas/auth-schemas'
+import { useSignIn } from '@/features/auth/server/use-sign-in'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { PasswordInput } from './password-input'
-import { signInSchema, type SignInFormData } from './schemas/auth-schemas'
 
 export const SignInCard = () => {
+  // HOOKS
+  const { mutate } = useSignIn()
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -34,15 +40,17 @@ export const SignInCard = () => {
     }
   })
 
+  // CONST
   const {
     control,
     handleSubmit,
     formState: { isSubmitting }
   } = form
 
+  // HANDLERS
   const onSubmit = (data: SignInFormData) => {
     console.log('Sign in data:', data)
-    // Handle sign in logic here
+    mutate({ json: data })
   }
 
   return (
@@ -133,7 +141,7 @@ export const SignInCard = () => {
           <div>
             ¿No tienes una cuenta?{' '}
             <Link
-              href='/auth?tab=sign-up'
+              href='/?tab=sign-up'
               className='text-orange-600 hover:underline font-medium'
             >
               Regístrate
@@ -142,7 +150,7 @@ export const SignInCard = () => {
           <div>
             ¿Olvidaste tu contraseña?{' '}
             <Link
-              href='/auth?tab=reset'
+              href='/?tab=reset'
               className='text-orange-600 hover:underline font-medium'
             >
               Restablecer
