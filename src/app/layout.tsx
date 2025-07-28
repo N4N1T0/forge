@@ -1,3 +1,4 @@
+import { QueryProviders } from '@/components/layout/query-provider'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
@@ -32,7 +33,7 @@ export default function RootLayout({
           'antialiased min-h-screen'
         )}
       >
-        {children}
+        <QueryProviders>{children}</QueryProviders>
       </body>
     </html>
   )
