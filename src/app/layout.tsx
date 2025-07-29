@@ -1,4 +1,5 @@
 import { QueryProviders } from '@/components/layout/query-provider'
+import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
 import { Inter, Space_Grotesk } from 'next/font/google'
@@ -34,6 +35,7 @@ export default function RootLayout({
         )}
       >
         <QueryProviders>{children}</QueryProviders>
+        <Toaster />
       </body>
     </html>
   )
