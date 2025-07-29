@@ -17,6 +17,9 @@ export const useLogout = () => {
       queryClient.invalidateQueries({
         queryKey: ['current']
       })
+      setTimeout(() => {
+        window.location.href = '/'
+      }, 1000)
     }
   })
 
