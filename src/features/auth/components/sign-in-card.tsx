@@ -49,7 +49,6 @@ export const SignInCard = () => {
 
   // HANDLERS
   const onSubmit = (data: SignInFormData) => {
-    console.log('Sign in data:', data)
     mutate({ json: data })
   }
 
