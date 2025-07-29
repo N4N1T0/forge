@@ -18,15 +18,17 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
-import { useForm } from 'react-hook-form'
 import {
   resetPasswordSchema,
   type ResetPasswordFormData
-} from '../schemas/auth-schemas'
+} from '@/features/auth/schemas/auth-schemas'
+import { useResetPassword } from '@/features/auth/server/use-reset-password'
+import { zodResolver } from '@hookform/resolvers/zod'
+import Link from 'next/link'
+import { useForm } from 'react-hook-form'
 
 export const ResetPasswordCard = () => {
+  const { mutate } = useResetPassword()
   const form = useForm<ResetPasswordFormData>({
     resolver: zodResolver(resetPasswordSchema),
     defaultValues: {
@@ -41,8 +43,7 @@ export const ResetPasswordCard = () => {
   } = form
 
   const onSubmit = (data: ResetPasswordFormData) => {
-    console.log('Reset password data:', data)
-    // Handle reset password logic here
+    mutate({ json: data })
   }
 
   return (
