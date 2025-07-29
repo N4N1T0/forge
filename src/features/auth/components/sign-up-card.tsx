@@ -32,7 +32,7 @@ import { PasswordInput } from './password-input'
 
 export const SignUpCard = () => {
   // HOOKS
-  const { mutate } = useSignUp()
+  const { mutate, isPending } = useSignUp()
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -44,11 +44,7 @@ export const SignUpCard = () => {
   })
 
   // CONST
-  const {
-    control,
-    handleSubmit,
-    formState: { isSubmitting }
-  } = form
+  const { control, handleSubmit } = form
 
   // HANDLERS
   const onSubmit = (data: SignUpFormData) => {
@@ -82,7 +78,7 @@ export const SignUpCard = () => {
                       type='text'
                       placeholder='Tu nombre completo'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
-                      disabled={isSubmitting}
+                      disabled={isPending}
                       autoComplete='name'
                     />
                   </FormControl>
@@ -105,7 +101,7 @@ export const SignUpCard = () => {
                       type='email'
                       placeholder='tu@ejemplo.com'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
-                      disabled={isSubmitting}
+                      disabled={isPending}
                       autoComplete='email'
                     />
                   </FormControl>
@@ -127,7 +123,7 @@ export const SignUpCard = () => {
                       {...field}
                       placeholder='••••••••'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
-                      disabled={isSubmitting}
+                      disabled={isPending}
                       autoComplete='new-password'
                     />
                   </FormControl>
@@ -149,7 +145,7 @@ export const SignUpCard = () => {
                       {...field}
                       placeholder='••••••••'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
-                      disabled={isSubmitting}
+                      disabled={isPending}
                       autoComplete='new-password'
                     />
                   </FormControl>
@@ -162,9 +158,9 @@ export const SignUpCard = () => {
               type='submit'
               className='w-full'
               size='lg'
-              disabled={isSubmitting}
+              disabled={isPending}
             >
-              {isSubmitting ? 'Creando cuenta...' : 'Crear Cuenta'}
+              {isPending ? 'Creando cuenta...' : 'Crear Cuenta'}
             </Button>
           </form>
         </Form>
@@ -172,11 +168,11 @@ export const SignUpCard = () => {
         <Separator variant='dashed' />
 
         <div className='grid grid-cols-2 gap-3'>
-          <Button variant='outline'>
+          <Button variant='outline' disabled={isPending}>
             <Image src={GoogleIcon} alt='Google Icon' className='size-5 mr-2' />
             Google
           </Button>
-          <Button variant='outline'>
+          <Button variant='outline' disabled={isPending}>
             <Image src={GitHubIcon} alt='GitHub Icon' className='size-5 mr-2' />
             GitHub
           </Button>

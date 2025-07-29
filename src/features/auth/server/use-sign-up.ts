@@ -32,7 +32,7 @@ export const useSignUp = () => {
       })
       setTimeout(() => {
         router.refresh()
-      }, 2000)
+      }, 500)
     },
     onError: (error) => {
       const errorMessage = error.message || 'Error al crear la cuenta'

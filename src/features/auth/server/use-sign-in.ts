@@ -29,7 +29,7 @@ export const useSignIn = () => {
       toast.success('¡Bienvenido! Has iniciado sesión correctamente')
       setTimeout(() => {
         router.refresh()
-      }, 2000)
+      }, 500)
     },
     onError: (error) => {
       const errorMessage = error.message || 'Error al iniciar sesión'

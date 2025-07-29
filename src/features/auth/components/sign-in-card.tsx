@@ -31,7 +31,7 @@ import { PasswordInput } from './password-input'
 
 export const SignInCard = () => {
   // HOOKS
-  const { mutate } = useSignIn()
+  const { mutate, isPending } = useSignIn()
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -41,11 +41,7 @@ export const SignInCard = () => {
   })
 
   // CONST
-  const {
-    control,
-    handleSubmit,
-    formState: { isSubmitting }
-  } = form
+  const { control, handleSubmit } = form
 
   // HANDLERS
   const onSubmit = (data: SignInFormData) => {
@@ -80,7 +76,7 @@ export const SignInCard = () => {
                       placeholder='tu@ejemplo.com'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500'
                       autoComplete='email'
-                      disabled={isSubmitting}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -102,7 +98,7 @@ export const SignInCard = () => {
                       placeholder='••••••••'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500'
                       autoComplete='current-password'
-                      disabled={isSubmitting}
+                      disabled={isPending}
                     />
                   </FormControl>
                   <FormMessage />
@@ -114,9 +110,9 @@ export const SignInCard = () => {
               type='submit'
               className='w-full'
               size='lg'
-              disabled={isSubmitting}
+              disabled={isPending}
             >
-              {isSubmitting ? 'Iniciando sesión...' : 'Inicia Sesión'}
+              {isPending ? 'Iniciando sesión...' : 'Inicia Sesión'}
             </Button>
           </form>
         </Form>
@@ -124,11 +120,11 @@ export const SignInCard = () => {
         <Separator variant='dashed' className='my-6' />
 
         <div className='grid grid-cols-2 gap-3'>
-          <Button variant='outline' disabled={isSubmitting}>
+          <Button variant='outline' disabled={isPending}>
             <Image src={GoogleIcon} alt='Google Icon' className='size-5 mr-2' />
             Google
           </Button>
-          <Button variant='outline' disabled={isSubmitting}>
+          <Button variant='outline' disabled={isPending}>
             <Image src={GitHubIcon} alt='GitHub Icon' className='size-5 mr-2' />
             GitHub
           </Button>
