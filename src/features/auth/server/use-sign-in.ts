@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { InferRequestType, InferResponseType } from 'hono'
 import { toast } from 'sonner'
 
+// TYPES
 type ResponseType = InferResponseType<
   (typeof client.api.login)['sign-in']['$post']
 >
@@ -24,6 +25,9 @@ export const useSignIn = () => {
     },
     onSuccess: () => {
       toast.success('¡Bienvenido! Has iniciado sesión correctamente')
+      setTimeout(() => {
+        window.location.href = '/dashboard'
+      }, 2000)
     },
     onError: (error) => {
       const errorMessage = error.message || 'Error al iniciar sesión'
