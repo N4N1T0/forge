@@ -9,6 +9,7 @@ import { createAdminClient } from '@/lib/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Context, Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
+import { revalidatePath } from 'next/cache'
 import { ID, Models } from 'node-appwrite'
 import { sessionMiddleware } from './middleware'
 
@@ -32,6 +33,7 @@ const app = new Hono()
       const session = await account.createEmailPasswordSession(email, password)
       setAuthCookie(c, session)
 
+      revalidatePath('/', 'page')
       return c.json<AuthResponse>({
         success: true
       })
@@ -89,6 +91,8 @@ const app = new Hono()
     const account = c.get('account')
     deleteCookie(c, AUTH_COOKIE)
     await account.deleteSession('current')
+
+    revalidatePath('/dashboard', 'layout')
     return c.json({
       success: true
     })
