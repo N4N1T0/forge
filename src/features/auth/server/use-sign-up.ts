@@ -27,6 +27,9 @@ export const useSignUp = () => {
         description:
           'Bienvenido a Forge. Tu cuenta ha sido creada correctamente.'
       })
+      setTimeout(() => {
+        window.location.href = '/dashboard'
+      }, 2000)
     },
     onError: (error) => {
       const errorMessage = error.message || 'Error al crear la cuenta'
