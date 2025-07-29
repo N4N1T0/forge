@@ -1,6 +1,7 @@
 import { client } from '@/lib/rpc'
 import { useMutation } from '@tanstack/react-query'
 import { InferRequestType, InferResponseType } from 'hono'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
 // TYPES
@@ -12,6 +13,7 @@ type RequestType = InferRequestType<
 >
 
 export const useSignIn = () => {
+  const router = useRouter()
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async (json) => {
       const response = await client.api.login['sign-in']['$post'](json)
@@ -26,7 +28,7 @@ export const useSignIn = () => {
     onSuccess: () => {
       toast.success('¡Bienvenido! Has iniciado sesión correctamente')
       setTimeout(() => {
-        window.location.href = '/dashboard'
+        router.refresh()
       }, 2000)
     },
     onError: (error) => {

@@ -1,8 +1,10 @@
 import { client } from '@/lib/rpc'
 import { useMutation } from '@tanstack/react-query'
 import { InferRequestType, InferResponseType } from 'hono'
+import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
+// TYPES
 type ResponseType = InferResponseType<
   (typeof client.api.login)['sign-up']['$post']
 >
@@ -11,6 +13,7 @@ type RequestType = InferRequestType<
 >
 
 export const useSignUp = () => {
+  const router = useRouter()
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async (json) => {
       const response = await client.api.login['sign-up']['$post'](json)
@@ -28,7 +31,7 @@ export const useSignUp = () => {
           'Bienvenido a Forge. Tu cuenta ha sido creada correctamente.'
       })
       setTimeout(() => {
-        window.location.href = '/dashboard'
+        router.refresh()
       }, 2000)
     },
     onError: (error) => {
