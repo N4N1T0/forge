@@ -1,9 +1,11 @@
-import { UserBtn } from '@/features/auth/components/user-btn'
+'use client'
 
-export default async function HomePage() {
+import CreateWorkspacesForm from '@/features/workspaces/components/workspace-form'
+
+export default function HomePage() {
   return (
     <div>
-      <UserBtn />
+      <CreateWorkspacesForm onCancel={() => {}} />
     </div>
   )
 }
