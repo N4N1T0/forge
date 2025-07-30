@@ -25,8 +25,8 @@ export const UserBtn = () => {
 
   if (isLoading) {
     return (
-      <div className='size-10 rounded-full flex justify-center items-center bg-muted border border-border transition-all duration-200'>
-        <Loader className='size-4 animate-spin text-muted-foreground' />
+      <div className='size-10 rounded-full flex justify-center items-center bg-primary border border-border transition-all duration-200'>
+        <Loader className='size-4 animate-spin text-white' />
       </div>
     )
   }
@@ -35,7 +35,7 @@ export const UserBtn = () => {
     <DropdownMenu>
       <DropdownMenuTrigger asChild className='outline-none relative'>
         <Avatar className='size-10 transition-all duration-200 border border-border cursor-pointer hover:border-primary/50 hover:shadow-sm'>
-          <AvatarFallback className='bg-muted flex justify-center items-center text-foreground size-full font-medium'>
+          <AvatarFallback className='bg-primary text-white flex justify-center items-center size-full font-medium'>
             {avatarFallback}
           </AvatarFallback>
         </Avatar>
@@ -46,9 +46,9 @@ export const UserBtn = () => {
         className='w-64 p-0'
         sideOffset={10}
       >
-        <div className='flex flex-col justify-center items-center gap-3 px-4 py-4'>
+        <div className='flex justify-center items-center gap-3 px-4 py-4'>
           <Avatar className='size-16 transition-all duration-200 border border-border shadow-sm'>
-            <AvatarFallback className='bg-muted flex justify-center items-center text-foreground size-full font-semibold text-lg'>
+            <AvatarFallback className='bg-primary text-white flex justify-center items-center size-full font-semibold text-lg'>
               {avatarFallback}
             </AvatarFallback>
           </Avatar>
@@ -56,9 +56,7 @@ export const UserBtn = () => {
             <p className='text-sm font-semibold text-foreground'>
               {user?.name || 'Usuario'}
             </p>
-            <p className='text-xs text-muted-foreground'>
-              {user?.email}
-            </p>
+            <p className='text-xs text-muted-foreground'>{user?.email}</p>
           </div>
         </div>
         <Separator variant='dashed' className='mx-2' />
