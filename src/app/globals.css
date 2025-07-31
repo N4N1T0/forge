@@ -54,8 +54,8 @@
   --primary: oklch(0.709 0.25 50); /* Molten Orange */
   --primary-foreground: oklch(0.985 0 0); /* Ash White */
 
-  --secondary: oklch(0.75 0.03 260); /* Forge Gray-light */
-  --secondary-foreground: oklch(0.145 0 0);
+  --secondary: oklch(0.75 0.18 85); /* Forge Yellow */
+  --secondary-foreground: oklch(0.985 0 0); /* Ash White */
 
   --muted: oklch(0.9 0.015 260);
   --muted-foreground: oklch(0.45 0.015 260);
@@ -98,8 +98,8 @@
   --primary: oklch(0.709 0.25 50); /* Molten Orange */
   --primary-foreground: oklch(0.985 0 0); /* Ash White */
 
-  --secondary: oklch(0.3 0.015 260); /* Forge Gray */
-  --secondary-foreground: oklch(0.985 0 0);
+  --secondary: oklch(0.75 0.18 85); /* Forge Yellow */
+  --secondary-foreground: oklch(0.18 0.03 85); /* Dark Brown for contrast */
 
   --muted: oklch(0.3 0.01 260);
   --muted-foreground: oklch(0.7 0.01 260);
