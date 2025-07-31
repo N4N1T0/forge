@@ -1,6 +1,11 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { DATABASE_ID, WORKSPACES_COLLECTION_ID } from '@/config'
+import {
+  DATABASE_ID,
+  IMAGES_BUCKET_ID,
+  WORKSPACES_COLLECTION_ID
+} from '@/config'
 import { sessionMiddleware } from '@/features/auth/server/middleware'
+import { Workspaces } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
 import { ID, Models } from 'node-appwrite'
@@ -19,19 +24,38 @@ const app = new Hono().post(
   async (c) => {
     try {
       const databases = c.get('databases')
+      const storage = c.get('storage')
       const user = c.get('user')
-      const { name } = c.req.valid('json')
+      const { name, image } = c.req.valid('json')
+
+      let uploadedImageUrl: string | null = null
+
+      if (image instanceof File) {
+        const file = await storage.createFile(
+          IMAGES_BUCKET_ID,
+          ID.unique(),
+          image
+        )
+
+        const arrayBuffer = await storage.getFilePreview(
+          IMAGES_BUCKET_ID,
+          file.$id
+        )
+
+        uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString('base64')}`
+      }
 
       console.log(DATABASE_ID)
       console.log(WORKSPACES_COLLECTION_ID)
 
-      const workspace = await databases.createDocument(
+      const workspace = await databases.createDocument<Workspaces>(
         DATABASE_ID,
         WORKSPACES_COLLECTION_ID,
         ID.unique(),
         {
           name,
-          userId: user.$id
+          userId: user.$id,
+          imageUrl: uploadedImageUrl
         }
       )
 
