@@ -46,11 +46,16 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
   })
 
   // CONST
-  const { control, handleSubmit } = form
+  const { control, handleSubmit, reset } = form
 
   // HANDLER
   const onSubmit = async (values: z.infer<typeof createWorkspacesSchema>) => {
-    createWorkspace({ json: values })
+    const finalValues = {
+      ...values,
+      image: values.image instanceof File ? values.image : ''
+    }
+    createWorkspace({ form: finalValues })
+    reset()
     onCancel()
   }
 
@@ -157,6 +162,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                       </Button>
                     </div>
                   </div>
+                  <FormMessage className='text-red-500 mt-1' />
                 </div>
               )}
             />
@@ -167,7 +173,6 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                 size='lg'
                 onClick={handleCancel}
                 disabled={isPending}
-                className='hover:bg-gray-100'
               >
                 Cancelar
               </Button>
