@@ -9,6 +9,7 @@ import { Workspaces } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
 import { ID, Models } from 'node-appwrite'
+import { ZodError } from 'zod'
 import { createWorkspacesSchema } from '../schema'
 
 // TYPES
@@ -19,16 +20,17 @@ type WorkspaceResponse =
 // ROUTES
 const app = new Hono().post(
   '/',
-  zValidator('json', createWorkspacesSchema),
+  zValidator('form', createWorkspacesSchema),
   sessionMiddleware,
   async (c) => {
     try {
       const databases = c.get('databases')
       const storage = c.get('storage')
       const user = c.get('user')
-      const { name, image } = c.req.valid('json')
+      const { name, image } = c.req.valid('form')
 
       let uploadedImageUrl: string | null = null
+      console.log(IMAGES_BUCKET_ID)
 
       if (image instanceof File) {
         const file = await storage.createFile(
@@ -36,17 +38,14 @@ const app = new Hono().post(
           ID.unique(),
           image
         )
-
-        const arrayBuffer = await storage.getFilePreview(
+        const arrayBuffer = await storage.getFileView(
           IMAGES_BUCKET_ID,
           file.$id
         )
 
         uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString('base64')}`
+        console.log('🚀 ~ uploadedImageUrl:', uploadedImageUrl)
       }
-
-      console.log(DATABASE_ID)
-      console.log(WORKSPACES_COLLECTION_ID)
 
       const workspace = await databases.createDocument<Workspaces>(
         DATABASE_ID,
@@ -64,6 +63,13 @@ const app = new Hono().post(
         data: workspace
       })
     } catch (error: any) {
+      console.log('🚀 ~ error:', error)
+      if (error instanceof ZodError) {
+        return c.json<WorkspaceResponse>({
+          success: false,
+          data: error.name
+        })
+      }
       return c.json<WorkspaceResponse>({
         success: false,
         data: error.type
