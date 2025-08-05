@@ -10,8 +10,8 @@ type RequestType = InferRequestType<(typeof client.api.workspace)['$post']>
 // HOOK
 export const useCreateWorkspace = () => {
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async (json) => {
-      const response = await client.api.workspace['$post'](json)
+    mutationFn: async (form) => {
+      const response = await client.api.workspace['$post'](form)
       const data = await response.json()
 
       if (!data.success) {
@@ -26,28 +26,36 @@ export const useCreateWorkspace = () => {
       })
     },
     onError: (error) => {
-      const errorMessage = error.message || 'Error creating workspace'
+      const errorMessage =
+        error.message || 'Error al crear el espacio de trabajo'
 
       switch (true) {
         case errorMessage.includes('workspace_name_taken'):
-          toast.error('Workspace name already taken', {
-            description: 'Please choose a different name for your workspace.'
+          toast.error('Nombre de espacio de trabajo ya en uso', {
+            description:
+              'Por favor, elige un nombre diferente para tu espacio de trabajo.'
           })
           break
         case errorMessage.includes('workspace_limit_reached'):
-          toast.error('Workspace limit reached', {
+          toast.error('Límite de espacios de trabajo alcanzado', {
             description:
-              'You have reached the maximum number of workspaces allowed.'
+              'Has alcanzado el número máximo de espacios de trabajo permitidos.'
           })
           break
         case errorMessage.includes('invalid_workspace_name'):
-          toast.error('Invalid workspace name', {
+          toast.error('Nombre de espacio de trabajo inválido', {
             description:
-              'The workspace name contains invalid characters or is too short.'
+              'El nombre del espacio de trabajo contiene caracteres inválidos o es demasiado corto.'
+          })
+          break
+        case errorMessage.includes('ZodError'):
+          toast.error('Error al crear el espacio de trabajo', {
+            description:
+              'Los datos proporcionados no son válidos. Por favor, verifica la información.'
           })
           break
         default:
-          toast.error('Error creating workspace', {
+          toast.error('Error al crear el espacio de trabajo', {
             description: errorMessage
           })
       }
