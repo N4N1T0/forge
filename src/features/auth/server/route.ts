@@ -10,6 +10,7 @@ import { zValidator } from '@hono/zod-validator'
 import { Context, Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
 import { ID, Models } from 'node-appwrite'
+import { ZodError } from 'zod'
 import { sessionMiddleware } from './middleware'
 
 // TYPES
@@ -36,6 +37,12 @@ const app = new Hono()
         success: true
       })
     } catch (error: any) {
+      if (error instanceof ZodError) {
+        return c.json<AuthResponse>({
+          success: false,
+          data: error.name
+        })
+      }
       return c.json<AuthResponse>({
         success: false,
         data: error.type
@@ -55,6 +62,12 @@ const app = new Hono()
         success: true
       })
     } catch (error: any) {
+      if (error instanceof ZodError) {
+        return c.json<AuthResponse>({
+          success: false,
+          data: error.name
+        })
+      }
       return c.json<AuthResponse>({
         success: false,
         data: error.type
@@ -78,6 +91,12 @@ const app = new Hono()
           success: true
         })
       } catch (error: any) {
+        if (error instanceof ZodError) {
+          return c.json<AuthResponse>({
+            success: false,
+            data: error.name
+          })
+        }
         return c.json<AuthResponse>({
           success: false,
           data: error.type
