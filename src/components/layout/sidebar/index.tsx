@@ -1,5 +1,6 @@
 import SidebarNavigation from '@/components/layout/sidebar/sidebar-navigation'
 import { Separator } from '@/components/ui/separator'
+import { WorkspaceSwitcher } from '@/features/workspaces/components/workspace-switcher'
 import Link from 'next/link'
 
 export const Sidebar = () => {
@@ -11,6 +12,8 @@ export const Sidebar = () => {
       >
         THE FORGE
       </Link>
+      <Separator variant='dashed' className='my-4' />
+      <WorkspaceSwitcher />
       <Separator variant='dashed' className='my-4' />
       <SidebarNavigation />
     </aside>
