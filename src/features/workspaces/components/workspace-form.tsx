@@ -54,9 +54,15 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
       ...values,
       image: values.image instanceof File ? values.image : ''
     }
-    createWorkspace({ form: finalValues })
-    reset()
-    onCancel()
+    createWorkspace(
+      { form: finalValues },
+      {
+        onSuccess: () => {
+          reset()
+          onCancel()
+        }
+      }
+    )
   }
 
   const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -177,7 +183,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                 Cancelar
               </Button>
               <Button type='submit' size='lg' disabled={isPending}>
-                Crear Espacio de Trabajo
+                {isPending ? 'Creando...' : 'Crear Espacio de Trabajo'}
               </Button>
             </div>
           </form>
