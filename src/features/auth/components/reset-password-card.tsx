@@ -95,7 +95,7 @@ export const ResetPasswordCard = () => {
           <div>
             ¿Recordaste tu contraseña?{' '}
             <Link
-              href='/auth?tab=sign-in'
+              href='/?tab=sign-in'
               className='text-orange-600 hover:underline font-medium'
             >
               Iniciar Sesión
@@ -104,7 +104,7 @@ export const ResetPasswordCard = () => {
           <div>
             ¿No tienes una cuenta?{' '}
             <Link
-              href='/auth?tab=sign-up'
+              href='/?tab=sign-up'
               className='text-orange-600 hover:underline font-medium'
             >
               Regístrate
