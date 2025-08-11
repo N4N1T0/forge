@@ -2,80 +2,140 @@
 import {
   DATABASE_ID,
   IMAGES_BUCKET_ID,
+  MEMBERS_COLLECTION_ID,
   WORKSPACES_COLLECTION_ID
 } from '@/config'
 import { sessionMiddleware } from '@/features/auth/server/middleware'
-import { Workspaces } from '@/types/appwrite'
+import { MemberRole } from '@/features/members/types'
+import { createWorkspacesSchema } from '@/features/workspaces/schema'
+import { Members, Workspaces } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
-import { ID, Models } from 'node-appwrite'
+import { ID, Models, Query } from 'node-appwrite'
 import { ZodError } from 'zod'
-import { createWorkspacesSchema } from '../schema'
 
 // TYPES
 type WorkspaceResponse =
   | { success: true; data: Models.Document }
   | { success: false; data: string }
 
+type WorkspaceListResponse =
+  | {
+      success: true
+      data: Workspaces[]
+    }
+  | {
+      success: false
+      data: string
+    }
+
 // ROUTES
-const app = new Hono().post(
-  '/',
-  zValidator('form', createWorkspacesSchema),
-  sessionMiddleware,
-  async (c) => {
+const app = new Hono()
+  .get('/', sessionMiddleware, async (c) => {
     try {
       const databases = c.get('databases')
-      const storage = c.get('storage')
       const user = c.get('user')
-      const { name, image } = c.req.valid('form')
 
-      let uploadedImageUrl: string | null = null
-      console.log(IMAGES_BUCKET_ID)
-
-      if (image instanceof File) {
-        const file = await storage.createFile(
-          IMAGES_BUCKET_ID,
-          ID.unique(),
-          image
-        )
-        const arrayBuffer = await storage.getFileView(
-          IMAGES_BUCKET_ID,
-          file.$id
-        )
-
-        uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString('base64')}`
-        console.log('🚀 ~ uploadedImageUrl:', uploadedImageUrl)
-      }
-
-      const workspace = await databases.createDocument<Workspaces>(
+      const members = await databases.listDocuments<Members>(
         DATABASE_ID,
-        WORKSPACES_COLLECTION_ID,
-        ID.unique(),
-        {
-          name,
-          userId: user.$id,
-          imageUrl: uploadedImageUrl
-        }
+        MEMBERS_COLLECTION_ID,
+        [Query.equal('userId', user.$id)]
       )
 
-      return c.json<WorkspaceResponse>({
-        success: true,
-        data: workspace
-      })
-    } catch (error: any) {
-      console.log('🚀 ~ error:', error)
-      if (error instanceof ZodError) {
-        return c.json<WorkspaceResponse>({
-          success: false,
-          data: error.name
+      if (members.total === 0) {
+        return c.json<WorkspaceListResponse>({
+          success: true,
+          data: []
         })
       }
-      return c.json<WorkspaceResponse>({
+
+      const workspaceIds = members.documents.map((member) => member.workspaceId)
+
+      const workspaces = await databases.listDocuments<Workspaces>(
+        DATABASE_ID,
+        WORKSPACES_COLLECTION_ID,
+        [Query.orderDesc('$createdAt'), Query.contains('$id', workspaceIds)]
+      )
+
+      return c.json<WorkspaceListResponse>({
+        success: true,
+        data: workspaces.documents
+      })
+    } catch (error: any) {
+      return c.json<WorkspaceListResponse>({
         success: false,
-        data: error.type
+        data: error.message || 'Failed to fetch workspaces'
       })
     }
-  }
-)
+  })
+  .post(
+    '/',
+    zValidator('form', createWorkspacesSchema),
+    sessionMiddleware,
+    async (c) => {
+      try {
+        const databases = c.get('databases')
+        const storage = c.get('storage')
+        const user = c.get('user')
+        const { name, image } = c.req.valid('form')
+
+        let uploadedImageUrl: string | null = null
+        console.log(IMAGES_BUCKET_ID)
+
+        if (image instanceof File) {
+          const file = await storage.createFile(
+            IMAGES_BUCKET_ID,
+            ID.unique(),
+            image
+          )
+          const arrayBuffer = await storage.getFileView(
+            IMAGES_BUCKET_ID,
+            file.$id
+          )
+
+          uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString('base64')}`
+        }
+
+        const workspace = await databases.createDocument<Workspaces>(
+          DATABASE_ID,
+          WORKSPACES_COLLECTION_ID,
+          ID.unique(),
+          {
+            name,
+            userId: user.$id,
+            imageUrl: uploadedImageUrl
+          }
+        )
+
+        await databases.createDocument(
+          DATABASE_ID,
+          MEMBERS_COLLECTION_ID,
+          ID.unique(),
+          {
+            userId: user.$id,
+            workspaceId: workspace.$id,
+            role: MemberRole.ADMIN
+          }
+        )
+
+        return c.json<WorkspaceResponse>({
+          success: true,
+          data: workspace
+        })
+      } catch (error: any) {
+        console.log('🚀 ~ error:', error)
+        if (error instanceof ZodError) {
+          return c.json<WorkspaceResponse>({
+            success: false,
+            data: error.name
+          })
+        }
+        return c.json<WorkspaceResponse>({
+          success: false,
+          data: error.type
+        })
+      }
+    }
+  )
 
 export default app
