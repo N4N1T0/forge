@@ -1,5 +1,6 @@
+import { ModeToggle } from '@/components/layout/navbar/theme-switcher'
+import MobileSidebar from '@/components/layout/sidebar/mobile-sidebar'
 import { UserBtn } from '@/features/auth/components/user-btn'
-import MobileSidebar from '../sidebar/mobile-sidebar'
 
 export const Navbar = () => {
   return (
@@ -11,7 +12,10 @@ export const Navbar = () => {
         </p>
       </div>
       <MobileSidebar />
-      <UserBtn />
+      <div className='flex items-center gap-2'>
+        <UserBtn />
+        <ModeToggle />
+      </div>
     </nav>
   )
 }

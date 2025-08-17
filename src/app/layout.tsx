@@ -1,17 +1,18 @@
 import { QueryProviders } from '@/components/layout/query-provider'
+import { ThemeProvider } from '@/components/layout/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
-import { Inter, Space_Grotesk } from 'next/font/google'
+import { Oxanium, Source_Code_Pro } from 'next/font/google'
 import './globals.css'
 
-const inter = Inter({
-  variable: '--font-inter',
+const oxanium = Oxanium({
+  variable: '--font-oxanium',
   subsets: ['latin']
 })
 
-const spaceGrotesk = Space_Grotesk({
-  variable: '--font-space-grotesk',
+const sourceCodePro = Source_Code_Pro({
+  variable: '--font-source-code-pro',
   subsets: ['latin']
 })
 
@@ -22,15 +23,24 @@ export const metadata: Metadata = {
 
 export default function RootLayout({ children }: Layouts) {
   return (
-    <html lang='en'>
+    <html lang='en' suppressHydrationWarning>
       <body
         className={cn(
-          inter.variable,
-          spaceGrotesk.variable,
+          oxanium.variable,
+          sourceCodePro.variable,
           'antialiased min-h-screen'
         )}
       >
-        <QueryProviders>{children}</QueryProviders>
+        <QueryProviders>
+          <ThemeProvider
+            attribute='class'
+            defaultTheme='system'
+            enableSystem
+            disableTransitionOnChange
+          >
+            {children}
+          </ThemeProvider>
+        </QueryProviders>
         <Toaster />
       </body>
     </html>
