@@ -8,6 +8,7 @@ import {
 import { sessionMiddleware } from '@/features/auth/server/middleware'
 import { MemberRole } from '@/features/members/types'
 import { createWorkspacesSchema } from '@/features/workspaces/schema'
+import { generateInviteCode } from '@/lib/utils'
 import { Members, Workspaces } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
@@ -103,7 +104,8 @@ const app = new Hono()
           {
             name,
             userId: user.$id,
-            imageUrl: uploadedImageUrl
+            imageUrl: uploadedImageUrl,
+            inviteCode: generateInviteCode(10)
           }
         )
 
