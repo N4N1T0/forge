@@ -9,3 +9,29 @@ import { twMerge } from 'tailwind-merge'
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
+
+/**
+ * Generates a random invite code of specified length using alphanumeric characters
+ * @param length - The desired length of the invite code
+ * @returns A random string containing uppercase letters, numbers and some lowercase letters
+ * @throws {Error} If length is less than 1
+ * @example
+ * ```ts
+ * const code = generateInviteCode(8); // Returns e.g. "X7kNP9aY"
+ * ```
+ */
+export const generateInviteCode = (length: number): string => {
+  if (length < 1) {
+    throw new Error('Invite code length must be at least 1')
+  }
+
+  const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789abcdefghijklmnopq'
+  let result = ''
+
+  for (let i = 0; i < length; i++) {
+    const randomIndex = Math.floor(Math.random() * characters.length)
+    result += characters.charAt(randomIndex)
+  }
+
+  return result
+}
