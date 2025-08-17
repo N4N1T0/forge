@@ -12,7 +12,7 @@ export const WorkspaceAvatar = ({
     return (
       <div
         className={cn(
-          'relative size-10 rounded-fmd overflow-hidden',
+          'relative size-10 rounded-full overflow-hidden border border-background',
           className
         )}
       >
@@ -28,7 +28,7 @@ export const WorkspaceAvatar = ({
 
   return (
     <Avatar className={cn('size-10', className)}>
-      <AvatarFallback className='bg-primary text-background text-lg uppercase rounded-md'>
+      <AvatarFallback className='bg-primary text-background text-lg uppercase border border-background rounded-full'>
         {name[0]}
       </AvatarFallback>
     </Avatar>
