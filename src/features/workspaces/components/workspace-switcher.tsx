@@ -3,25 +3,44 @@
 import {
   Select,
   SelectContent,
+  SelectItem,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
+import { useWorkspaceId } from '@/features/workspaces/client/use-workspace-id'
 import { WorkspaceAvatar } from '@/features/workspaces/components/workspace-avatar'
 import { useGetWorkspaces } from '@/features/workspaces/server/use-current-workspace'
-import { SelectItem } from '@radix-ui/react-select'
 import { CirclePlus } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useEffect, useState } from 'react'
 
 export const WorkspaceSwitcher = () => {
+  // STATE
+  const router = useRouter()
+  const initialWorkspaceId = useWorkspaceId()
   const { data, isLoading } = useGetWorkspaces()
+  const [selectedWorkspace, setSelectedWorkspace] = useState<
+    string | undefined
+  >(initialWorkspaceId)
+
+  useEffect(() => {
+    setSelectedWorkspace(initialWorkspaceId)
+  }, [initialWorkspaceId])
+
+  // HANDLER
+  const handlerOnselect = (value: string) => {
+    setSelectedWorkspace(value)
+    router.push(`/dashboard/workspace/${value}`)
+  }
 
   return (
-    <div className='flex flex-col gap-y-2'>
+    <div className='flex flex-col gap-y-3'>
       <div className='flex items-center justify-between'>
         <p className='text-xs uppercase text-primary'>WorkSpaces</p>
         <CirclePlus className='size-5 text-primary cursor-pointer hover:text-primary/70 transition-colors duration-100' />
       </div>
-      <Select>
-        <SelectTrigger className='w-full'>
+      <Select onValueChange={handlerOnselect} value={selectedWorkspace || ''}>
+        <SelectTrigger className='w-full !h-fit'>
           <SelectValue
             placeholder='No Workspace Selected'
             className='text-background'
