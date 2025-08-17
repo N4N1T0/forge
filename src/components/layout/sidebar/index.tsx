@@ -5,7 +5,7 @@ import Link from 'next/link'
 
 export const Sidebar = () => {
   return (
-    <aside className='h-full bg-neutral-100 p-4 w-full'>
+    <aside className='h-full bg-sidebar p-4 w-full'>
       <Link
         href='/dashboard'
         className='text-3xl font-bold text-primary w-full items-center flex justify-center font-display'
