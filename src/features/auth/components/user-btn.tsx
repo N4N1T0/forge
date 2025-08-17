@@ -25,7 +25,7 @@ export const UserBtn = () => {
 
   if (isLoading) {
     return (
-      <div className='size-10 rounded-full flex justify-center items-center bg-primary border border-border transition-all duration-200'>
+      <div className='size-10 flex justify-center items-center bg-primary border border-border transition-all duration-200'>
         <Loader className='size-4 animate-spin text-white' />
       </div>
     )
@@ -33,9 +33,12 @@ export const UserBtn = () => {
 
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild className='outline-none relative'>
+      <DropdownMenuTrigger
+        asChild
+        className='outline-none relative rounded-none'
+      >
         <Avatar className='size-10 transition-all duration-200 border border-border cursor-pointer hover:border-primary/50 hover:shadow-sm'>
-          <AvatarFallback className='bg-primary text-white flex justify-center items-center size-full font-medium'>
+          <AvatarFallback className='bg-primary text-white flex justify-center items-center size-full font-medium rounded-none'>
             {avatarFallback}
           </AvatarFallback>
         </Avatar>
