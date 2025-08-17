@@ -79,17 +79,17 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
   }
 
   return (
-    <Card className='w-full max-w-2xl mx-auto rounded-xl shadow-lg bg-white/50 backdrop-blur-sm'>
+    <Card className='w-full max-w-2xl mx-auto shadow-lg'>
       <CardHeader className='space-y-2 pb-3'>
-        <CardTitle className='text-3xl font-bold bg-gradient-to-r from-primary to-secondary bg-clip-text text-transparent'>
+        <CardTitle className='text-3xl font-bold text-primary'>
           Crear Espacio de Trabajo
         </CardTitle>
-        <CardDescription className='text-base text-gray-600'>
+        <CardDescription className='text-base text-muted-foreground'>
           Crea un nuevo espacio de trabajo para empezar a colaborar con tu
           equipo.
         </CardDescription>
       </CardHeader>
-      <Separator variant='dashed' className='bg-gray-200' />
+      <Separator variant='dashed' className='bg-muted-foreground' />
       <CardContent className='pt-3'>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
@@ -98,7 +98,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
               name='name'
               render={({ field }) => (
                 <FormItem>
-                  <FormLabel className='text-sm font-semibold text-gray-700'>
+                  <FormLabel className='text-sm font-semibold text-muted-foreground'>
                     Nombre del Espacio de Trabajo
                   </FormLabel>
                   <FormControl>
@@ -106,8 +106,8 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                       {...field}
                       type='name'
                       placeholder='Nombre del espacio de trabajo'
-                      className='h-12 rounded-lg border-gray-200 focus:ring-2 focus:ring-blue-500/30 focus:border-blue-500 transition-all duration-200'
-                      autoComplete='off'
+                      className='h-12 focus:ring-2'
+                      autoComplete='on'
                       disabled={isPending}
                     />
                   </FormControl>
@@ -119,7 +119,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
               control={control}
               name='image'
               render={({ field }) => (
-                <div className='bg-gray-50 p-6 rounded-lg border border-dashed border-gray-300'>
+                <div className='bg-input p-6 rounded-lg border border-dashed border-muted-foreground'>
                   <div className='flex items-center gap-x-6'>
                     {field.value ? (
                       <div className='relative w-20 h-20 rounded-lg overflow-hidden ring-2 ring-blue-500/20'>
@@ -135,17 +135,17 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                         />
                       </div>
                     ) : (
-                      <Avatar className='w-20 h-20 bg-gray-100'>
+                      <Avatar className='size-20 bg-muted-foreground'>
                         <AvatarFallback>
-                          <ImageIcon className='w-10 h-10 text-gray-400' />
+                          <ImageIcon className='w-10 h-10 text-muted-foreground' />
                         </AvatarFallback>
                       </Avatar>
                     )}
                     <div className='flex flex-col gap-y-2'>
-                      <p className='text-sm font-medium text-gray-700'>
-                        Icono del Workspace
+                      <p className='text-sm font-medium text-muted-foreground'>
+                        Icono del Espacio de Trabajo
                       </p>
-                      <p className='text-sm text-gray-500'>
+                      <p className='text-sm text-muted-foreground'>
                         JPG, PNG, SVG o JPEG, máximo 1mb
                       </p>
                       <input
@@ -162,7 +162,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                         variant='outline'
                         onClick={() => inputRef.current?.click()}
                         disabled={isPending}
-                        className='w-fit hover:bg-gray-100'
+                        className='w-fit'
                       >
                         Subir Icono
                       </Button>
@@ -179,10 +179,16 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                 size='lg'
                 onClick={handleCancel}
                 disabled={isPending}
+                className='flex-1'
               >
                 Cancelar
               </Button>
-              <Button type='submit' size='lg' disabled={isPending}>
+              <Button
+                type='submit'
+                size='lg'
+                disabled={isPending}
+                className='flex-1'
+              >
                 {isPending ? 'Creando...' : 'Crear Espacio de Trabajo'}
               </Button>
             </div>
