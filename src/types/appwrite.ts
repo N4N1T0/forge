@@ -12,6 +12,7 @@ export type Workspaces = Models.Document & {
   name: string
   userId: string
   imageUrl: string | null
+  inviteCode: string
 }
 
 export type Members = Models.Document & {
