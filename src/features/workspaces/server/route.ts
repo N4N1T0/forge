@@ -50,7 +50,9 @@ const app = new Hono()
         })
       }
 
-      const workspaceIds = members.documents.map((member) => member.workspaceId)
+      const workspaceIds = members.documents.map(
+        (member: Members) => member.workspaceId
+      )
 
       const workspaces = await databases.listDocuments<Workspaces>(
         DATABASE_ID,
@@ -78,6 +80,7 @@ const app = new Hono()
         const databases = c.get('databases')
         const storage = c.get('storage')
         const user = c.get('user')
+        console.log('🚀 ~ user:', user)
         const { name, image } = c.req.valid('form')
 
         let uploadedImageUrl: string | null = null
