@@ -1,51 +1,35 @@
+'use client'
+
 import { buttonVariants } from '@/components/ui/button'
-import { ClipboardCheck, HouseIcon, Settings, UsersIcon } from 'lucide-react'
+import { routes } from '@/data'
+import { useWorkspaceId } from '@/features/workspaces/client/use-workspace-id'
 import Link from 'next/link'
 
-const routes = [
-  {
-    name: 'Dashboard',
-    href: '/dashboard',
-    icon: HouseIcon
-  },
-  {
-    name: 'Tareas',
-    href: '/tasks',
-    icon: ClipboardCheck
-  },
-  {
-    name: 'Ajustes',
-    href: '/settings',
-    icon: Settings
-  },
-  {
-    name: 'Miembros',
-    href: '/members',
-    icon: UsersIcon
-  }
-]
-
 export default function SidebarNavigation() {
+  const workspaceId = useWorkspaceId()
+
   return (
     <ul className='flex flex-col gap-3'>
-      {routes.map((route) => {
+      {routes.map(({ href, icon, name }) => {
         const isActive = false
-        const Icon = route.icon
+        const Icon = icon
+        const formattedHref = `/dashboard/workspace/${workspaceId}/${href}`
 
         return (
-          <li key={route.name} className='cursor-pointer'>
+          <li key={name} className='cursor-pointer'>
             <Link
-              href={route.href}
+              href={formattedHref}
               data-active={isActive}
               className={buttonVariants({
                 variant: 'ghost',
                 className:
-                  'w-full justify-start hover:text-primary hover:bg-transparent data-[active=true]:bg-primary data-[active=true]:text-white',
+                  'w-full justify-start hover:text-primary hover:bg-transparent data-[active=true]:bg-primary data-[active=true]:text-primary',
+
                 size: 'sm'
               })}
             >
               <Icon className='size-5' />
-              {route.name}
+              {name}
             </Link>
           </li>
         )
