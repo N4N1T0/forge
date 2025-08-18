@@ -1,8 +1,8 @@
-import { getWorkspaces } from '@/features/workspaces/actions'
+import { getWorkspacesAction } from '@/features/workspaces/actions'
 import { redirect } from 'next/navigation'
 
 export default async function HomePage() {
-  const workspaces = await getWorkspaces()
+  const workspaces = await getWorkspacesAction()
 
   if (
     !workspaces.success ||
