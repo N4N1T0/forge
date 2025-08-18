@@ -1,3 +1,5 @@
+import 'server-only'
+
 import {
   APPWRITE_ENDPOINT,
   APPWRITE_PROJECT_ID,
@@ -6,12 +8,14 @@ import {
   WORKSPACES_COLLECTION_ID
 } from '@/config'
 import { AUTH_COOKIE } from '@/features/auth/constants'
+import { getMember } from '@/features/members/utils'
 import { Members, Workspaces } from '@/types/appwrite'
 import { cookies } from 'next/headers'
 import { Account, Client, Databases, Query } from 'node-appwrite'
 
-export const getWorkspaces = async () => {
+export const getWorkspacesAction = async () => {
   try {
+    // TODO
     const client = new Client()
       .setEndpoint(APPWRITE_ENDPOINT)
       .setProject(APPWRITE_PROJECT_ID)
@@ -56,6 +60,63 @@ export const getWorkspaces = async () => {
       data: workspaces.documents
     }
   } catch (error) {
+    // TODO
+    console.log('🚀 ~ getWorkspaces ~ error:', error)
+    return {
+      success: false,
+      data: null
+    }
+  }
+}
+
+export const getWorkspaceAction = async ({
+  workspaceId
+}: GetWorkspaceActionProps) => {
+  try {
+    // TODO
+    const client = new Client()
+      .setEndpoint(APPWRITE_ENDPOINT)
+      .setProject(APPWRITE_PROJECT_ID)
+
+    const cookie = await cookies()
+    const session = cookie.get(AUTH_COOKIE)
+
+    if (!session)
+      return {
+        success: false,
+        data: null
+      }
+
+    client.setSession(session.value)
+    const databases = new Databases(client)
+    const account = new Account(client)
+    const user = await account.get()
+
+    const member = await getMember({
+      databases,
+      userId: user.$id,
+      workspaceId
+    })
+
+    if (!member) {
+      return {
+        success: false,
+        data: null
+      }
+    }
+
+    const workspaces = await databases.getDocument<Workspaces>(
+      DATABASE_ID,
+      WORKSPACES_COLLECTION_ID,
+      workspaceId
+    )
+
+    return {
+      success: true,
+      data: workspaces
+    }
+  } catch (error) {
+    // TODO
     console.log('🚀 ~ getWorkspaces ~ error:', error)
     return {
       success: false,
