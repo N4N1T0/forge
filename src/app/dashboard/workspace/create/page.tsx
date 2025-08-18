@@ -6,12 +6,10 @@ import { useRouter } from 'next/navigation'
 export default function CreateWorkspace() {
   const router = useRouter()
   return (
-    <div>
-      <CreateWorkspacesForm
-        onCancel={() => {
-          router.push('/dashboard')
-        }}
-      />
-    </div>
+    <CreateWorkspacesForm
+      onCancel={() => {
+        router.push('/dashboard')
+      }}
+    />
   )
 }
