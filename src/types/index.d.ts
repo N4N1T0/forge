@@ -7,3 +7,11 @@ interface WorkspaceAvatarProps {
   workspace: Workspaces
   className?: string
 }
+
+interface WorkspaceIdProps {
+  params: Promise<{ [key: string]: string | string[] | undefined }>
+}
+
+interface GetWorkspaceActionProps {
+  workspaceId: string
+}
