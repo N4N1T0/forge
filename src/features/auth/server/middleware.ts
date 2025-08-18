@@ -3,32 +3,13 @@ import 'server-only'
 import { AUTH_COOKIE } from '@/features/auth/constants'
 import { getCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
-import {
-  Account,
-  Client,
-  Databases,
-  Models,
-  Storage,
-  type Account as AccountType,
-  type Databases as DatabasesType,
-  type Storage as StorageType
-} from 'node-appwrite'
-
-type MiddleWareContext = {
-  Variables: {
-    account: AccountType
-    databases: DatabasesType
-    storage: StorageType
-    users: Models.User
-    user: Models.User<Models.Preferences>
-  }
-}
+import { Account, Client, Databases, Storage } from 'node-appwrite'
 
 export const sessionMiddleware = createMiddleware<MiddleWareContext>(
   async (c, next) => {
     const client = new Client()
       .setEndpoint(process.env.NEXT_PUBLIC_APPWRITE_ENDPOINT!)
-      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT!)
+      .setProject(process.env.NEXT_PUBLIC_APPWRITE_PROJECT_ID!)
 
     const session = getCookie(c, AUTH_COOKIE)
 
