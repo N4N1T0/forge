@@ -2,7 +2,14 @@
 
 import { Sidebar } from '@/components/layout/sidebar/index'
 import { Button } from '@/components/ui/button'
-import { Sheet, SheetContent, SheetTrigger } from '@/components/ui/sheet'
+import {
+  Sheet,
+  SheetContent,
+  SheetDescription,
+  SheetHeader,
+  SheetTitle,
+  SheetTrigger
+} from '@/components/ui/sheet'
 import { MenuIcon } from 'lucide-react'
 import { usePathname } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -20,11 +27,17 @@ function MobileSidebar() {
   return (
     <Sheet modal={false} open={open} onOpenChange={setOpen}>
       <SheetTrigger asChild>
-        <Button size='icon' variant='secondary' className='lg:hidden'>
-          <MenuIcon className='size-4 text-neutral-500' />
+        <Button size='icon' variant='outline' className='lg:hidden'>
+          <MenuIcon className='size-4' />
         </Button>
       </SheetTrigger>
-      <SheetContent className='p-0' side='left'>
+      <SheetContent side='left'>
+        <SheetHeader className='sr-only'>
+          <SheetTitle>Forge Sidebar</SheetTitle>
+          <SheetDescription>
+            Navigate through the Forge application.
+          </SheetDescription>
+        </SheetHeader>
         <Sidebar />
       </SheetContent>
     </Sheet>
