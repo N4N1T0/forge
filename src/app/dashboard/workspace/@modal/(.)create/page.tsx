@@ -39,7 +39,7 @@ export default function ModalWorkspaceCreate() {
               with your team.
             </DialogDescription>
           </DialogHeader>
-          <CreateWorkspacesForm onCancel={() => handleOpenChange} />
+          <CreateWorkspacesForm onCancel={() => handleOpenChange(false)} />
         </DialogContent>
       </Dialog>
     )
@@ -56,7 +56,7 @@ export default function ModalWorkspaceCreate() {
           </DrawerDescription>
         </DrawerHeader>
         <div className='my-auto'>
-          <CreateWorkspacesForm onCancel={() => handleOpenChange} />
+          <CreateWorkspacesForm onCancel={() => handleOpenChange(false)} />
         </div>
       </DrawerContent>
     </Drawer>
