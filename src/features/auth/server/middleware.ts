@@ -1,6 +1,7 @@
 import 'server-only'
 
 import { AUTH_COOKIE } from '@/features/auth/constants'
+import { MiddleWareContext } from '@/types/appwrite'
 import { getCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
 import { Account, Client, Databases, Storage } from 'node-appwrite'
