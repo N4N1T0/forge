@@ -11,6 +11,7 @@ import { useWorkspaceId } from '@/features/workspaces/client/use-workspace-id'
 import { WorkspaceAvatar } from '@/features/workspaces/components/workspace-avatar'
 import { useGetWorkspaces } from '@/features/workspaces/server/use-current-workspace'
 import { CirclePlus } from 'lucide-react'
+import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
 
@@ -37,7 +38,9 @@ export const WorkspaceSwitcher = () => {
     <div className='flex flex-col gap-y-3'>
       <div className='flex items-center justify-between'>
         <p className='text-xs uppercase text-primary'>WorkSpaces</p>
-        <CirclePlus className='size-5 text-primary cursor-pointer hover:text-primary/70 transition-colors duration-100' />
+        <Link href='/dashboard/workspace/create'>
+          <CirclePlus className='size-5 text-primary cursor-pointer hover:text-primary/70 transition-colors duration-100' />
+        </Link>
       </div>
       <Select onValueChange={handlerOnselect} value={selectedWorkspace || ''}>
         <SelectTrigger className='w-full !h-fit'>
