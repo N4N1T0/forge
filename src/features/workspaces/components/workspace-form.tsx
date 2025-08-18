@@ -24,6 +24,7 @@ import { useCreateWorkspace } from '@/features/workspaces/server/use-create-work
 import { zodResolver } from '@hookform/resolvers/zod'
 import { ImageIcon } from 'lucide-react'
 import Image from 'next/image'
+import { useRouter } from 'next/navigation'
 import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
@@ -35,6 +36,7 @@ interface createWorkspacesFormProps {
 
 const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
   // HOOKS
+  const router = useRouter()
   const { mutate: createWorkspace, isPending } = useCreateWorkspace()
   const inputRef = useRef<HTMLInputElement>(null)
   const form = useForm<z.infer<typeof createWorkspacesSchema>>({
@@ -57,9 +59,10 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
     createWorkspace(
       { form: finalValues },
       {
-        onSuccess: () => {
+        onSuccess: (data) => {
           reset()
           onCancel()
+          if (data.success) return router.push(`/workspaces/${data.data.$id}`)
         }
       }
     )
