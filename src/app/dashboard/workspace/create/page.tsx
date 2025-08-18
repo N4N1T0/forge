@@ -1,15 +1,12 @@
-'use client'
-
+import { getCurrentAction } from '@/features/auth/actions'
 import CreateWorkspacesForm from '@/features/workspaces/components/workspace-form'
-import { useRouter } from 'next/navigation'
+import { redirect } from 'next/navigation'
 
-export default function CreateWorkspace() {
-  const router = useRouter()
-  return (
-    <CreateWorkspacesForm
-      onCancel={() => {
-        router.push('/dashboard')
-      }}
-    />
-  )
+export default async function CreateWorkspace() {
+  const data = await getCurrentAction()
+
+  if (!data.success || !data.data) {
+    return redirect('/')
+  }
+  return <CreateWorkspacesForm />
 }
