@@ -19,27 +19,30 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { createWorkspacesSchema } from '@/features/workspaces/schema'
-import { useCreateWorkspace } from '@/features/workspaces/server/use-create-workspace'
-import { createWorkspacesFormProps } from '@/types/functions'
+import { updateWorkspaceSchema } from '@/features/workspaces/schema'
+import { useUpdateWorkspace } from '@/features/workspaces/server/use-update-workspace'
+import { editWorkspacesFormProps } from '@/types/functions'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ImageIcon } from 'lucide-react'
+import { ArrowLeftIcon, ImageIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import z from 'zod'
 
-const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
+const EditWorkspacesForm = ({
+  onCancel,
+  initialValues
+}: editWorkspacesFormProps) => {
   // HOOKS
   const router = useRouter()
-  const { mutate: createWorkspace, isPending } = useCreateWorkspace()
+  const { mutate: updateWorkspace, isPending } = useUpdateWorkspace()
   const inputRef = useRef<HTMLInputElement>(null)
-  const form = useForm<z.infer<typeof createWorkspacesSchema>>({
-    resolver: zodResolver(createWorkspacesSchema),
+  const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
+    resolver: zodResolver(updateWorkspaceSchema),
     defaultValues: {
-      name: '',
-      image: ''
+      image: initialValues?.imageUrl ?? '',
+      name: initialValues?.name ?? ''
     }
   })
 
@@ -47,13 +50,13 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
   const { control, handleSubmit, reset } = form
 
   // HANDLER
-  const onSubmit = async (values: z.infer<typeof createWorkspacesSchema>) => {
+  const onSubmit = async (values: z.infer<typeof updateWorkspaceSchema>) => {
     const finalValues = {
       ...values,
       image: values.image instanceof File ? values.image : ''
     }
-    createWorkspace(
-      { form: finalValues },
+    updateWorkspace(
+      { form: finalValues, param: { workspaceId: initialValues?.$id } },
       {
         onSuccess: (data) => {
           reset()
@@ -75,18 +78,27 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
   const handleCancel = () => {
     form.reset()
     if (inputRef.current) inputRef.current.value = ''
-    onCancel?.()
+    if (onCancel) {
+      onCancel()
+    } else if (initialValues?.$id) {
+      router.push(`/dashboard/workspace/${initialValues.$id}`)
+    }
   }
 
   return (
     <Card className='w-full max-w-lg max-h-[75vh] mx-auto shadow-lg'>
-      <CardHeader className='space-y-2'>
-        <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
-          Crear Espacio de Trabajo
-        </CardTitle>
+      <CardHeader className=''>
+        <div className='flex items-center flex-row gap-x-4'>
+          <Button size='sm' variant='secondary' onClick={handleCancel}>
+            <ArrowLeftIcon className='size-4' />
+            Cancelar
+          </Button>
+          <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
+            {initialValues?.name ?? 'Editar Espacio de Trabajo'}
+          </CardTitle>
+        </div>
         <CardDescription className='text-sm md:text-base text-muted-foreground'>
-          Crea un nuevo espacio de trabajo para empezar a colaborar con tu
-          equipo.
+          Edita los detalles del espacio de trabajo.
         </CardDescription>
       </CardHeader>
       <Separator variant='dashed' className='bg-muted-foreground' />
@@ -205,7 +217,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                 disabled={isPending}
                 className='flex-1'
               >
-                {isPending ? 'Creando...' : 'Crear Espacio de Trabajo'}
+                {isPending ? 'Editando...' : 'Editar Espacio de Trabajo'}
               </Button>
             </div>
           </form>
@@ -215,4 +227,4 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
   )
 }
 
-export default CreateWorkspacesForm
+export default EditWorkspacesForm
