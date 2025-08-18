@@ -79,18 +79,18 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
   }
 
   return (
-    <Card className='w-full max-w-2xl mx-auto shadow-lg'>
-      <CardHeader className='space-y-2 pb-3'>
-        <CardTitle className='text-3xl font-bold text-primary'>
+    <Card className='w-full max-w-lg max-h-[75vh] mx-auto shadow-lg'>
+      <CardHeader className='space-y-2'>
+        <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
           Crear Espacio de Trabajo
         </CardTitle>
-        <CardDescription className='text-base text-muted-foreground'>
+        <CardDescription className='text-sm md:text-base text-muted-foreground'>
           Crea un nuevo espacio de trabajo para empezar a colaborar con tu
           equipo.
         </CardDescription>
       </CardHeader>
       <Separator variant='dashed' className='bg-muted-foreground' />
-      <CardContent className='pt-3'>
+      <CardContent className='overflow-y-auto'>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
             <FormField
@@ -119,7 +119,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
               control={control}
               name='image'
               render={({ field }) => (
-                <div className='bg-input p-6 rounded-lg border border-dashed border-muted-foreground'>
+                <div className='bg-input p-4 rounded-lg border border-dashed border-muted-foreground'>
                   <div className='flex items-center gap-x-6'>
                     {field.value ? (
                       <div className='relative w-20 h-20 rounded-lg overflow-hidden ring-2 ring-blue-500/20'>
@@ -145,7 +145,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                       <p className='text-sm font-medium text-muted-foreground'>
                         Icono del Espacio de Trabajo
                       </p>
-                      <p className='text-sm text-muted-foreground'>
+                      <p className='text-xs text-muted-foreground'>
                         JPG, PNG, SVG o JPEG, máximo 1mb
                       </p>
                       <input
@@ -172,7 +172,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                 </div>
               )}
             />
-            <div className='flex justify-end items-center w-full gap-3 pt-4'>
+            <div className='flex justify-end items-center gap-3 flex-wrap'>
               <Button
                 type='button'
                 variant='secondary'
