@@ -14,6 +14,7 @@ const routes = app
 // EXPORT
 export const GET = handle(routes)
 export const POST = handle(routes)
+export const PATCH = handle(routes)
 
 // TYPES
 export type AppType = typeof routes

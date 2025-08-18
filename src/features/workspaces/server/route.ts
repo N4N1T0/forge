@@ -6,10 +6,13 @@ import {
   WORKSPACES_COLLECTION_ID
 } from '@/config'
 import { sessionMiddleware } from '@/features/auth/server/middleware'
-import { MemberRole } from '@/features/members/types'
-import { createWorkspacesSchema } from '@/features/workspaces/schema'
+import { getMember } from '@/features/members/utils'
+import {
+  createWorkspacesSchema,
+  updateWorkspaceSchema
+} from '@/features/workspaces/schema'
 import { generateInviteCode } from '@/lib/utils'
-import { Members, Workspaces } from '@/types/appwrite'
+import { Members, Role, Workspaces } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
 import { ID, Models, Query } from 'node-appwrite'
@@ -80,13 +83,11 @@ const app = new Hono()
         const databases = c.get('databases')
         const storage = c.get('storage')
         const user = c.get('user')
-        console.log('🚀 ~ user:', user)
         const { name, image } = c.req.valid('form')
 
         let uploadedImageUrl: string | null = null
-        console.log(IMAGES_BUCKET_ID)
 
-        if (image instanceof File) {
+        if (image && image instanceof File) {
           const file = await storage.createFile(
             IMAGES_BUCKET_ID,
             ID.unique(),
@@ -119,7 +120,7 @@ const app = new Hono()
           {
             userId: user.$id,
             workspaceId: workspace.$id,
-            role: MemberRole.ADMIN
+            role: Role.ADMIN
           }
         )
 
@@ -138,6 +139,75 @@ const app = new Hono()
         return c.json<WorkspaceResponse>({
           success: false,
           data: error.type
+        })
+      }
+    }
+  )
+  .patch(
+    '/:workspaceId',
+    sessionMiddleware,
+    zValidator('form', updateWorkspaceSchema),
+    async (c) => {
+      try {
+        const databases = c.get('databases')
+        const storage = c.get('storage')
+        const user = c.get('user')
+
+        const { workspaceId } = c.req.param()
+        const { name, image } = c.req.valid('form')
+
+        const member = await getMember({
+          databases,
+          workspaceId,
+          userId: user.$id
+        })
+
+        if (!member || member.role !== Role.ADMIN) {
+          return c.json<WorkspaceResponse>(
+            {
+              success: false,
+              data: 'You are not a member of this workspace'
+            },
+            401
+          )
+        }
+
+        let uploadedImageUrl: string | null = null
+
+        if (image && image instanceof File) {
+          const file = await storage.createFile(
+            IMAGES_BUCKET_ID,
+            ID.unique(),
+            image
+          )
+          const arrayBuffer = await storage.getFileView(
+            IMAGES_BUCKET_ID,
+            file.$id
+          )
+
+          uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString('base64')}`
+        } else {
+          uploadedImageUrl = image === undefined ? null : image
+        }
+
+        const workspace = await databases.updateDocument<Workspaces>(
+          DATABASE_ID,
+          WORKSPACES_COLLECTION_ID,
+          workspaceId,
+          {
+            name,
+            imageUrl: uploadedImageUrl
+          }
+        )
+
+        return c.json<WorkspaceResponse>({
+          success: true,
+          data: workspace
+        })
+      } catch (error: any) {
+        return c.json<WorkspaceResponse>({
+          success: false,
+          data: error.message || 'Failed to update workspace'
         })
       }
     }
