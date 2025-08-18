@@ -33,7 +33,7 @@ function AuthContent() {
         <Image src={AuthImage} alt='Auth Image' />
       </div>
 
-      <div className='flex-1 flex items-center justify-center p-4 lg:p-8 bg-gray-50'>
+      <div className='flex-1 flex items-center justify-center p-4 lg:p-8 bg-background'>
         <div className='w-full max-w-md'>
           <AnimatePresence mode='wait'>
             <motion.div
