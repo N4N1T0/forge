@@ -10,7 +10,7 @@ import {
 import { useWorkspaceId } from '@/features/workspaces/client/use-workspace-id'
 import { WorkspaceAvatar } from '@/features/workspaces/components/workspace-avatar'
 import { useGetWorkspaces } from '@/features/workspaces/server/use-current-workspace'
-import { CirclePlus } from 'lucide-react'
+import { CirclePlus, Loader } from 'lucide-react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 import { useEffect, useState } from 'react'
@@ -52,7 +52,8 @@ export const WorkspaceSwitcher = () => {
         <SelectContent className='py-2 px-1 w-full'>
           {isLoading && (
             <SelectItem value='loading' disabled>
-              Loading...
+              <Loader className='size-4 animate-spin' />
+              <span>Loading...</span>
             </SelectItem>
           )}
 
