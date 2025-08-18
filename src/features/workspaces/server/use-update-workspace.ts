@@ -4,16 +4,24 @@ import { InferRequestType, InferResponseType } from 'hono'
 import { toast } from 'sonner'
 
 // TYPES
-type ResponseType = InferResponseType<(typeof client.api.workspace)['$post']>
-type RequestType = InferRequestType<(typeof client.api.workspace)['$post']>
+type ResponseType = InferResponseType<
+  (typeof client.api.workspace)[':workspaceId']['$patch']
+>
+type RequestType = InferRequestType<
+  (typeof client.api.workspace)[':workspaceId']['$patch']
+>
 
 // HOOK
-export const useCreateWorkspace = () => {
+export const useUpdateWorkspace = () => {
   const queryClient = useQueryClient()
 
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async ({ form }) => {
-      const response = await client.api.workspace['$post']({ form })
+    mutationFn: async ({ form, param }) => {
+      const response = await client.api.workspace[':workspaceId']['$patch']({
+        form,
+        param
+      })
+
       const data = await response.json()
 
       if (!data.success) {
@@ -22,15 +30,19 @@ export const useCreateWorkspace = () => {
 
       return data
     },
-    onSuccess: () => {
-      toast.success('Espacio de trabajo creado exitosamente', {
-        description: 'Tu nuevo espacio de trabajo ha sido creado.'
+    onSuccess: (data) => {
+      toast.success('Espacio de trabajo actualizado exitosamente', {
+        description: 'Tu espacio de trabajo ha sido actualizado.'
       })
       queryClient.invalidateQueries({ queryKey: ['workspaces'] })
+      if (data.success)
+        queryClient.invalidateQueries({
+          queryKey: ['workspaces', data.data.$id]
+        })
     },
     onError: (error) => {
       const errorMessage =
-        error.message || 'Error al crear el espacio de trabajo'
+        error.message || 'Error al actualizar el espacio de trabajo'
 
       switch (true) {
         case errorMessage.includes('workspace_name_taken'):
