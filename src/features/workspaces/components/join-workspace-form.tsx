@@ -1,0 +1,72 @@
+'use client'
+
+import { Button } from '@/components/ui/button'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
+import { Separator } from '@/components/ui/separator'
+import { useJoinWorkspace } from '@/features/workspaces/server/use-join-workspace'
+import Link from 'next/link'
+import { useRouter } from 'next/navigation'
+
+const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
+  // CONST
+  const { name, inviteCode, workspaceId } = initialValues
+
+  // HOOKS
+  const { mutate: joinWorkspace, isPending } = useJoinWorkspace()
+  const router = useRouter()
+
+  // HANDLERS
+  const handlerJoinWorkspace = () => {
+    joinWorkspace(
+      { json: { code: inviteCode }, param: { workspaceId } },
+      {
+        onSuccess: () => {
+          router.push(`/dashboard/workspace/${name}`)
+        }
+      }
+    )
+  }
+
+  return (
+    <Card className='shadow-none max-w-lg mx-auto w-full'>
+      <CardHeader>
+        <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
+          Unirme al espacio de trabajo
+        </CardTitle>
+        <CardDescription>
+          Has sido invitado al espacio de trabajo <strong>{name}</strong>
+        </CardDescription>
+      </CardHeader>
+      <Separator variant='dashed' />
+      <CardContent>
+        <div className='flex justify-between items-center flex-col md:flex-row gap-2'>
+          <Button
+            className='w-full md:w-fit'
+            variant='secondary'
+            size='lg'
+            disabled={isPending}
+            asChild
+          >
+            <Link href='/dashboard'>Cancelar</Link>
+          </Button>
+          <Button
+            className='w-full md:w-fit'
+            size='lg'
+            onClick={handlerJoinWorkspace}
+            disabled={isPending}
+          >
+            Unirme
+          </Button>
+        </div>
+      </CardContent>
+    </Card>
+  )
+}
+
+export default JoinWorkspaceForm

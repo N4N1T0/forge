@@ -79,7 +79,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
   }
 
   return (
-    <Card className='w-full max-w-lg max-h-[75vh] mx-auto shadow-lg'>
+    <Card className='w-full max-w-2xl max-h-[75vh] mx-auto shadow-lg overflow-y-auto'>
       <CardHeader className='space-y-2'>
         <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
           Crear Espacio de Trabajo
@@ -90,7 +90,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
         </CardDescription>
       </CardHeader>
       <Separator variant='dashed' className='bg-muted-foreground' />
-      <CardContent className='overflow-y-auto'>
+      <CardContent>
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
             <FormField
