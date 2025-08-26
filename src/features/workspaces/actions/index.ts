@@ -1,37 +1,19 @@
 import 'server-only'
 
 import {
-  APPWRITE_ENDPOINT,
-  APPWRITE_PROJECT_ID,
   DATABASE_ID,
   MEMBERS_COLLECTION_ID,
   WORKSPACES_COLLECTION_ID
 } from '@/config'
-import { AUTH_COOKIE } from '@/features/auth/constants'
 import { getMember } from '@/features/members/utils'
+import { CreateSessionClient } from '@/lib/appwrite'
 import { Members, Workspaces } from '@/types/appwrite'
-import { cookies } from 'next/headers'
-import { Account, Client, Databases, Query } from 'node-appwrite'
+import { Query } from 'node-appwrite'
 
 export const getWorkspacesAction = async () => {
   try {
-    // TODO
-    const client = new Client()
-      .setEndpoint(APPWRITE_ENDPOINT)
-      .setProject(APPWRITE_PROJECT_ID)
+    const { account, databases } = await CreateSessionClient()
 
-    const cookie = await cookies()
-    const session = cookie.get(AUTH_COOKIE)
-
-    if (!session)
-      return {
-        success: false,
-        data: null
-      }
-
-    client.setSession(session.value)
-    const databases = new Databases(client)
-    const account = new Account(client)
     const user = await account.get()
 
     const members = await databases.listDocuments<Members>(
@@ -73,23 +55,7 @@ export const getWorkspaceAction = async ({
   workspaceId
 }: GetWorkspaceActionProps) => {
   try {
-    // TODO
-    const client = new Client()
-      .setEndpoint(APPWRITE_ENDPOINT)
-      .setProject(APPWRITE_PROJECT_ID)
-
-    const cookie = await cookies()
-    const session = cookie.get(AUTH_COOKIE)
-
-    if (!session)
-      return {
-        success: false,
-        data: null
-      }
-
-    client.setSession(session.value)
-    const databases = new Databases(client)
-    const account = new Account(client)
+    const { account, databases } = await CreateSessionClient()
     const user = await account.get()
 
     const member = await getMember({
@@ -114,6 +80,34 @@ export const getWorkspaceAction = async ({
     return {
       success: true,
       data: workspaces
+    }
+  } catch (error) {
+    // TODO
+    console.log('🚀 ~ getWorkspaces ~ error:', error)
+    return {
+      success: false,
+      data: null
+    }
+  }
+}
+
+export const getWorkspaceInfoAction = async ({
+  workspaceId
+}: GetWorkspaceInfoActionProps) => {
+  try {
+    const { databases } = await CreateSessionClient()
+
+    const workspaces = await databases.getDocument<Workspaces>(
+      DATABASE_ID,
+      WORKSPACES_COLLECTION_ID,
+      workspaceId
+    )
+
+    return {
+      success: true,
+      data: {
+        name: workspaces.name
+      }
     }
   } catch (error) {
     // TODO
