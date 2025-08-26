@@ -27,8 +27,8 @@ export default async function WorkspacePageSettings({
   }
 
   return (
-    <>
+    <div className='overflow-auto pb-16 size-full'>
       <EditWorkspacesForm initialValues={initialValues.data} />
-    </>
+    </div>
   )
 }
