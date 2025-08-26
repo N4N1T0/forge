@@ -9,7 +9,7 @@ export default function DashboardLayout({ children }: Layouts) {
           <Sidebar />
         </div>
         <div className='lg:pl-64 w-full'>
-          <div className='mx-auto max-w-screen-2xl h-full'>
+          <div className='mx-auto max-w-screen-4xl h-full'>
             <Navbar />
             <main className='size-full py-8 px-6 flex flex-col justify-center items-center'>
               {children}
