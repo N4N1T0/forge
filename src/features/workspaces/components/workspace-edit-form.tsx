@@ -1,6 +1,5 @@
 'use client'
 
-import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -17,22 +16,28 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
+import { Icon, IconPicker } from '@/components/ui/icon-picker'
 import { Input } from '@/components/ui/input'
+import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
-import { updateWorkspaceSchema } from '@/features/workspaces/schema'
+import { Textarea } from '@/components/ui/textarea'
+import { THEME_ITEMS } from '@/data'
+import {
+  CreateWorkspacesSchema,
+  createWorkspacesSchema
+} from '@/features/workspaces/schema'
+import { useDeleteWorkspace } from '@/features/workspaces/server/use-delete-workspace'
 import { useUpdateWorkspace } from '@/features/workspaces/server/use-update-workspace'
 import { useConfirm } from '@/hooks/use-confirm'
+import { generateSlug } from '@/lib/utils'
 import { editWorkspacesFormProps } from '@/types/functions'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { ArrowLeftIcon, CopyIcon, ImageIcon } from 'lucide-react'
+import { CheckIcon, LinkIcon, Loader, MinusIcon } from 'lucide-react'
 import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
-import z from 'zod'
-import { useDeleteWorkspace } from '../server/use-delete-workspace'
-import { useResetWorkspaceInviteCode } from '../server/use-reset-workspace-invite-code'
 
 const EditWorkspacesForm = ({
   onCancel,
@@ -44,40 +49,32 @@ const EditWorkspacesForm = ({
     useUpdateWorkspace()
   const { mutate: deleteWorkspace, isPending: isDeleting } =
     useDeleteWorkspace()
-  const { mutate: resetInviteCode, isPending: isResetting } =
-    useResetWorkspaceInviteCode()
   const inputRef = useRef<HTMLInputElement>(null)
   const [confirmDelete, DeleteWorkspaceModal] = useConfirm(
     'Eliminar Espacio de Trabajo',
     '¿Estás seguro de eliminar este espacio de trabajo?',
     'destructive'
   )
-  const [confirmResetInviteCode, ResetInviteCodeModal] = useConfirm(
-    'Resetear Código de Invitación',
-    '¿Estás seguro de resetear el código de invitación?',
-    'destructive'
-  )
 
-  const form = useForm<z.infer<typeof updateWorkspaceSchema>>({
-    resolver: zodResolver(updateWorkspaceSchema),
+  const form = useForm<CreateWorkspacesSchema>({
+    resolver: zodResolver(createWorkspacesSchema),
     defaultValues: {
-      image: initialValues?.imageUrl ?? '',
-      name: initialValues?.name ?? ''
+      name: initialValues?.name ?? '',
+      description: initialValues?.description ?? '',
+      icon: initialValues?.icon ?? 'anvil',
+      slug: initialValues?.slug ?? '',
+      theme: initialValues?.theme ?? 'light'
     }
   })
 
   // CONST
   const { control, handleSubmit, reset } = form
-  const fullInviteCode = `${window.location.origin}/dashboard/workspace/${initialValues?.$id}/join?inviteCode=${initialValues?.inviteCode}`
+  const fullInviteCode = `${window.location.origin}/dashboard/workspace/${initialValues?.$id}/join?inviteCode=${initialValues?.slug}`
 
   // HANDLER
-  const onSubmit = async (values: z.infer<typeof updateWorkspaceSchema>) => {
-    const finalValues = {
-      ...values,
-      image: values.image instanceof File ? values.image : ''
-    }
+  const onSubmit = async (values: CreateWorkspacesSchema) => {
     updateWorkspace(
-      { form: finalValues, param: { workspaceId: initialValues?.$id } },
+      { form: values, param: { workspaceId: initialValues?.$id } },
       {
         onSuccess: () => {
           reset()
@@ -85,13 +82,6 @@ const EditWorkspacesForm = ({
         }
       }
     )
-  }
-
-  const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const file = event.target.files?.[0]
-    if (file) {
-      form.setValue('image', file)
-    }
   }
 
   const handleCancel = () => {
@@ -116,21 +106,6 @@ const EditWorkspacesForm = ({
     )
   }
 
-  const handleResetInviteCode = async () => {
-    const ok = await confirmResetInviteCode()
-    if (!ok) {
-      return null
-    }
-    resetInviteCode(
-      { param: { workspaceId: initialValues?.$id } },
-      {
-        onSuccess: () => {
-          router.refresh()
-        }
-      }
-    )
-  }
-
   const handleCopyInviteCode = () => {
     navigator.clipboard.writeText(fullInviteCode).then(() => {
       toast.success('Código de invitación copiado al portapapeles')
@@ -138,140 +113,210 @@ const EditWorkspacesForm = ({
   }
 
   return (
-    <div className='flex flex-col gap-y-4 max-w-3xl mx-auto'>
-      {/* EDIT FORM */}
-      <Card className='w-full mx-auto shadow-lg'>
-        <CardHeader className=''>
-          <div className='flex items-center flex-row gap-x-4'>
-            <Button size='sm' variant='secondary' onClick={handleCancel}>
-              <ArrowLeftIcon className='size-4' />
-              Cancelar
-            </Button>
-            <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
-              {initialValues?.name ?? 'Editar Espacio de Trabajo'}
-            </CardTitle>
-          </div>
+    <div className='flex flex-col gap-3 max-w-2xl mx-auto'>
+      <Card className='w-full shadow-lg overflow-y-auto'>
+        <CardHeader className='space-y-2'>
+          <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
+            {initialValues?.name ?? 'Edit Workspace'}
+          </CardTitle>
           <CardDescription className='text-sm md:text-base text-muted-foreground'>
-            Edita los detalles del espacio de trabajo.
+            Edit the details of your workspace.
           </CardDescription>
         </CardHeader>
-        <Separator variant='dashed' className='bg-muted-foreground' />
+        <Separator />
         <CardContent>
           <Form {...form}>
             <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
+              <fieldset className='flex gap-4 items-center w-full'>
+                <FormField
+                  control={control}
+                  name='icon'
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel className='text-sm font-semibold text-muted-foreground'>
+                        Icon
+                      </FormLabel>
+                      <IconPicker
+                        value={field.value}
+                        disabled={isUpdating || isDeleting}
+                        onValueChange={(icon) => field.onChange(icon)}
+                      >
+                        <Button
+                          variant='outline'
+                          size='icon'
+                          className='aspect-square size-12'
+                          disabled={isUpdating || isDeleting}
+                        >
+                          {field.value ? (
+                            <Icon name={field.value} />
+                          ) : (
+                            'Select Icon'
+                          )}
+                        </Button>
+                      </IconPicker>
+                      <FormMessage className='text-red-500' />
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={control}
+                  name='name'
+                  render={({ field }) => (
+                    <FormItem className='w-full'>
+                      <FormLabel className='text-sm font-semibold text-muted-foreground'>
+                        Name*
+                      </FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          type='name'
+                          placeholder='Salamanders'
+                          className='h-12 focus:ring-2 w-full'
+                          autoComplete='on'
+                          disabled={isUpdating || isDeleting}
+                        />
+                      </FormControl>
+                      <FormMessage className='text-red-500' />
+                    </FormItem>
+                  )}
+                />
+              </fieldset>
+
               <FormField
                 control={control}
-                name='name'
+                name='description'
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel className='text-sm font-semibold text-muted-foreground'>
-                      Nombre del Espacio de Trabajo
+                      Description
                     </FormLabel>
                     <FormControl>
-                      <Input
+                      <Textarea
                         {...field}
-                        type='name'
-                        placeholder='Nombre del espacio de trabajo'
+                        placeholder='Into the fires of battle, unto the anvil of war!'
                         className='h-12 focus:ring-2'
-                        autoComplete='on'
-                        disabled={isUpdating || isDeleting || isResetting}
+                        disabled={isUpdating || isDeleting}
                       />
                     </FormControl>
                     <FormMessage className='text-red-500' />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={control}
-                name='image'
+                name='slug'
                 render={({ field }) => (
-                  <div className='bg-input p-4 rounded-lg border border-dashed border-muted-foreground'>
-                    <div className='flex items-center gap-x-6'>
-                      {field.value ? (
-                        <div className='relative w-20 h-20 rounded-lg overflow-hidden ring-2 ring-blue-500/20'>
-                          <Image
-                            src={
-                              field.value instanceof File
-                                ? URL.createObjectURL(field.value)
-                                : field.value
+                  <FormItem>
+                    <FormLabel className='text-sm font-semibold text-muted-foreground'>
+                      Slug (Invite Link)
+                    </FormLabel>
+                    <FormControl>
+                      <div className='flex gap-3 w-full'>
+                        <div className='flex flex-1'>
+                          <span className='border-input dark:bg-input/30 bg-transparent text-muted-foreground inline-flex items-center border px-3 text-xs'>
+                            {`${origin}/workspace/join/`}
+                          </span>
+                          <Input
+                            {...field}
+                            className='h-12 focus:ring-2'
+                            placeholder={
+                              initialValues?.slug ??
+                              (generateSlug(form.watch('name')) ||
+                                'salamanders')
                             }
-                            alt='Imagen del Espacio de Trabajo'
-                            fill
-                            className='object-cover'
+                            type='text'
+                            disabled={isUpdating || isDeleting}
                           />
                         </div>
-                      ) : (
-                        <Avatar className='size-20 bg-muted-foreground'>
-                          <AvatarFallback>
-                            <ImageIcon className='w-10 h-10 text-muted-foreground' />
-                          </AvatarFallback>
-                        </Avatar>
-                      )}
-                      <div className='flex flex-col gap-y-2'>
-                        <p className='text-sm font-medium text-muted-foreground'>
-                          Icono del Espacio de Trabajo
-                        </p>
-                        <p className='text-xs text-muted-foreground'>
-                          JPG, PNG, SVG o JPEG, máximo 1mb
-                        </p>
-                        <input
-                          className='hidden'
-                          accept='.jpg, .png, .jpeg, .svg'
-                          ref={inputRef}
-                          type='file'
-                          disabled={isUpdating || isDeleting || isResetting}
-                          onChange={handleImageChange}
-                        />
-                        {field.value ? (
-                          <Button
-                            type='button'
-                            size='sm'
-                            variant='destructive'
-                            onClick={() => {
-                              field.onChange(null)
-                              if (inputRef.current) inputRef.current.value = ''
-                            }}
-                            disabled={isUpdating || isDeleting || isResetting}
-                            className='w-fit'
-                          >
-                            Eliminar Icono
-                          </Button>
-                        ) : (
-                          <Button
-                            type='button'
-                            size='sm'
-                            variant='outline'
-                            onClick={() => inputRef.current?.click()}
-                            disabled={isUpdating || isDeleting || isResetting}
-                            className='w-fit'
-                          >
-                            Subir Icono
-                          </Button>
-                        )}
+                        <Button
+                          type='button'
+                          variant='secondary'
+                          className='h-12 aspect-square w-auto'
+                          onClick={handleCopyInviteCode}
+                          disabled={isUpdating || isDeleting}
+                        >
+                          <LinkIcon />
+                        </Button>
                       </div>
-                    </div>
-                    <FormMessage className='text-red-500 mt-1' />
-                  </div>
+                    </FormControl>
+                    <FormMessage className='text-red-500' />
+                  </FormItem>
                 )}
               />
+
+              <FormField
+                control={control}
+                name='theme'
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className='text-sm font-semibold text-muted-foreground'>
+                      Theme
+                    </FormLabel>
+                    <FormControl>
+                      <RadioGroup
+                        className='flex gap-3'
+                        onValueChange={field.onChange}
+                        defaultValue={field.value}
+                      >
+                        {THEME_ITEMS.map(({ value, label, image }) => (
+                          <label key={`${value}-${value}`}>
+                            <RadioGroupItem
+                              id={`${value}-${value}`}
+                              className='peer sr-only after:absolute after:inset-0'
+                              value={value}
+                            />
+                            <Image
+                              src={image}
+                              alt={label}
+                              width={88}
+                              height={70}
+                              className='border-input peer-focus-visible:ring-ring/50 peer-data-[state=checked]:border-ring peer-data-[state=checked]:bg-accent relative cursor-pointer overflow-hidden rounded-md border shadow-xs transition-[color,box-shadow] outline-none peer-focus-visible:ring-[3px] peer-data-disabled:cursor-not-allowed peer-data-disabled:opacity-50'
+                            />
+                            <span className='group peer-data-[state=unchecked]:text-muted-foreground/70 mt-2 flex items-center gap-1'>
+                              <CheckIcon
+                                size={16}
+                                className='group-peer-data-[state=unchecked]:hidden'
+                                aria-hidden='true'
+                              />
+                              <MinusIcon
+                                size={16}
+                                className='group-peer-data-[state=checked]:hidden'
+                                aria-hidden='true'
+                              />
+                              <span className='text-xs font-medium'>
+                                {label}
+                              </span>
+                            </span>
+                          </label>
+                        ))}
+                      </RadioGroup>
+                    </FormControl>
+                    <FormMessage className='text-red-500' />
+                  </FormItem>
+                )}
+              />
+
+              <Separator />
+
               <div className='flex justify-end items-center gap-3 flex-wrap'>
                 <Button
                   type='button'
                   variant='secondary'
                   size='lg'
                   onClick={handleCancel}
-                  disabled={isUpdating || isDeleting || isResetting}
+                  disabled={isUpdating || isDeleting}
                   className='flex-1'
                 >
-                  Cancelar
+                  Cancel
                 </Button>
                 <Button
                   type='submit'
                   size='lg'
-                  disabled={isUpdating || isDeleting || isResetting}
+                  disabled={isUpdating || isDeleting}
                   className='flex-1'
                 >
-                  {isUpdating ? 'Editando...' : 'Editar Espacio de Trabajo'}
+                  {isUpdating ? 'Updating...' : 'Update Workspace'}
                 </Button>
               </div>
             </form>
@@ -279,60 +324,36 @@ const EditWorkspacesForm = ({
         </CardContent>
       </Card>
 
-      {/* RESET INVITE CODE ZONE */}
-      <Card className='w-full max-h-[75vh] mx-auto shadow-lg'>
-        <CardContent className='py-0'>
-          <h3 className='text-2xl font-semibold'>Invitación</h3>
-          <p className='text-sm text-muted-foreground my-3'>
-            Puedes usar el siguiente código de invitación para invitar a nuevos
-            miembros a este espacio de trabajo.
-          </p>
-          <div className='my-4'>
-            <div className='flex items-center gap-x-2'>
-              <Input disabled value={fullInviteCode} />
-              <Button
-                variant='secondary'
-                size='sm'
-                onClick={handleCopyInviteCode}
-              >
-                <CopyIcon className='size-4' />
-              </Button>
-            </div>
-          </div>
-          <Button
-            variant='destructive'
-            type='button'
-            disabled={isDeleting || isUpdating || isResetting}
-            onClick={handleResetInviteCode}
-          >
-            {isResetting ? 'Resetando...' : 'Resetear Código de Invitación'}
-          </Button>
-        </CardContent>
-      </Card>
-
       {/* DANGER ZONE */}
-      <Card className='w-full max-h-[75vh] mx-auto shadow-lg'>
-        <CardContent className='py-0'>
-          <h3 className='text-2xl font-semibold'>Zona de Peligro</h3>
-          <p className='text-sm text-muted-foreground my-3'>
-            Eliminar este espacio de trabajo es irreversible, y eliminara todos
-            los datos asociados a este espacio de trabajo.
-          </p>
+      <Card className='max-w-2xl border-destructive'>
+        <CardHeader>
+          <CardTitle>Danger Zone</CardTitle>
+          <CardDescription>
+            Deleting a workspace is irreversible and will remove all associated
+            data.
+          </CardDescription>
+        </CardHeader>
+        <CardContent>
           <Button
-            variant='destructive'
             type='button'
-            disabled={isDeleting || isUpdating || isResetting}
+            variant='destructive'
             onClick={handleDelete}
+            disabled={isDeleting || isUpdating}
           >
-            {isDeleting ? 'Eliminando...' : 'Eliminar Espacio de Trabajo'}
+            {isDeleting ? (
+              <>
+                <Loader className='mr-2 h-4 w-4 animate-spin' />
+                Deleting...
+              </>
+            ) : (
+              'Delete Workspace'
+            )}
           </Button>
         </CardContent>
       </Card>
 
       {/* DELETE MODAL */}
       <DeleteWorkspaceModal />
-      {/* RESET INVITE CODE MODAL */}
-      <ResetInviteCodeModal />
     </div>
   )
 }

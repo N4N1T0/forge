@@ -19,7 +19,7 @@ export const WorkspaceSwitcher = () => {
   // STATE
   const router = useRouter()
   const initialWorkspaceId = useWorkspaceId()
-  const { data, isLoading } = useGetWorkspaces()
+  const { data: workspaces, isLoading } = useGetWorkspaces()
   const [selectedWorkspace, setSelectedWorkspace] = useState<
     string | undefined
   >(initialWorkspaceId)
@@ -57,14 +57,14 @@ export const WorkspaceSwitcher = () => {
             </SelectItem>
           )}
 
-          {!isLoading && data?.length === 0 && (
+          {!isLoading && workspaces?.length === 0 && (
             <SelectItem value='no-workspace' disabled className='text-sm'>
               No Workspace Found
             </SelectItem>
           )}
 
           {!isLoading &&
-            data?.map((workspace) => (
+            workspaces?.map((workspace) => (
               <SelectItem
                 key={workspace.$id}
                 value={workspace.$id}
