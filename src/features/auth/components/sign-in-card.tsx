@@ -117,7 +117,7 @@ export const SignInCard = () => {
           </form>
         </Form>
 
-        <Separator variant='dashed' className='my-6' />
+        <Separator className='my-6' />
 
         <div className='grid grid-cols-2 gap-3'>
           <Button variant='outline' disabled={isPending}>
@@ -130,14 +130,14 @@ export const SignInCard = () => {
           </Button>
         </div>
 
-        <Separator variant='dashed' />
+        <Separator />
 
         <CardFooter className='text-center text-sm text-muted-foreground space-y-2 flex-col'>
           <div>
             ¿No tienes una cuenta?{' '}
             <Link
               href='/?tab=sign-up'
-              className='text-orange-600 hover:underline font-medium'
+              className='text-primary hover:underline font-medium'
             >
               Regístrate
             </Link>
@@ -146,7 +146,7 @@ export const SignInCard = () => {
             ¿Olvidaste tu contraseña?{' '}
             <Link
               href='/?tab=reset'
-              className='text-orange-600 hover:underline font-medium'
+              className='text-primary hover:underline font-medium'
             >
               Restablecer
             </Link>
