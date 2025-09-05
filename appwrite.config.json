@@ -58,7 +58,7 @@
             "databaseId": "6889d4420039348bacac",
             "name": "workspaces",
             "enabled": true,
-            "documentSecurity": false,
+            "documentSecurity": true,
             "attributes": [
                 {
                     "key": "name",
@@ -79,13 +79,34 @@
                     "encrypt": false
                 },
                 {
-                    "key": "imageUrl",
+                    "key": "icon",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "slug",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 10,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "theme",
                     "type": "string",
                     "required": false,
                     "array": false,
-                    "size": 1400000,
-                    "default": null,
-                    "encrypt": false
+                    "elements": [
+                        "light",
+                        "dark"
+                    ],
+                    "format": "enum",
+                    "default": "dark"
                 }
             ],
             "indexes": []
