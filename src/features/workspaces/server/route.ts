@@ -1,26 +1,22 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   DATABASE_ID,
-  IMAGES_BUCKET_ID,
   MEMBERS_COLLECTION_ID,
   WORKSPACES_COLLECTION_ID
 } from '@/config'
 import { sessionMiddleware } from '@/features/auth/server/middleware'
 import { getMember } from '@/features/members/utils'
-import {
-  createWorkspacesSchema,
-  updateWorkspaceSchema
-} from '@/features/workspaces/schema'
-import { generateInviteCode } from '@/lib/utils'
+import { createWorkspacesSchema } from '@/features/workspaces/schema'
+import { generateSlug } from '@/lib/utils'
 import { Members, Role, Workspaces } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
-import { ID, Models, Query } from 'node-appwrite'
+import { ID, Query } from 'node-appwrite'
 import z, { ZodError } from 'zod'
 
 // TYPES
 type WorkspaceResponse =
-  | { success: true; data: Partial<Models.Document> }
+  | { success: true; data: Partial<Workspaces> }
   | { success: false; data: string }
 
 type WorkspaceListResponse =
@@ -40,27 +36,27 @@ const app = new Hono()
       const databases = c.get('databases')
       const user = c.get('user')
 
-      const members = await databases.listDocuments<Members>(
+      const member = await databases.listDocuments<Members>(
         DATABASE_ID,
         MEMBERS_COLLECTION_ID,
         [Query.equal('userId', user.$id)]
       )
 
-      if (members.total === 0) {
+      if (member.total === 0) {
         return c.json<WorkspaceListResponse>({
           success: true,
           data: []
         })
       }
 
-      const workspaceIds = members.documents.map(
+      const workspaceIds = member.documents.map(
         (member: Members) => member.workspaceId
       )
 
       const workspaces = await databases.listDocuments<Workspaces>(
         DATABASE_ID,
         WORKSPACES_COLLECTION_ID,
-        [Query.orderDesc('$createdAt'), Query.contains('$id', workspaceIds)]
+        [Query.contains('$id', workspaceIds)]
       )
 
       return c.json<WorkspaceListResponse>({
@@ -74,6 +70,44 @@ const app = new Hono()
       })
     }
   })
+  .get('/:workspaceId', sessionMiddleware, async (c) => {
+    try {
+      const databases = c.get('databases')
+      const user = c.get('user')
+
+      const member = await databases.listDocuments<Members>(
+        DATABASE_ID,
+        MEMBERS_COLLECTION_ID,
+        [
+          Query.equal('userId', user.$id),
+          Query.equal('workspaceId', c.req.param('workspaceId'))
+        ]
+      )
+
+      if (member.total === 0) {
+        return c.json<WorkspaceResponse>({
+          success: false,
+          data: "You're no part of this workspace"
+        })
+      }
+
+      const workspace = await databases.getDocument<Workspaces>(
+        DATABASE_ID,
+        WORKSPACES_COLLECTION_ID,
+        c.req.param('workspaceId')
+      )
+
+      return c.json<WorkspaceResponse>({
+        success: true,
+        data: workspace
+      })
+    } catch (error: any) {
+      return c.json<WorkspaceResponse>({
+        success: false,
+        data: error.message || 'Failed to fetch workspaces'
+      })
+    }
+  })
   .post(
     '/',
     zValidator('form', createWorkspacesSchema),
@@ -81,25 +115,10 @@ const app = new Hono()
     async (c) => {
       try {
         const databases = c.get('databases')
-        const storage = c.get('storage')
         const user = c.get('user')
-        const { name, image } = c.req.valid('form')
-
-        let uploadedImageUrl: string | null = null
-
-        if (image && image instanceof File) {
-          const file = await storage.createFile(
-            IMAGES_BUCKET_ID,
-            ID.unique(),
-            image
-          )
-          const arrayBuffer = await storage.getFileView(
-            IMAGES_BUCKET_ID,
-            file.$id
-          )
-
-          uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString('base64')}`
-        }
+        const { name, description, icon, slug, theme } = c.req.valid('form')
+        const formattedSlug =
+          slug === undefined || slug === '' ? generateSlug(name) : slug
 
         const workspace = await databases.createDocument<Workspaces>(
           DATABASE_ID,
@@ -108,8 +127,10 @@ const app = new Hono()
           {
             name,
             userId: user.$id,
-            imageUrl: uploadedImageUrl,
-            inviteCode: generateInviteCode(10)
+            description,
+            icon,
+            slug: formattedSlug,
+            theme
           }
         )
 
@@ -146,15 +167,16 @@ const app = new Hono()
   .patch(
     '/:workspaceId',
     sessionMiddleware,
-    zValidator('form', updateWorkspaceSchema),
+    zValidator('form', createWorkspacesSchema),
     async (c) => {
       try {
         const databases = c.get('databases')
-        const storage = c.get('storage')
         const user = c.get('user')
 
         const { workspaceId } = c.req.param()
-        const { name, image } = c.req.valid('form')
+        const { name, description, icon, slug, theme } = c.req.valid('form')
+        const formattedSlug =
+          slug === undefined || slug === '' ? generateSlug(name) : slug
 
         const member = await getMember({
           databases,
@@ -172,31 +194,16 @@ const app = new Hono()
           )
         }
 
-        let uploadedImageUrl: string | null = null
-
-        if (image && image instanceof File) {
-          const file = await storage.createFile(
-            IMAGES_BUCKET_ID,
-            ID.unique(),
-            image
-          )
-          const arrayBuffer = await storage.getFileView(
-            IMAGES_BUCKET_ID,
-            file.$id
-          )
-
-          uploadedImageUrl = `data:image/png;base64,${Buffer.from(arrayBuffer).toString('base64')}`
-        } else {
-          uploadedImageUrl = image === undefined ? null : image
-        }
-
         const workspace = await databases.updateDocument<Workspaces>(
           DATABASE_ID,
           WORKSPACES_COLLECTION_ID,
           workspaceId,
           {
             name,
-            imageUrl: uploadedImageUrl
+            description,
+            icon,
+            slug: formattedSlug,
+            theme
           }
         )
 
@@ -254,50 +261,6 @@ const app = new Hono()
       })
     }
   })
-  .post('/:workspaceId/reset-invite-code', sessionMiddleware, async (c) => {
-    try {
-      const databases = c.get('databases')
-      const user = c.get('user')
-      const { workspaceId } = c.req.param()
-
-      const member = await getMember({
-        databases,
-        workspaceId,
-        userId: user.$id
-      })
-
-      if (!member || member.role !== Role.ADMIN) {
-        return c.json<WorkspaceResponse>(
-          {
-            success: false,
-            data: 'You are not a member of this workspace'
-          },
-          401
-        )
-      }
-
-      await databases.updateDocument<Workspaces>(
-        DATABASE_ID,
-        WORKSPACES_COLLECTION_ID,
-        workspaceId,
-        {
-          inviteCode: generateInviteCode(10)
-        }
-      )
-
-      return c.json<WorkspaceResponse>({
-        success: true,
-        data: {
-          $id: workspaceId
-        }
-      })
-    } catch (error: any) {
-      return c.json<WorkspaceResponse>({
-        success: false,
-        data: error.message || 'Failed to reset invite code'
-      })
-    }
-  })
   .post(
     '/:workspaceId/join',
     sessionMiddleware,
@@ -305,7 +268,6 @@ const app = new Hono()
     async (c) => {
       const { workspaceId } = c.req.param()
       const { code } = c.req.valid('json')
-      console.log('🚀 ~ workspaceId:', workspaceId)
 
       const databases = c.get('databases')
       const user = c.get('user')
@@ -329,7 +291,7 @@ const app = new Hono()
         workspaceId
       )
 
-      if (workspace.inviteCode !== code) {
+      if (workspace.slug !== code) {
         return c.json<WorkspaceResponse>({
           success: false,
           data: 'Código de invitación inválido'
