@@ -30,7 +30,11 @@ function AuthContent() {
   return (
     <div className='min-h-screen flex'>
       <div className='hidden lg:flex lg:w-1/2'>
-        <Image src={AuthImage} alt='Auth Image' />
+        <Image
+          src={AuthImage}
+          alt='Auth Image'
+          className='size-full object-fit'
+        />
       </div>
 
       <div className='flex-1 flex items-center justify-center p-4 lg:p-8 bg-background'>
