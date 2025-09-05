@@ -4,11 +4,9 @@ import JoinWorkspaceForm from '@/features/workspaces/components/join-workspace-f
 import { redirect } from 'next/navigation'
 
 export default async function JoinWorkspacePage({
-  params,
   searchParams
 }: JoinWorkspaceProps) {
-  const { inviteCode } = await searchParams
-  const { workspaceId } = await params
+  const { inviteCode, workspaceId } = await searchParams
   const user = await getCurrentAction()
 
   if (!user.success || !user.data) {
@@ -34,7 +32,7 @@ export default async function JoinWorkspacePage({
   }
 
   return (
-    <div className='overflow-auto pb-16 size-full flex justify-center items-center'>
+    <div className='overflow-auto pb-16 min-h-screen w-full flex justify-center items-center'>
       <JoinWorkspaceForm initialValues={initialValues} />
     </div>
   )
