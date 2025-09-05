@@ -8,11 +8,14 @@ export const getMember = async ({
   workspaceId,
   userId
 }: GetMembersParams) => {
-  const members = await databases.listDocuments<Members>(
-    DATABASE_ID,
-    MEMBERS_COLLECTION_ID,
-    [Query.equal('userId', userId), Query.equal('workspaceId', workspaceId)]
-  )
+  const members = await databases.listRows<Members>({
+    databaseId: DATABASE_ID,
+    tableId: MEMBERS_COLLECTION_ID,
+    queries: [
+      Query.equal('userId', userId),
+      Query.equal('workspaceId', workspaceId)
+    ]
+  })
 
-  return members.documents[0]
+  return members.rows[0]
 }
