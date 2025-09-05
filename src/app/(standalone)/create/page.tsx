@@ -8,5 +8,9 @@ export default async function CreateWorkspace() {
   if (!data.success || !data.data) {
     return redirect('/')
   }
-  return <CreateWorkspacesForm />
+  return (
+    <div className='flex items-center justify-center min-h-screen w-full'>
+      <CreateWorkspacesForm />
+    </div>
+  )
 }
