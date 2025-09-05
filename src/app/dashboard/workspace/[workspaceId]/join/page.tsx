@@ -11,7 +11,11 @@ export default async function JoinWorkspacePage({
   const { workspaceId } = await params
   const user = await getCurrentAction()
 
-  if (!user.success || !user.data || !inviteCode || !workspaceId) {
+  if (!user.success || !user.data) {
+    return redirect('/')
+  }
+
+  if (!inviteCode || !workspaceId) {
     return redirect('/dashboard')
   }
 
