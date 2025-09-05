@@ -22,3 +22,9 @@ export const routes = [
     icon: UsersIcon
   }
 ]
+
+export const THEME_ITEMS = [
+  { value: 'light', label: 'Light', image: '/ui-light.png' },
+  { value: 'dark', label: 'Dark', image: '/ui-dark.png' },
+  { value: 'system', label: 'System', image: '/ui-system.png' }
+]
