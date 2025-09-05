@@ -30,7 +30,10 @@ const app = new Hono()
       const { email, password } = c.req.valid('json')
 
       const { account } = await createAdminClient()
-      const session = await account.createEmailPasswordSession(email, password)
+      const session = await account.createEmailPasswordSession({
+        email,
+        password
+      })
       setAuthCookie(c, session)
 
       return c.json<AuthResponse>({
@@ -55,7 +58,10 @@ const app = new Hono()
 
       const { account } = await createAdminClient()
       await account.create(ID.unique(), email, password, name)
-      const session = await account.createEmailPasswordSession(email, password)
+      const session = await account.createEmailPasswordSession({
+        email,
+        password
+      })
       setAuthCookie(c, session)
 
       return c.json<AuthResponse>({
@@ -82,10 +88,10 @@ const app = new Hono()
         const { email } = c.req.valid('json')
 
         const { account } = await createAdminClient()
-        await account.createRecovery(
+        await account.createRecovery({
           email,
-          `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password`
-        )
+          url: `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password`
+        })
 
         return c.json<AuthResponse>({
           success: true
@@ -107,7 +113,9 @@ const app = new Hono()
   .post('/logout', sessionMiddleware, async (c) => {
     const account = c.get('account')
     deleteCookie(c, AUTH_COOKIE)
-    await account.deleteSession('current')
+    await account.deleteSession({
+      sessionId: 'current'
+    })
 
     return c.json({
       success: true
