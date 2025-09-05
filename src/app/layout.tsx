@@ -3,17 +3,22 @@ import { ThemeProvider } from '@/components/layout/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
 import type { Metadata } from 'next'
-import { Oxanium, Source_Code_Pro } from 'next/font/google'
+import { Geist, Geist_Mono, Noto_Sans_Georgian } from 'next/font/google'
 import './globals.css'
 
-const oxanium = Oxanium({
-  variable: '--font-oxanium',
+const geist = Geist({
+  variable: '--font-geist',
   subsets: ['latin']
 })
 
-const sourceCodePro = Source_Code_Pro({
-  variable: '--font-source-code-pro',
+const geistMono = Geist_Mono({
+  variable: '--font-geist-mono',
   subsets: ['latin']
+})
+
+const notoSansGeorgian = Noto_Sans_Georgian({
+  variable: '--font-noto-sans-georgian',
+  subsets: ['georgian']
 })
 
 export const metadata: Metadata = {
@@ -26,8 +31,9 @@ export default function RootLayout({ children }: Layouts) {
     <html lang='en' suppressHydrationWarning>
       <body
         className={cn(
-          oxanium.variable,
-          sourceCodePro.variable,
+          geist.variable,
+          geistMono.variable,
+          notoSansGeorgian.variable,
           'antialiased min-h-screen'
         )}
       >
