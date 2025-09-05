@@ -9,6 +9,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
+import { Skeleton } from '@/components/ui/skeleton'
 import { useGetMembers } from '@/features/members/server/use-get-members'
 import { useWorkspaceId } from '@/features/workspaces/client/use-workspace-id'
 import { ArrowLeftIcon } from 'lucide-react'
@@ -20,7 +21,7 @@ import MemberMoreBtn from './member-more-btn'
 const MembersList = () => {
   const workspaceId = useWorkspaceId()
   const router = useRouter()
-  const { data: members } = useGetMembers({ workspaceId })
+  const { data: members, isLoading } = useGetMembers({ workspaceId })
 
   const handleCancel = () => {
     router.back()
@@ -44,6 +45,20 @@ const MembersList = () => {
       </CardHeader>
       <Separator />
       <CardContent>
+        {/* LOADING SKELETON */}
+        {isLoading &&
+          Array.from({ length: 3 }).map((_, index) => (
+            <div className='flex items-center gap-2 mt-1' key={index}>
+              <Skeleton className='size-10 rounded-full' />
+              <div className='w-full max-w-48 flex flex-col gap-1'>
+                <Skeleton className='h-4 w-full' />
+                <Skeleton className='h-3 w-full' />
+              </div>
+              <Skeleton className='size-9 ml-auto' />
+            </div>
+          ))}
+
+        {/* DATA */}
         {members?.map((member, index) => (
           <Fragment key={member?.$id}>
             <div className='flex items-center gap-2'>
