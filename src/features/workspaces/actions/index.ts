@@ -6,21 +6,21 @@ import {
   WORKSPACES_COLLECTION_ID
 } from '@/config'
 import { getMember } from '@/features/members/utils'
-import { CreateSessionClient } from '@/lib/appwrite'
+import { createSessionClient } from '@/lib/appwrite'
 import { Members, Workspaces } from '@/types/appwrite'
 import { Query } from 'node-appwrite'
 
 export const getWorkspacesAction = async () => {
   try {
-    const { account, databases } = await CreateSessionClient()
+    const { account, databases } = await createSessionClient()
 
     const user = await account.get()
 
-    const members = await databases.listDocuments<Members>(
-      DATABASE_ID,
-      MEMBERS_COLLECTION_ID,
-      [Query.equal('userId', user.$id)]
-    )
+    const members = await databases.listRows<Members>({
+      databaseId: DATABASE_ID,
+      tableId: MEMBERS_COLLECTION_ID,
+      queries: [Query.equal('userId', user.$id)]
+    })
 
     if (members.total === 0) {
       return {
@@ -29,17 +29,20 @@ export const getWorkspacesAction = async () => {
       }
     }
 
-    const workspaceIds = members.documents.map((member) => member.workspaceId)
+    const workspaceIds = members.rows.map((member) => member.workspaceId)
 
-    const workspaces = await databases.listDocuments<Workspaces>(
-      DATABASE_ID,
-      WORKSPACES_COLLECTION_ID,
-      [Query.orderDesc('$createdAt'), Query.contains('$id', workspaceIds)]
-    )
+    const workspaces = await databases.listRows<Workspaces>({
+      databaseId: DATABASE_ID,
+      tableId: WORKSPACES_COLLECTION_ID,
+      queries: [
+        Query.orderDesc('$createdAt'),
+        Query.contains('$id', workspaceIds)
+      ]
+    })
 
     return {
       success: true,
-      data: workspaces.documents
+      data: workspaces.rows
     }
   } catch (error) {
     // TODO
@@ -55,7 +58,7 @@ export const getWorkspaceAction = async ({
   workspaceId
 }: GetWorkspaceActionProps) => {
   try {
-    const { account, databases } = await CreateSessionClient()
+    const { account, databases } = await createSessionClient()
     const user = await account.get()
 
     const member = await getMember({
@@ -71,11 +74,11 @@ export const getWorkspaceAction = async ({
       }
     }
 
-    const workspaces = await databases.getDocument<Workspaces>(
-      DATABASE_ID,
-      WORKSPACES_COLLECTION_ID,
-      workspaceId
-    )
+    const workspaces = await databases.getRow<Workspaces>({
+      databaseId: DATABASE_ID,
+      tableId: WORKSPACES_COLLECTION_ID,
+      rowId: workspaceId
+    })
 
     return {
       success: true,
@@ -95,13 +98,13 @@ export const getWorkspaceInfoAction = async ({
   workspaceId
 }: GetWorkspaceInfoActionProps) => {
   try {
-    const { databases } = await CreateSessionClient()
+    const { databases } = await createSessionClient()
 
-    const workspaces = await databases.getDocument<Workspaces>(
-      DATABASE_ID,
-      WORKSPACES_COLLECTION_ID,
-      workspaceId
-    )
+    const workspaces = await databases.getRow<Workspaces>({
+      databaseId: DATABASE_ID,
+      tableId: WORKSPACES_COLLECTION_ID,
+      rowId: workspaceId
+    })
 
     return {
       success: true,
