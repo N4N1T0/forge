@@ -272,49 +272,56 @@ const app = new Hono()
       const databases = c.get('tables')
       const user = c.get('user')
 
-      const member = await getMember({
-        databases,
-        workspaceId,
-        userId: user.$id
-      })
-
-      if (member) {
-        return c.json<WorkspaceResponse>({
-          success: false,
-          data: 'Ya eres miembro de este espacio de trabajo'
-        })
-      }
-
-      const workspace = await databases.getRow<Workspaces>({
-        databaseId: DATABASE_ID,
-        tableId: WORKSPACES_COLLECTION_ID,
-        rowId: workspaceId
-      })
-
-      if (workspace.slug !== code) {
-        return c.json<WorkspaceResponse>({
-          success: false,
-          data: 'Código de invitación inválido'
-        })
-      }
-
-      await databases.createRow<Members>({
-        databaseId: DATABASE_ID,
-        tableId: MEMBERS_COLLECTION_ID,
-        rowId: ID.unique(),
-        data: {
-          userId: user.$id,
+      try {
+        const member = await getMember({
+          databases,
           workspaceId,
-          role: Role.MEMBER
-        }
-      })
+          userId: user.$id
+        })
 
-      return c.json<WorkspaceResponse>({
-        success: true,
-        data: {
-          $id: workspaceId
+        if (member) {
+          return c.json<WorkspaceResponse>({
+            success: false,
+            data: 'Ya eres miembro de este espacio de trabajo'
+          })
         }
-      })
+
+        const workspace = await databases.getRow<Workspaces>({
+          databaseId: DATABASE_ID,
+          tableId: WORKSPACES_COLLECTION_ID,
+          rowId: workspaceId
+        })
+
+        if (workspace.slug !== code) {
+          return c.json<WorkspaceResponse>({
+            success: false,
+            data: 'Código de invitación inválido'
+          })
+        }
+
+        await databases.createRow<Members>({
+          databaseId: DATABASE_ID,
+          tableId: MEMBERS_COLLECTION_ID,
+          rowId: ID.unique(),
+          data: {
+            userId: user.$id,
+            workspaceId,
+            role: Role.MEMBER
+          }
+        })
+
+        return c.json<WorkspaceResponse>({
+          success: true,
+          data: {
+            $id: workspaceId
+          }
+        })
+      } catch (error: any) {
+        return c.json<WorkspaceResponse>({
+          success: false,
+          data: error.message || 'Failed to join workspace'
+        })
+      }
     }
   )
 
