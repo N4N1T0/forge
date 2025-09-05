@@ -3,9 +3,9 @@ import 'server-only'
 import { APPWRITE_ENDPOINT, APPWRITE_PROJECT_ID } from '@/config'
 import { AUTH_COOKIE } from '@/features/auth/constants'
 import { cookies } from 'next/headers'
-import { Account, Client, Databases } from 'node-appwrite'
+import { Account, Client, TablesDB, Users } from 'node-appwrite'
 
-export async function CreateSessionClient() {
+export async function createSessionClient() {
   const client = new Client()
     .setEndpoint(APPWRITE_ENDPOINT)
     .setProject(APPWRITE_PROJECT_ID)
@@ -24,7 +24,7 @@ export async function CreateSessionClient() {
       return new Account(client)
     },
     get databases() {
-      return new Databases(client)
+      return new TablesDB(client)
     }
   }
 }
@@ -38,6 +38,9 @@ export async function createAdminClient() {
   return {
     get account() {
       return new Account(client)
+    },
+    get users() {
+      return new Users(client)
     }
   }
 }
