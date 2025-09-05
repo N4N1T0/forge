@@ -159,7 +159,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (
     <Sidebar collapsible='icon' {...props}>
       <SidebarHeader>
-        <span className='border-b border-b-muted-foreground uppercase text-xl py-2 px-1'>
+        <span className='border-b uppercase font-serif text-xl py-2 px-1 mt-2.5'>
           THE FORGE
         </span>
       </SidebarHeader>
