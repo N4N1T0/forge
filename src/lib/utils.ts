@@ -35,3 +35,20 @@ export const generateInviteCode = (length: number): string => {
 
   return result
 }
+
+/**
+ * Generates a slug from a given name.
+ *
+ * @param {string} name - The name to generate the slug from.
+ * @return {string} The generated slug.
+ */
+export const generateSlug = (name: string): string => {
+  const slug = name
+    .trim()
+    .toLowerCase()
+    .normalize('NFD')
+    .replace(/[\u0300-\u036f]/g, '')
+    .replace(/\s+/g, '-')
+
+  return slug
+}
