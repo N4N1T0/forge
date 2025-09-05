@@ -5,7 +5,7 @@ import { AUTH_COOKIE } from '@/features/auth/constants'
 import { MiddleWareContext } from '@/types/functions'
 import { getCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
-import { Account, Client, Databases, Storage, Users } from 'node-appwrite'
+import { Account, Client, Storage, TablesDB } from 'node-appwrite'
 
 export const sessionMiddleware = createMiddleware<MiddleWareContext>(
   async (c, next) => {
@@ -28,16 +28,14 @@ export const sessionMiddleware = createMiddleware<MiddleWareContext>(
     client.setSession(session)
 
     const account = new Account(client)
-    const databases = new Databases(client)
+    const tables = new TablesDB(client) // ✅ replace Databases with Tables
     const storage = new Storage(client)
-    const users = new Users(client)
     const user = await account.get()
 
     c.set('account', account)
-    c.set('databases', databases)
+    c.set('tables', tables) // ✅ updated key
     c.set('storage', storage)
     c.set('user', user)
-    c.set('users', users)
 
     await next()
   }
