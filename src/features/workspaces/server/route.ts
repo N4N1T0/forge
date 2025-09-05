@@ -33,14 +33,14 @@ type WorkspaceListResponse =
 const app = new Hono()
   .get('/', sessionMiddleware, async (c) => {
     try {
-      const databases = c.get('databases')
+      const databases = c.get('tables')
       const user = c.get('user')
 
-      const member = await databases.listDocuments<Members>(
-        DATABASE_ID,
-        MEMBERS_COLLECTION_ID,
-        [Query.equal('userId', user.$id)]
-      )
+      const member = await databases.listRows<Members>({
+        databaseId: DATABASE_ID,
+        tableId: MEMBERS_COLLECTION_ID,
+        queries: [Query.equal('userId', user.$id)]
+      })
 
       if (member.total === 0) {
         return c.json<WorkspaceListResponse>({
@@ -49,19 +49,19 @@ const app = new Hono()
         })
       }
 
-      const workspaceIds = member.documents.map(
+      const workspaceIds = member.rows.map(
         (member: Members) => member.workspaceId
       )
 
-      const workspaces = await databases.listDocuments<Workspaces>(
-        DATABASE_ID,
-        WORKSPACES_COLLECTION_ID,
-        [Query.contains('$id', workspaceIds)]
-      )
+      const workspaces = await databases.listRows<Workspaces>({
+        databaseId: DATABASE_ID,
+        tableId: WORKSPACES_COLLECTION_ID,
+        queries: [Query.contains('$id', workspaceIds)]
+      })
 
       return c.json<WorkspaceListResponse>({
         success: true,
-        data: workspaces.documents
+        data: workspaces.rows
       })
     } catch (error: any) {
       return c.json<WorkspaceListResponse>({
@@ -72,17 +72,17 @@ const app = new Hono()
   })
   .get('/:workspaceId', sessionMiddleware, async (c) => {
     try {
-      const databases = c.get('databases')
+      const databases = c.get('tables')
       const user = c.get('user')
 
-      const member = await databases.listDocuments<Members>(
-        DATABASE_ID,
-        MEMBERS_COLLECTION_ID,
-        [
+      const member = await databases.listRows<Members>({
+        databaseId: DATABASE_ID,
+        tableId: MEMBERS_COLLECTION_ID,
+        queries: [
           Query.equal('userId', user.$id),
           Query.equal('workspaceId', c.req.param('workspaceId'))
         ]
-      )
+      })
 
       if (member.total === 0) {
         return c.json<WorkspaceResponse>({
@@ -91,11 +91,11 @@ const app = new Hono()
         })
       }
 
-      const workspace = await databases.getDocument<Workspaces>(
-        DATABASE_ID,
-        WORKSPACES_COLLECTION_ID,
-        c.req.param('workspaceId')
-      )
+      const workspace = await databases.getRow<Workspaces>({
+        databaseId: DATABASE_ID,
+        tableId: WORKSPACES_COLLECTION_ID,
+        rowId: c.req.param('workspaceId')
+      })
 
       return c.json<WorkspaceResponse>({
         success: true,
@@ -114,17 +114,17 @@ const app = new Hono()
     sessionMiddleware,
     async (c) => {
       try {
-        const databases = c.get('databases')
+        const databases = c.get('tables')
         const user = c.get('user')
         const { name, description, icon, slug, theme } = c.req.valid('form')
         const formattedSlug =
           slug === undefined || slug === '' ? generateSlug(name) : slug
 
-        const workspace = await databases.createDocument<Workspaces>(
-          DATABASE_ID,
-          WORKSPACES_COLLECTION_ID,
-          ID.unique(),
-          {
+        const workspace = await databases.createRow<Workspaces>({
+          databaseId: DATABASE_ID,
+          tableId: WORKSPACES_COLLECTION_ID,
+          rowId: ID.unique(),
+          data: {
             name,
             userId: user.$id,
             description,
@@ -132,18 +132,18 @@ const app = new Hono()
             slug: formattedSlug,
             theme
           }
-        )
+        })
 
-        await databases.createDocument(
-          DATABASE_ID,
-          MEMBERS_COLLECTION_ID,
-          ID.unique(),
-          {
+        await databases.createRow({
+          databaseId: DATABASE_ID,
+          tableId: MEMBERS_COLLECTION_ID,
+          rowId: ID.unique(),
+          data: {
             userId: user.$id,
             workspaceId: workspace.$id,
             role: Role.ADMIN
           }
-        )
+        })
 
         return c.json<WorkspaceResponse>({
           success: true,
@@ -170,7 +170,7 @@ const app = new Hono()
     zValidator('form', createWorkspacesSchema),
     async (c) => {
       try {
-        const databases = c.get('databases')
+        const databases = c.get('tables')
         const user = c.get('user')
 
         const { workspaceId } = c.req.param()
@@ -194,18 +194,18 @@ const app = new Hono()
           )
         }
 
-        const workspace = await databases.updateDocument<Workspaces>(
-          DATABASE_ID,
-          WORKSPACES_COLLECTION_ID,
-          workspaceId,
-          {
+        const workspace = await databases.updateRow<Workspaces>({
+          databaseId: DATABASE_ID,
+          tableId: WORKSPACES_COLLECTION_ID,
+          rowId: workspaceId,
+          data: {
             name,
             description,
             icon,
             slug: formattedSlug,
             theme
           }
-        )
+        })
 
         return c.json<WorkspaceResponse>({
           success: true,
@@ -221,7 +221,7 @@ const app = new Hono()
   )
   .delete('/:workspaceId', sessionMiddleware, async (c) => {
     try {
-      const databases = c.get('databases')
+      const databases = c.get('tables')
       const user = c.get('user')
       const { workspaceId } = c.req.param()
 
@@ -242,11 +242,11 @@ const app = new Hono()
       }
 
       // TODO: DELETE MEMBERS & TASKS
-      await databases.deleteDocument(
-        DATABASE_ID,
-        WORKSPACES_COLLECTION_ID,
-        workspaceId
-      )
+      await databases.deleteRow({
+        databaseId: DATABASE_ID,
+        tableId: WORKSPACES_COLLECTION_ID,
+        rowId: workspaceId
+      })
 
       return c.json<WorkspaceResponse>({
         success: true,
@@ -269,7 +269,7 @@ const app = new Hono()
       const { workspaceId } = c.req.param()
       const { code } = c.req.valid('json')
 
-      const databases = c.get('databases')
+      const databases = c.get('tables')
       const user = c.get('user')
 
       const member = await getMember({
@@ -285,11 +285,11 @@ const app = new Hono()
         })
       }
 
-      const workspace = await databases.getDocument<Workspaces>(
-        DATABASE_ID,
-        WORKSPACES_COLLECTION_ID,
-        workspaceId
-      )
+      const workspace = await databases.getRow<Workspaces>({
+        databaseId: DATABASE_ID,
+        tableId: WORKSPACES_COLLECTION_ID,
+        rowId: workspaceId
+      })
 
       if (workspace.slug !== code) {
         return c.json<WorkspaceResponse>({
@@ -298,16 +298,16 @@ const app = new Hono()
         })
       }
 
-      await databases.createDocument<Members>(
-        DATABASE_ID,
-        MEMBERS_COLLECTION_ID,
-        ID.unique(),
-        {
+      await databases.createRow<Members>({
+        databaseId: DATABASE_ID,
+        tableId: MEMBERS_COLLECTION_ID,
+        rowId: ID.unique(),
+        data: {
           userId: user.$id,
           workspaceId,
           role: Role.MEMBER
         }
-      )
+      })
 
       return c.json<WorkspaceResponse>({
         success: true,
