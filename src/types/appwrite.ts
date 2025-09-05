@@ -9,7 +9,7 @@ export enum Role {
   MEMBER = 'MEMBER'
 }
 
-export type Workspaces = Models.Document & {
+export type Workspaces = Models.Row & {
   name: string
   userId: string
   icon: IconName
@@ -18,7 +18,7 @@ export type Workspaces = Models.Document & {
   description: string
 }
 
-export type Members = Models.Document & {
+export type Members = Models.Row & {
   userId: string
   workspaceId: string
   role: Role

@@ -1,14 +1,14 @@
 import {
   type Account as AccountType,
-  type Databases as DatabasesType,
   type Models,
   type Storage as StorageType,
+  type TablesDB as TablesDBType,
   type Users as UsersType
 } from 'node-appwrite'
 import { Workspaces } from './appwrite'
 
 export interface GetMembersParams {
-  databases: DatabasesType
+  databases: TablesDBType
   workspaceId: string
   userId: string
 }
@@ -16,7 +16,7 @@ export interface GetMembersParams {
 export type MiddleWareContext = {
   Variables: {
     account: AccountType
-    databases: DatabasesType
+    tables: TablesDBType
     storage: StorageType
     users: UsersType
     user: Models.User<Models.Preferences>
