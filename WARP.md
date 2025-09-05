@@ -51,13 +51,13 @@ The app relies on the following env vars (see `src/config.ts`, `src/lib/appwrite
 
 - Authn/Authz and session handling
   - Server-only Appwrite client factories in `src/lib/appwrite.ts`:
-    - `CreateSessionClient` reads the `AUTH_COOKIE` from `next/headers` cookies and exposes `account`/`databases` clients.
+    - `createSessionClient` reads the `AUTH_COOKIE` from `next/headers` cookies and exposes `account`/`databases` clients.
     - `createAdminClient` uses server env (endpoint, project, API key) to perform privileged operations (account create/session, etc.).
   - `src/features/auth/server/middleware.ts` (referenced by routes) injects user/account/client context into Hono for protected routes.
   - Cookie name comes from `src/features/auth/constants`.
 
 - Data layer (Appwrite)
-  - IDs come from `src/config.ts` (database, collections, buckets) via NEXT_PUBLIC_* env vars.
+  - IDs come from `src/config.ts` (database, collections, buckets) via NEXT*PUBLIC*\* env vars.
   - Types in `src/types/appwrite.ts` (enum Role, Workspaces, Members). Regenerate with Appwrite CLI when schema changes:
     - `appwrite types --language ts ./src/types/appwrite.ts`
   - Workspace flows in `src/features/workspaces/server/route.ts`:
