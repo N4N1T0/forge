@@ -1,10 +1,10 @@
 import 'server-only'
 
-import { CreateSessionClient } from '@/lib/appwrite'
+import { createSessionClient } from '@/lib/appwrite'
 
 export const getCurrentAction = async () => {
   try {
-    const { account } = await CreateSessionClient()
+    const { account } = await createSessionClient()
 
     const user = await account.get()
 
