@@ -3,6 +3,7 @@
 import { DATABASE_ID, MEMBERS_COLLECTION_ID } from '@/config'
 import { sessionMiddleware } from '@/features/auth/server/middleware'
 import { getMember } from '@/features/members/utils'
+import { createAdminClient } from '@/lib/appwrite'
 import { Members, Role } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
@@ -13,7 +14,7 @@ import { z } from 'zod'
 type MemberListResponse =
   | {
       success: true
-      data: (Members & { name: string; email: string })[]
+      data: ((Members & { name: string; email: string }) | null)[]
     }
   | {
       success: false
@@ -30,6 +31,7 @@ type DeleteMemberResponse =
       data: string
     }
 
+// ROUTES
 const app = new Hono()
   .get(
     '/',
@@ -38,9 +40,9 @@ const app = new Hono()
     async (c) => {
       try {
         const { workspaceId } = c.req.valid('query')
-        const databases = c.get('databases')
-        const users = c.get('users')
+        const databases = c.get('tables')
         const user = c.get('user')
+        const { users } = await createAdminClient()
 
         const member = await getMember({
           databases,
@@ -55,17 +57,18 @@ const app = new Hono()
           })
         }
 
-        const members = await databases.listDocuments<Members>(
-          DATABASE_ID,
-          MEMBERS_COLLECTION_ID,
-          [Query.equal('workspaceId', workspaceId)]
-        )
+        const members = await databases.listRows<Members>({
+          databaseId: DATABASE_ID,
+          tableId: MEMBERS_COLLECTION_ID,
+          queries: [Query.equal('workspaceId', workspaceId)]
+        })
 
         const populatedMembers = await Promise.all(
-          members.documents.map(async (member) => {
+          members.rows.map(async (member) => {
             try {
-              const user = await users.get(member.userId)
-              console.log('🚀 ~ members.documents.map ~ user:', user)
+              const user = await users.get({
+                userId: member.userId
+              })
               return {
                 ...member,
                 name: user.name,
@@ -73,12 +76,10 @@ const app = new Hono()
               }
             } catch (error) {
               console.log('🚀 ~ members.documents.map ~ error:', error)
-              return member
+              return null
             }
           })
         )
-
-        console.log('🚀 ~ populatedMembers:', populatedMembers)
 
         return c.json<MemberListResponse>({
           success: true,
@@ -94,21 +95,21 @@ const app = new Hono()
   )
   .delete('/:memberId', sessionMiddleware, async (c) => {
     try {
-      const databases = c.get('databases')
+      const databases = c.get('tables')
       const user = c.get('user')
       const { memberId } = c.req.param()
 
-      const memberToDelete = await databases.getDocument<Members>(
-        DATABASE_ID,
-        MEMBERS_COLLECTION_ID,
-        memberId
-      )
+      const memberToDelete = await databases.getRow<Members>({
+        databaseId: DATABASE_ID,
+        tableId: MEMBERS_COLLECTION_ID,
+        rowId: memberId
+      })
 
-      const allMembers = await databases.listDocuments<Members>(
-        DATABASE_ID,
-        MEMBERS_COLLECTION_ID,
-        [Query.equal('workspaceId', memberToDelete.workspaceId)]
-      )
+      const allMembers = await databases.listRows<Members>({
+        databaseId: DATABASE_ID,
+        tableId: MEMBERS_COLLECTION_ID,
+        queries: [Query.equal('workspaceId', memberToDelete.workspaceId)]
+      })
 
       const member = await getMember({
         databases,
@@ -137,11 +138,11 @@ const app = new Hono()
         })
       }
 
-      await databases.deleteDocument(
-        DATABASE_ID,
-        MEMBERS_COLLECTION_ID,
-        memberId
-      )
+      await databases.deleteRow({
+        databaseId: DATABASE_ID,
+        tableId: MEMBERS_COLLECTION_ID,
+        rowId: memberId
+      })
 
       return c.json<DeleteMemberResponse>({
         success: true,
@@ -162,22 +163,22 @@ const app = new Hono()
     zValidator('json', z.object({ role: z.enum(Role) })),
     async (c) => {
       try {
-        const databases = c.get('databases')
+        const databases = c.get('tables')
         const user = c.get('user')
         const { memberId } = c.req.param()
         const { role } = c.req.valid('json')
 
-        const memberToUpdate = await databases.getDocument<Members>(
-          DATABASE_ID,
-          MEMBERS_COLLECTION_ID,
-          memberId
-        )
+        const memberToUpdate = await databases.getRow<Members>({
+          databaseId: DATABASE_ID,
+          tableId: MEMBERS_COLLECTION_ID,
+          rowId: memberId
+        })
 
-        const allMembers = await databases.listDocuments<Members>(
-          DATABASE_ID,
-          MEMBERS_COLLECTION_ID,
-          [Query.equal('workspaceId', memberToUpdate.workspaceId)]
-        )
+        const allMembers = await databases.listRows<Members>({
+          databaseId: DATABASE_ID,
+          tableId: MEMBERS_COLLECTION_ID,
+          queries: [Query.equal('workspaceId', memberToUpdate.workspaceId)]
+        })
 
         const member = await getMember({
           databases,
@@ -206,14 +207,14 @@ const app = new Hono()
           })
         }
 
-        await databases.updateDocument(
-          DATABASE_ID,
-          MEMBERS_COLLECTION_ID,
-          memberId,
-          {
+        await databases.updateRow({
+          databaseId: DATABASE_ID,
+          tableId: MEMBERS_COLLECTION_ID,
+          rowId: memberId,
+          data: {
             role: role
           }
-        )
+        })
 
         return c.json<DeleteMemberResponse>({
           success: true,
