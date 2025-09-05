@@ -175,7 +175,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                   <FormControl>
                     <div className='flex'>
                       <span className='border-input dark:bg-input/30 bg-transparent text-muted-foreground inline-flex items-center border px-3 text-xs'>
-                        {`${origin}/workspace/join/`}
+                        {`${origin}/join/`}
                       </span>
                       <Input
                         {...field}
