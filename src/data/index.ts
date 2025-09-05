@@ -7,17 +7,17 @@ export const routes = [
     icon: HouseIcon
   },
   {
-    name: 'Tareas',
+    name: 'Tasks',
     href: '/tasks',
     icon: ClipboardCheck
   },
   {
-    name: 'Ajustes',
+    name: 'Settings',
     href: '/settings',
     icon: Settings
   },
   {
-    name: 'Miembros',
+    name: 'Members',
     href: '/members',
     icon: UsersIcon
   }
