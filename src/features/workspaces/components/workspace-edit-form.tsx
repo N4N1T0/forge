@@ -56,20 +56,21 @@ const EditWorkspacesForm = ({
     'destructive'
   )
 
+  // FORM
   const form = useForm<CreateWorkspacesSchema>({
     resolver: zodResolver(createWorkspacesSchema),
     defaultValues: {
       name: initialValues?.name ?? '',
       description: initialValues?.description ?? '',
       icon: initialValues?.icon ?? 'anvil',
-      slug: initialValues?.slug ?? '',
+      slug: initialValues?.slug ?? generateSlug(initialValues?.name ?? ''),
       theme: initialValues?.theme ?? 'light'
     }
   })
 
   // CONST
   const { control, handleSubmit, reset } = form
-  const fullInviteCode = `${window.location.origin}/dashboard/workspace/${initialValues?.$id}/join?inviteCode=${initialValues?.slug}`
+  const fullInviteCode = `${window.location.origin}/join?inviteCode=${form.watch('slug')}&workspaceId=${initialValues.$id}`
 
   // HANDLER
   const onSubmit = async (values: CreateWorkspacesSchema) => {
@@ -215,7 +216,7 @@ const EditWorkspacesForm = ({
                       <div className='flex gap-3 w-full'>
                         <div className='flex flex-1'>
                           <span className='border-input dark:bg-input/30 bg-transparent text-muted-foreground inline-flex items-center border px-3 text-xs'>
-                            {`${origin}/workspace/join/`}
+                            {`${origin}/join/`}
                           </span>
                           <Input
                             {...field}

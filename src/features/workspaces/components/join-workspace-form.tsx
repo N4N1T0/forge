@@ -37,13 +37,13 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
     <Card className='shadow-none max-w-lg mx-auto w-full'>
       <CardHeader>
         <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
-          Unirme al espacio de trabajo
+          Join Workspace
         </CardTitle>
         <CardDescription>
-          Has sido invitado al espacio de trabajo <strong>{name}</strong>
+          You have been invited to workspace <strong>{name}</strong>
         </CardDescription>
       </CardHeader>
-      <Separator variant='dashed' />
+      <Separator />
       <CardContent>
         <div className='flex justify-between items-center flex-col md:flex-row gap-2'>
           <Button
@@ -53,7 +53,7 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
             disabled={isPending}
             asChild
           >
-            <Link href='/dashboard'>Cancelar</Link>
+            <Link href='/dashboard'>Cancel</Link>
           </Button>
           <Button
             className='w-full md:w-fit'
@@ -61,7 +61,7 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
             onClick={handlerJoinWorkspace}
             disabled={isPending}
           >
-            Unirme
+            Join
           </Button>
         </div>
       </CardContent>
