@@ -10,6 +10,12 @@ interface WorkspaceAvatarProps {
   className?: string
 }
 
+interface MemberAvatarProps {
+  member: Members
+  className?: string
+  fallbackClassName?: string
+}
+
 interface WorkspaceIdProps {
   params: Params
 }
