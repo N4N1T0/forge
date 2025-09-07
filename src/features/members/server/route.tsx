@@ -193,13 +193,6 @@ const app = new Hono()
           })
         }
 
-        if (member.role !== Role.ADMIN) {
-          return c.json<DeleteMemberResponse>({
-            success: false,
-            data: 'No puedes modificar a ti mismo'
-          })
-        }
-
         if (allMembers.total === 1) {
           return c.json<DeleteMemberResponse>({
             success: false,

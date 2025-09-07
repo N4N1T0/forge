@@ -1,5 +1,6 @@
 'use client'
 
+import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -11,7 +12,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import { useGetMembers } from '@/features/members/server/use-get-members'
-import { useWorkspaceId } from '@/features/workspaces/client/use-workspace-id'
+import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
 import { ArrowLeftIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Fragment } from 'react'
@@ -19,9 +20,12 @@ import { MemberAvatar } from './member-avatar'
 import MemberMoreBtn from './member-more-btn'
 
 const MembersList = () => {
-  const workspaceId = useWorkspaceId()
+  const { workspace } = useGetCurrentWorkspace()
   const router = useRouter()
-  const { data: members, isLoading } = useGetMembers({ workspaceId })
+  const { data: members, isLoading } = useGetMembers({
+    workspaceId: workspace?.$id as string
+  })
+  console.log('🚀 ~ MembersList ~ members:', members)
 
   const handleCancel = () => {
     router.back()
@@ -62,20 +66,27 @@ const MembersList = () => {
         {members?.map((member, index) => (
           <Fragment key={member?.$id}>
             <div className='flex items-center gap-2'>
-              <MemberAvatar member={member} />
+              <MemberAvatar
+                member={member}
+                className={
+                  member?.role === 'ADMIN' ? 'bg-red-500' : 'bg-green-500'
+                }
+              />
               <div className='flex flex-col'>
                 <p className='text-sm font-medium'>
                   {member?.name ?? 'Unknown'}
                 </p>
                 <p className='text-xs text-muted-foreground'>
-                  {member?.email ?? 'Unknown'}
+                  {member?.role ?? 'Unknown'}
                 </p>
               </div>
-              <MemberMoreBtn member={member} />
+              {member?.userId !== workspace?.userId ? (
+                <MemberMoreBtn member={member} />
+              ) : (
+                <Badge className='ml-auto'>OWNER</Badge>
+              )}
             </div>
-            {index < members.length - 1 && (
-              <Separator className='bg-muted-foreground my-2' />
-            )}
+            {index < members.length - 1 && <Separator className='my-2.5' />}
           </Fragment>
         ))}
       </CardContent>
