@@ -2,8 +2,7 @@ import {
   type Account as AccountType,
   type Models,
   type Storage as StorageType,
-  type TablesDB as TablesDBType,
-  type Users as UsersType
+  type TablesDB as TablesDBType
 } from 'node-appwrite'
 import { Workspaces } from './appwrite'
 
@@ -18,7 +17,6 @@ export type MiddleWareContext = {
     account: AccountType
     tables: TablesDBType
     storage: StorageType
-    users: UsersType
     user: Models.User<Models.Preferences>
   }
 }
