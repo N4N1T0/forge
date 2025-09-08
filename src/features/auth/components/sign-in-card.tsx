@@ -31,7 +31,7 @@ import { PasswordInput } from './password-input'
 
 export const SignInCard = () => {
   // HOOKS
-  const { mutate, isPending } = useSignIn()
+  const { mutate: signIn, isPending } = useSignIn()
   const form = useForm<SignInFormData>({
     resolver: zodResolver(signInSchema),
     defaultValues: {
@@ -45,7 +45,7 @@ export const SignInCard = () => {
 
   // HANDLERS
   const onSubmit = (data: SignInFormData) => {
-    mutate({ json: data })
+    signIn({ json: data })
   }
 
   return (
