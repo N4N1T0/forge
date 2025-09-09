@@ -9,6 +9,7 @@ import { getMember } from '@/features/members/utils'
 import { createSessionClient } from '@/lib/appwrite'
 import { Members, Workspaces } from '@/types/appwrite'
 import { Query } from 'node-appwrite'
+import { GetWorkspaceActionProps, GetWorkspaceInfoActionProps } from '@/types'
 
 export const getWorkspacesAction = async () => {
   try {
