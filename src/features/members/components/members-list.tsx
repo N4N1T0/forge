@@ -14,6 +14,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { useCurrentMember } from '@/features/members/server/use-current-member'
 import { useGetMembers } from '@/features/members/server/use-get-members'
 import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
+import { checkIsOwner } from '@/lib/utils'
 import { Members } from '@/types/appwrite'
 import { ArrowLeftIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -57,10 +58,7 @@ const MemberItem = ({
   return (
     <Fragment key={member.$id}>
       <div className='flex items-center gap-2'>
-        <MemberAvatar
-          member={member}
-          className={member.role === 'ADMIN' ? 'bg-red-500' : 'bg-green-500'}
-        />
+        <MemberAvatar member={member} />
         <div className='flex flex-col'>
           <p className='text-sm font-medium'>{member.name ?? 'Unknown'}</p>
           <p className='text-xs text-muted-foreground'>
@@ -98,12 +96,6 @@ const MembersList = () => {
     )
   }
 
-  const checkIsOwner = (
-    member: (Members & { name: string; email: string }) | null
-  ) => {
-    return member?.userId === workspace?.userId
-  }
-
   return (
     <Card className='size-full shadow-none'>
       <CardHeader>
@@ -131,7 +123,7 @@ const MembersList = () => {
               member={member}
               isLast={index === members.length - 1}
               canUseMoreBtn={checkMoreBtnAvailability(member)}
-              isOwner={checkIsOwner(member)}
+              isOwner={checkIsOwner(member, workspace)}
             />
           ))
         )}
