@@ -8,7 +8,7 @@ import { Workspaces } from './appwrite'
 
 export interface GetMembersParams {
   databases: TablesDBType
-  workspaceId: string
+  workspaceId?: string
   userId: string
 }
 

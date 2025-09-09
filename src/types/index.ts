@@ -1,39 +1,35 @@
-type Layouts = Readonly<{
+import { Workspaces } from './appwrite'
+
+export type Layouts = Readonly<{
   children: React.ReactNode
   modal?: React.ReactNode
 }>
 
 type Params = Promise<{ [key: string]: string | string[] | undefined }>
 
-interface WorkspaceAvatarProps {
+export interface WorkspaceAvatarProps {
   workspace: Workspaces
   className?: string
 }
 
-interface MemberAvatarProps {
-  member: Members
-  className?: string
-  fallbackClassName?: string
-}
-
-interface WorkspaceIdProps {
+export interface WorkspaceIdProps {
   params: Params
 }
 
-interface JoinWorkspaceProps {
+export interface JoinWorkspaceProps {
   params: Params
   searchParams: Params
 }
 
-interface GetWorkspaceActionProps {
+export interface GetWorkspaceActionProps {
   workspaceId: string
 }
 
-interface GetWorkspaceInfoActionProps {
+export interface GetWorkspaceInfoActionProps {
   workspaceId: string
 }
 
-interface JoinWorkspaceFormProps {
+export interface JoinWorkspaceFormProps {
   initialValues: {
     workspaceId: string
     name: string
