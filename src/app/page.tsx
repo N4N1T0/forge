@@ -4,38 +4,36 @@ import { AnimatePresence, motion } from 'motion/react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
-import { AuthImage } from '@/assets/images'
+import { DynamicIconPoster } from '@/features/auth/components/dynamic-icon-poster'
 import { ResetPasswordCard } from '@/features/auth/components/reset-password-card'
 import { SignInCard } from '@/features/auth/components/sign-in-card'
 import { SignUpCard } from '@/features/auth/components/sign-up-card'
-import Image from 'next/image'
+import { IconName } from 'lucide-react/dynamic'
 
 function AuthContent() {
   // STATE
   const searchParams = useSearchParams()
   const tab = searchParams.get('tab') || 'sign-in'
+  const workspaceId = searchParams.get('workspaceId')
+  const icon = searchParams.get('icon')
+  const inviteCode = searchParams.get('inviteCode')
+  const redirect = `/join?workspaceId=${workspaceId}&icon=${icon}&inviteCode=${inviteCode}`
 
   // RENDER
   const renderCard = () => {
     switch (tab) {
       case 'sign-up':
-        return <SignUpCard />
+        return <SignUpCard redirect={redirect} />
       case 'reset':
         return <ResetPasswordCard />
       default:
-        return <SignInCard />
+        return <SignInCard redirect={redirect} />
     }
   }
 
   return (
     <div className='min-h-screen flex'>
-      <div className='hidden lg:flex lg:w-1/2'>
-        <Image
-          src={AuthImage}
-          alt='Auth Image'
-          className='size-full object-fit'
-        />
-      </div>
+      <DynamicIconPoster icon={icon as IconName} />
 
       <div className='flex-1 flex items-center justify-center p-4 lg:p-8 bg-background'>
         <div className='w-full max-w-md'>
