@@ -11,29 +11,102 @@ import {
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useCurrentMember } from '@/features/members/server/use-current-member'
 import { useGetMembers } from '@/features/members/server/use-get-members'
 import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
+import { Members } from '@/types/appwrite'
 import { ArrowLeftIcon } from 'lucide-react'
 import { useRouter } from 'next/navigation'
-import { Fragment } from 'react'
+import { Models } from 'node-appwrite'
+import { Fragment, useCallback } from 'react'
 import { MemberAvatar } from './member-avatar'
 import MemberMoreBtn from './member-more-btn'
 
+// INTERFACES
+interface MemberItemProps {
+  member: (Members & Models.User<Models.Preferences>) | null
+  isLast: boolean
+  canUseMoreBtn: boolean
+  isOwner: boolean
+}
+
+// SKELETON
+const LoadingSkeleton = () => (
+  <>
+    {Array.from({ length: 3 }).map((_, index) => (
+      <div className='flex items-center gap-2 mt-1' key={index}>
+        <Skeleton className='size-10 rounded-full' />
+        <div className='w-full max-w-48 flex flex-col gap-1'>
+          <Skeleton className='h-4 w-full' />
+          <Skeleton className='h-3 w-full' />
+        </div>
+        <Skeleton className='size-9 ml-auto' />
+      </div>
+    ))}
+  </>
+)
+
+const MemberItem = ({
+  member,
+  isLast,
+  canUseMoreBtn,
+  isOwner
+}: MemberItemProps) => {
+  if (!member) return null
+
+  return (
+    <Fragment key={member.$id}>
+      <div className='flex items-center gap-2'>
+        <MemberAvatar
+          member={member}
+          className={member.role === 'ADMIN' ? 'bg-red-500' : 'bg-green-500'}
+        />
+        <div className='flex flex-col'>
+          <p className='text-sm font-medium'>{member.name ?? 'Unknown'}</p>
+          <p className='text-xs text-muted-foreground'>
+            {member.role ?? 'Unknown'}
+          </p>
+        </div>
+        {canUseMoreBtn && <MemberMoreBtn member={member} />}
+        {isOwner && <Badge className='ml-auto'>OWNER</Badge>}
+      </div>
+      {!isLast && <Separator className='my-2.5' />}
+    </Fragment>
+  )
+}
+
 const MembersList = () => {
+  // HOOKS
   const { workspace } = useGetCurrentWorkspace()
   const router = useRouter()
   const { data: members, isLoading } = useGetMembers({
     workspaceId: workspace?.$id as string
   })
-  console.log('🚀 ~ MembersList ~ members:', members)
+  const { data: currentMember } = useCurrentMember()
 
-  const handleCancel = () => {
+  // HANDLERS
+  const handleCancel = useCallback(() => {
     router.back()
+  }, [router])
+
+  // CONST
+  const checkMoreBtnAvailability = (
+    member: (Members & { name: string; email: string }) | null
+  ) => {
+    return (
+      member?.userId !== workspace?.userId && currentMember?.role === 'ADMIN'
+    )
+  }
+
+  const checkIsOwner = (
+    member: (Members & { name: string; email: string }) | null
+  ) => {
+    return member?.userId === workspace?.userId
   }
 
   return (
     <Card className='size-full shadow-none'>
-      <CardHeader className=''>
+      <CardHeader>
         <div className='flex items-center flex-row gap-x-4'>
           <Button size='sm' variant='secondary' onClick={handleCancel}>
             <ArrowLeftIcon className='size-4' />
@@ -49,46 +122,19 @@ const MembersList = () => {
       </CardHeader>
       <Separator />
       <CardContent>
-        {/* LOADING SKELETON */}
-        {isLoading &&
-          Array.from({ length: 3 }).map((_, index) => (
-            <div className='flex items-center gap-2 mt-1' key={index}>
-              <Skeleton className='size-10 rounded-full' />
-              <div className='w-full max-w-48 flex flex-col gap-1'>
-                <Skeleton className='h-4 w-full' />
-                <Skeleton className='h-3 w-full' />
-              </div>
-              <Skeleton className='size-9 ml-auto' />
-            </div>
-          ))}
-
-        {/* DATA */}
-        {members?.map((member, index) => (
-          <Fragment key={member?.$id}>
-            <div className='flex items-center gap-2'>
-              <MemberAvatar
-                member={member}
-                className={
-                  member?.role === 'ADMIN' ? 'bg-red-500' : 'bg-green-500'
-                }
-              />
-              <div className='flex flex-col'>
-                <p className='text-sm font-medium'>
-                  {member?.name ?? 'Unknown'}
-                </p>
-                <p className='text-xs text-muted-foreground'>
-                  {member?.role ?? 'Unknown'}
-                </p>
-              </div>
-              {member?.userId !== workspace?.userId ? (
-                <MemberMoreBtn member={member} />
-              ) : (
-                <Badge className='ml-auto'>OWNER</Badge>
-              )}
-            </div>
-            {index < members.length - 1 && <Separator className='my-2.5' />}
-          </Fragment>
-        ))}
+        {isLoading ? (
+          <LoadingSkeleton />
+        ) : (
+          members?.map((member, index) => (
+            <MemberItem
+              key={member?.$id}
+              member={member}
+              isLast={index === members.length - 1}
+              canUseMoreBtn={checkMoreBtnAvailability(member)}
+              isOwner={checkIsOwner(member)}
+            />
+          ))
+        )}
       </CardContent>
     </Card>
   )

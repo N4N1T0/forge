@@ -1,32 +1,23 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
-import { cn } from '@/lib/utils'
-import Image from 'next/image'
+import { cn, getInitials } from '@/lib/utils'
+import { Members } from '@/types/appwrite'
+import { Models } from 'node-appwrite'
+
+export interface MemberAvatarProps {
+  member: Members & Models.User<Models.Preferences>
+  className?: string
+  fallbackClassName?: string
+}
 
 export const MemberAvatar = ({ member, className }: MemberAvatarProps) => {
-  const { imageUrl, name } = member
-
-  if (imageUrl) {
-    return (
-      <div
-        className={cn(
-          'relative size-10 rounded-full overflow-hidden border border-background',
-          className
-        )}
-      >
-        <Image
-          src={imageUrl}
-          alt={name}
-          className='object-cover size-full'
-          fill
-        />
-      </div>
-    )
-  }
-
+  // CONST
+  const { name } = member
+  const initials = getInitials(name)
   return (
     <Avatar className={cn('size-10', className)}>
-      <AvatarFallback className='bg-primary text-background text-lg uppercase border border-background rounded-full'>
-        {name[0]}
+      {/* TODO: {prefs && prefs?.avatar && <AvatarImage src={prefs?.avatar} />} */}
+      <AvatarFallback className='bg-primary text-background text-lg uppercase border border-background'>
+        {initials}
       </AvatarFallback>
     </Avatar>
   )
