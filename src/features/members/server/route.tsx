@@ -7,14 +7,14 @@ import { createAdminClient } from '@/lib/appwrite'
 import { Members, Role } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
-import { Query } from 'node-appwrite'
+import { Models, Query } from 'node-appwrite'
 import { z } from 'zod'
 
 // TYPES
 type MemberListResponse =
   | {
       success: true
-      data: ((Members & { name: string; email: string }) | null)[]
+      data: ((Members & Models.User<Models.Preferences>) | null)[]
     }
   | {
       success: false
@@ -25,6 +25,16 @@ type DeleteMemberResponse =
   | {
       success: true
       data: Pick<Members, '$id'>
+    }
+  | {
+      success: false
+      data: string
+    }
+
+type MemberResponse =
+  | {
+      success: true
+      data: Members & Models.User<Models.Preferences>
     }
   | {
       success: false
@@ -71,8 +81,7 @@ const app = new Hono()
               })
               return {
                 ...member,
-                name: user.name,
-                email: user.email
+                ...user
               }
             } catch (error) {
               console.log('🚀 ~ members.documents.map ~ error:', error)
@@ -93,6 +102,39 @@ const app = new Hono()
       }
     }
   )
+  .get('/member', sessionMiddleware, async (c) => {
+    try {
+      const databases = c.get('tables')
+      const user = c.get('user')
+
+      const member = await getMember({
+        databases,
+        userId: user.$id
+      })
+
+      const formattedMember = {
+        ...member,
+        ...user
+      }
+
+      if (!member) {
+        return c.json<MemberResponse>({
+          success: false,
+          data: 'No se encontró el miembro'
+        })
+      }
+
+      return c.json<MemberResponse>({
+        success: true,
+        data: formattedMember
+      })
+    } catch (error: any) {
+      return c.json<MemberResponse>({
+        success: false,
+        data: error.message || 'Failed to fetch members'
+      })
+    }
+  })
   .delete('/:memberId', sessionMiddleware, async (c) => {
     try {
       const databases = c.get('tables')
