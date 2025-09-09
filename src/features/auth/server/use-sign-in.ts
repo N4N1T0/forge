@@ -7,28 +7,36 @@ import { toast } from 'sonner'
 // TYPES
 type ResponseType = InferResponseType<
   (typeof client.api.login)['sign-in']['$post']
->
+> & {
+  redirect?: string | null | undefined
+}
 type RequestType = InferRequestType<
   (typeof client.api.login)['sign-in']['$post']
->
+> & {
+  redirect?: string | null | undefined
+}
 
 export const useSignIn = () => {
   const router = useRouter()
   const mutation = useMutation<ResponseType, Error, RequestType>({
-    mutationFn: async (json) => {
-      const response = await client.api.login['sign-in']['$post'](json)
+    mutationFn: async ({ json, redirect }) => {
+      const response = await client.api.login['sign-in']['$post']({ json })
       const data = await response.json()
 
       if (!data.success) {
         throw new Error(data.data)
       }
 
-      return data
+      return { success: true, redirect }
     },
-    onSuccess: () => {
+    onSuccess: ({ redirect }) => {
       toast.success('¡Bienvenido! Has iniciado sesión correctamente')
       setTimeout(() => {
-        router.refresh()
+        if (redirect) {
+          router.push(redirect)
+        } else {
+          router.refresh()
+        }
       }, 500)
     },
     onError: (error) => {
