@@ -1,4 +1,6 @@
+import { Members, Workspaces } from '@/types/appwrite'
 import { clsx, type ClassValue } from 'clsx'
+import { Models } from 'node-appwrite'
 import { twMerge } from 'tailwind-merge'
 
 /**
@@ -42,4 +44,18 @@ export const getInitials = (name: string | undefined): string => {
     .map((word) => word.charAt(0).toUpperCase())
     .slice(0, 2) // Take first two initials (first name and first last name)
     .join('')
+}
+
+/**
+ * Checks if a member is the owner of a workspace
+ *
+ * @param {(Members & { name: string; email: string }) | null} member - The member to check
+ * @param {Workspaces | null} workspace - The workspace to check against
+ * @returns {boolean} True if the member is the owner of the workspace, false otherwise
+ */
+export const checkIsOwner = (
+  member: (Members & Models.User<Models.Preferences>) | null | undefined,
+  workspace: Partial<Workspaces> | undefined
+): boolean => {
+  return member?.userId === workspace?.userId
 }
