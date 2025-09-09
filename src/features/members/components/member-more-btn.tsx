@@ -17,6 +17,7 @@ const MemberMoreBtn = ({
 }: {
   member: (Members & { name: string; email: string }) | null
 }) => {
+  console.log('🚀 ~ MemberMoreBtn ~ member:', member)
   // HOOKS
   const { mutate: deleteMember, isPending: isDeleting } = useDeleteMember()
   const { mutate: updateMember, isPending: isUpdating } = useUpdateMember()
