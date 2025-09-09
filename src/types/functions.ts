@@ -2,7 +2,8 @@ import {
   type Account as AccountType,
   type Models,
   type Storage as StorageType,
-  type TablesDB as TablesDBType
+  type TablesDB as TablesDBType,
+  type Users as UsersType
 } from 'node-appwrite'
 import { Workspaces } from './appwrite'
 
@@ -18,6 +19,15 @@ export type MiddleWareContext = {
     tables: TablesDBType
     storage: StorageType
     user: Models.User<Models.Preferences>
+  }
+}
+
+export type AdminMiddleWareContext = {
+  Variables: {
+    account: AccountType
+    tables: TablesDBType
+    storage: StorageType
+    users: UsersType
   }
 }
 
