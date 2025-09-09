@@ -6,6 +6,7 @@ import {
   signUpSchema
 } from '@/features/auth/schemas/auth-schemas'
 import { createAdminClient } from '@/lib/appwrite'
+import { adminMiddleware } from '@/lib/middleware'
 import { zValidator } from '@hono/zod-validator'
 import { Context, Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
@@ -25,73 +26,84 @@ const app = new Hono()
       data: user
     })
   })
-  .post('/sign-in', zValidator('json', signInSchema), async (c) => {
-    try {
-      const { email, password } = c.req.valid('json')
+  .post(
+    '/sign-in',
+    adminMiddleware,
+    zValidator('json', signInSchema),
+    async (c) => {
+      try {
+        const { email, password } = c.req.valid('json')
+        const account = c.get('account')
+        const users = c.get('users')
 
-      const { account, users } = await createAdminClient()
+        const user = await users.list({
+          queries: [Query.equal('email', email)]
+        })
 
-      const user = await users.list({
-        queries: [Query.equal('email', email)]
-      })
+        if (user.total === 0) {
+          return c.json<AuthResponse>({
+            success: false,
+            data: 'user_not_found'
+          })
+        }
 
-      if (user.total === 0) {
+        const session = await account.createEmailPasswordSession({
+          email,
+          password
+        })
+
+        setAuthCookie(c, session)
+
+        return c.json<AuthResponse>({
+          success: true
+        })
+      } catch (error: any) {
+        if (error instanceof ZodError) {
+          return c.json<AuthResponse>({
+            success: false,
+            data: error.name
+          })
+        }
         return c.json<AuthResponse>({
           success: false,
-          data: 'user_not_found'
+          data: error.type
         })
       }
-
-      const session = await account.createEmailPasswordSession({
-        email,
-        password
-      })
-      setAuthCookie(c, session)
-
-      return c.json<AuthResponse>({
-        success: true
-      })
-    } catch (error: any) {
-      if (error instanceof ZodError) {
-        return c.json<AuthResponse>({
-          success: false,
-          data: error.name
-        })
-      }
-      return c.json<AuthResponse>({
-        success: false,
-        data: error.type
-      })
     }
-  })
-  .post('/sign-up', zValidator('json', signUpSchema), async (c) => {
-    try {
-      const { email, password, name } = c.req.valid('json')
+  )
+  .post(
+    '/sign-up',
+    adminMiddleware,
+    zValidator('json', signUpSchema),
+    async (c) => {
+      try {
+        const { email, password, name } = c.req.valid('json')
 
-      const { account } = await createAdminClient()
-      await account.create(ID.unique(), email, password, name)
-      const session = await account.createEmailPasswordSession({
-        email,
-        password
-      })
-      setAuthCookie(c, session)
+        const account = c.get('account')
+        await account.create({ userId: ID.unique(), email, password, name })
+        const session = await account.createEmailPasswordSession({
+          email,
+          password
+        })
+        setAuthCookie(c, session)
 
-      return c.json<AuthResponse>({
-        success: true
-      })
-    } catch (error: any) {
-      if (error instanceof ZodError) {
+        return c.json<AuthResponse>({
+          success: true
+        })
+      } catch (error: any) {
+        if (error instanceof ZodError) {
+          return c.json<AuthResponse>({
+            success: false,
+            data: error.name
+          })
+        }
         return c.json<AuthResponse>({
           success: false,
-          data: error.name
+          data: error.type
         })
       }
-      return c.json<AuthResponse>({
-        success: false,
-        data: error.type
-      })
     }
-  })
+  )
   .post(
     '/reset-password',
     zValidator('json', resetPasswordSchema),
