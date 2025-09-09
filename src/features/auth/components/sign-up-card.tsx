@@ -165,7 +165,7 @@ export const SignUpCard = () => {
           </form>
         </Form>
 
-        <Separator variant='dashed' />
+        <Separator />
 
         <div className='grid grid-cols-2 gap-3'>
           <Button variant='outline' disabled={isPending}>
@@ -178,13 +178,13 @@ export const SignUpCard = () => {
           </Button>
         </div>
 
-        <Separator variant='dashed' />
+        <Separator />
 
         <div className='text-center text-sm text-muted-foreground'>
           ¿Ya tienes una cuenta?{' '}
           <Link
             href='/?tab=sign-in'
-            className='text-orange-600 hover:underline font-medium'
+            className='text-primary hover:underline font-medium'
           >
             Iniciar Sesión
           </Link>
