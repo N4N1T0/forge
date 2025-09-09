@@ -29,7 +29,11 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { PasswordInput } from './password-input'
 
-export const SignInCard = () => {
+interface SignInCardProps {
+  redirect?: string | null | undefined
+}
+
+export const SignInCard = ({ redirect }: SignInCardProps) => {
   // HOOKS
   const { mutate: signIn, isPending } = useSignIn()
   const form = useForm<SignInFormData>({
@@ -45,17 +49,17 @@ export const SignInCard = () => {
 
   // HANDLERS
   const onSubmit = (data: SignInFormData) => {
-    signIn({ json: data })
+    signIn({ json: data, redirect })
   }
 
   return (
     <Card className='w-full max-w-md mx-auto'>
       <CardHeader className='text-center space-y-2'>
         <CardTitle className='text-2xl font-bold font-display text-primary uppercase'>
-          Iniciar Sesión
+          Sign In
         </CardTitle>
         <CardDescription>
-          Ingresa tus credenciales para acceder a tu cuenta
+          Enter your credentials to access your account
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-6'>
@@ -67,13 +71,13 @@ export const SignInCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-medium'>
-                    Correo electrónico
+                    Email address
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type='email'
-                      placeholder='tu@ejemplo.com'
+                      placeholder='you@example.com'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500'
                       autoComplete='email'
                       disabled={isPending}
@@ -90,7 +94,7 @@ export const SignInCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-medium'>
-                    Contraseña
+                    Password
                   </FormLabel>
                   <FormControl>
                     <PasswordInput
@@ -112,7 +116,7 @@ export const SignInCard = () => {
               size='lg'
               disabled={isPending}
             >
-              {isPending ? 'Iniciando sesión...' : 'Inicia Sesión'}
+              {isPending ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
         </Form>
@@ -134,21 +138,21 @@ export const SignInCard = () => {
 
         <CardFooter className='text-center text-sm text-muted-foreground space-y-2 flex-col'>
           <div>
-            ¿No tienes una cuenta?{' '}
+            Don&apos;t have an account?{' '}
             <Link
-              href='/?tab=sign-up'
+              href={`/?tab=sign-up&redirect=${redirect}`}
               className='text-primary hover:underline font-medium'
             >
-              Regístrate
+              Sign up
             </Link>
           </div>
           <div>
-            ¿Olvidaste tu contraseña?{' '}
+            Forgot your password?{' '}
             <Link
               href='/?tab=reset'
               className='text-primary hover:underline font-medium'
             >
-              Restablecer
+              Reset
             </Link>
           </div>
         </CardFooter>

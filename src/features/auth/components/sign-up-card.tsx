@@ -30,7 +30,11 @@ import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { PasswordInput } from './password-input'
 
-export const SignUpCard = () => {
+interface SignUpCardProps {
+  redirect?: string | null | undefined
+}
+
+export const SignUpCard = ({ redirect }: SignUpCardProps) => {
   // HOOKS
   const { mutate, isPending } = useSignUp()
   const form = useForm<SignUpFormData>({
@@ -48,17 +52,17 @@ export const SignUpCard = () => {
 
   // HANDLERS
   const onSubmit = (data: SignUpFormData) => {
-    mutate({ json: data })
+    mutate({ json: data, redirect })
   }
 
   return (
     <Card className='w-full max-w-md mx-auto'>
       <CardHeader className='text-center space-y-2'>
         <CardTitle className='text-2xl font-bold text-primary font-display uppercase'>
-          Crear Cuenta
+          Create Account
         </CardTitle>
         <CardDescription>
-          Completa los campos para crear tu nueva cuenta
+          Complete the fields to create your new account
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-6'>
@@ -70,13 +74,13 @@ export const SignUpCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-medium'>
-                    Nombre completo
+                    Full Name
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type='text'
-                      placeholder='Tu nombre completo'
+                      placeholder='Your full name'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
                       disabled={isPending}
                       autoComplete='name'
@@ -93,13 +97,13 @@ export const SignUpCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-medium'>
-                    Correo electrónico
+                    Email Address
                   </FormLabel>
                   <FormControl>
                     <Input
                       {...field}
                       type='email'
-                      placeholder='tu@ejemplo.com'
+                      placeholder='you@example.com'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
                       disabled={isPending}
                       autoComplete='email'
@@ -116,7 +120,7 @@ export const SignUpCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-medium'>
-                    Contraseña
+                    Password
                   </FormLabel>
                   <FormControl>
                     <PasswordInput
@@ -138,7 +142,7 @@ export const SignUpCard = () => {
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-medium'>
-                    Confirmar contraseña
+                    Confirm Password
                   </FormLabel>
                   <FormControl>
                     <PasswordInput
@@ -160,7 +164,7 @@ export const SignUpCard = () => {
               size='lg'
               disabled={isPending}
             >
-              {isPending ? 'Creando cuenta...' : 'Crear Cuenta'}
+              {isPending ? 'Creating account...' : 'Create Account'}
             </Button>
           </form>
         </Form>
@@ -181,12 +185,12 @@ export const SignUpCard = () => {
         <Separator />
 
         <div className='text-center text-sm text-muted-foreground'>
-          ¿Ya tienes una cuenta?{' '}
+          Already have an account?{' '}
           <Link
-            href='/?tab=sign-in'
+            href={`/?tab=sign-in&redirect=${redirect}`}
             className='text-primary hover:underline font-medium'
           >
-            Iniciar Sesión
+            Sign In
           </Link>
         </div>
       </CardContent>
