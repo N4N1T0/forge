@@ -22,6 +22,7 @@ import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { THEME_ITEMS } from '@/data'
+import { useCurrentMember } from '@/features/members/server/use-current-member'
 import {
   CreateWorkspacesSchema,
   createWorkspacesSchema
@@ -30,6 +31,7 @@ import { useDeleteWorkspace } from '@/features/workspaces/server/use-delete-work
 import { useUpdateWorkspace } from '@/features/workspaces/server/use-update-workspace'
 import { useConfirm } from '@/hooks/use-confirm'
 import { generateSlug } from '@/lib/utils'
+import { Role } from '@/types/appwrite'
 import { editWorkspacesFormProps } from '@/types/functions'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckIcon, LinkIcon, Loader, MinusIcon } from 'lucide-react'
@@ -45,6 +47,7 @@ const EditWorkspacesForm = ({
 }: editWorkspacesFormProps) => {
   // HOOKS
   const router = useRouter()
+  const { data: currentMember } = useCurrentMember()
   const { mutate: updateWorkspace, isPending: isUpdating } =
     useUpdateWorkspace()
   const { mutate: deleteWorkspace, isPending: isDeleting } =
@@ -326,35 +329,40 @@ const EditWorkspacesForm = ({
       </Card>
 
       {/* DANGER ZONE */}
-      <Card className='max-w-2xl border-destructive'>
-        <CardHeader>
-          <CardTitle>Danger Zone</CardTitle>
-          <CardDescription>
-            Deleting a workspace is irreversible and will remove all associated
-            data.
-          </CardDescription>
-        </CardHeader>
-        <CardContent>
-          <Button
-            type='button'
-            variant='destructive'
-            onClick={handleDelete}
-            disabled={isDeleting || isUpdating}
-          >
-            {isDeleting ? (
-              <>
-                <Loader className='mr-2 h-4 w-4 animate-spin' />
-                Deleting...
-              </>
-            ) : (
-              'Delete Workspace'
-            )}
-          </Button>
-        </CardContent>
-      </Card>
+      {currentMember?.role === Role.ADMIN && (
+        <>
+          {/* DELETE CARD */}
+          <Card className='max-w-2xl border-destructive'>
+            <CardHeader>
+              <CardTitle>Danger Zone</CardTitle>
+              <CardDescription>
+                Deleting a workspace is irreversible and will remove all
+                associated data.
+              </CardDescription>
+            </CardHeader>
+            <CardContent>
+              <Button
+                type='button'
+                variant='destructive'
+                onClick={handleDelete}
+                disabled={isDeleting || isUpdating}
+              >
+                {isDeleting ? (
+                  <>
+                    <Loader className='mr-2 h-4 w-4 animate-spin' />
+                    Deleting...
+                  </>
+                ) : (
+                  'Delete Workspace'
+                )}
+              </Button>
+            </CardContent>
+          </Card>
 
-      {/* DELETE MODAL */}
-      <DeleteWorkspaceModal />
+          {/* DELETE MODAL */}
+          <DeleteWorkspaceModal />
+        </>
+      )}
     </div>
   )
 }
