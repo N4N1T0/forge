@@ -80,8 +80,8 @@ const app = new Hono()
                 userId: member.userId
               })
               return {
-                ...member,
-                ...user
+                ...user,
+                ...member
               }
             } catch (error) {
               console.log('🚀 ~ members.documents.map ~ error:', error)
@@ -113,8 +113,8 @@ const app = new Hono()
       })
 
       const formattedMember = {
-        ...member,
-        ...user
+        ...user,
+        ...member
       }
 
       if (!member) {
@@ -140,6 +140,7 @@ const app = new Hono()
       const databases = c.get('tables')
       const user = c.get('user')
       const { memberId } = c.req.param()
+      console.log('🚀 ~ memberId:', memberId)
 
       const memberToDelete = await databases.getRow<Members>({
         databaseId: DATABASE_ID,
@@ -162,21 +163,21 @@ const app = new Hono()
       if (!member) {
         return c.json<DeleteMemberResponse>({
           success: false,
-          data: 'No tienes permiso para eliminar a este miembro'
+          data: 'You do not have permission to delete this member'
         })
       }
 
       if (member.$id !== memberToDelete.$id && member.role !== Role.ADMIN) {
         return c.json<DeleteMemberResponse>({
           success: false,
-          data: 'No puedes eliminar a ti mismo'
+          data: 'You can`t remove your self'
         })
       }
 
       if (allMembers.total === 1) {
         return c.json<DeleteMemberResponse>({
           success: false,
-          data: 'No puedes eliminar al único miembro'
+          data: 'You can`t remove the last member'
         })
       }
 
@@ -193,6 +194,7 @@ const app = new Hono()
         }
       })
     } catch (error: any) {
+      console.log('🚀 ~ error:', error)
       return c.json<DeleteMemberResponse>({
         success: false,
         data: error.message || 'Failed to delete member'
