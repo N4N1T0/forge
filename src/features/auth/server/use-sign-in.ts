@@ -40,6 +40,18 @@ export const useSignIn = () => {
             description: 'Las credenciales que has ingresado son inválidas.'
           })
           break
+        case errorMessage.includes('user_not_found'):
+          toast.error('Usuario no encontrado', {
+            description:
+              'No se encontró una cuenta con este correo electrónico.',
+            action: {
+              label: 'Regístrate',
+              onClick: () => {
+                router.push('/?tab=sign-up')
+              }
+            }
+          })
+          break
         case errorMessage.includes('user_blocked'):
           toast.error('Usuario bloqueado', {
             description:
@@ -57,7 +69,6 @@ export const useSignIn = () => {
             description: errorMessage
           })
       }
-      toast.error(errorMessage)
     }
   })
 

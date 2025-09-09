@@ -9,7 +9,7 @@ import { createAdminClient } from '@/lib/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Context, Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
-import { ID, Models } from 'node-appwrite'
+import { ID, Models, Query } from 'node-appwrite'
 import { ZodError } from 'zod'
 import { sessionMiddleware } from './middleware'
 
@@ -29,7 +29,19 @@ const app = new Hono()
     try {
       const { email, password } = c.req.valid('json')
 
-      const { account } = await createAdminClient()
+      const { account, users } = await createAdminClient()
+
+      const user = await users.list({
+        queries: [Query.equal('email', email)]
+      })
+
+      if (user.total === 0) {
+        return c.json<AuthResponse>({
+          success: false,
+          data: 'user_not_found'
+        })
+      }
+
       const session = await account.createEmailPasswordSession({
         email,
         password
