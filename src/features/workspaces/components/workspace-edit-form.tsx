@@ -30,8 +30,7 @@ import {
 import { useDeleteWorkspace } from '@/features/workspaces/server/use-delete-workspace'
 import { useUpdateWorkspace } from '@/features/workspaces/server/use-update-workspace'
 import { useConfirm } from '@/hooks/use-confirm'
-import { generateSlug } from '@/lib/utils'
-import { Role } from '@/types/appwrite'
+import { checkIsOwner, generateSlug } from '@/lib/utils'
 import { editWorkspacesFormProps } from '@/types/functions'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { CheckIcon, LinkIcon, Loader, MinusIcon } from 'lucide-react'
@@ -47,7 +46,7 @@ const EditWorkspacesForm = ({
 }: editWorkspacesFormProps) => {
   // HOOKS
   const router = useRouter()
-  const { data: currentMember } = useCurrentMember()
+  const { data: currentMember, isLoading } = useCurrentMember()
   const { mutate: updateWorkspace, isPending: isUpdating } =
     useUpdateWorkspace()
   const { mutate: deleteWorkspace, isPending: isDeleting } =
@@ -73,7 +72,7 @@ const EditWorkspacesForm = ({
 
   // CONST
   const { control, handleSubmit, reset } = form
-  const fullInviteCode = `${window.location.origin}/join?inviteCode=${form.watch('slug')}&workspaceId=${initialValues.$id}`
+  const fullInviteCode = `${window.location.origin}/join?inviteCode=${form.watch('slug')}&workspaceId=${initialValues.$id}&icon=${form.watch('icon')}`
 
   // HANDLER
   const onSubmit = async (values: CreateWorkspacesSchema) => {
@@ -329,7 +328,7 @@ const EditWorkspacesForm = ({
       </Card>
 
       {/* DANGER ZONE */}
-      {currentMember?.role === Role.ADMIN && (
+      {checkIsOwner(currentMember, initialValues) && !isLoading && (
         <>
           {/* DELETE CARD */}
           <Card className='max-w-2xl border-destructive'>
