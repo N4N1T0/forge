@@ -6,7 +6,6 @@ import {
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import ResponsiveModal from '@/components/ui/responsive-modal'
@@ -22,7 +21,7 @@ import CreateWorkspacesForm from '@/features/workspaces/components/workspace-for
 import { useGetWorkspaces } from '@/features/workspaces/server/use-current-workspace'
 import { Workspaces } from '@/types/appwrite'
 import { ChevronsUpDown, Plus } from 'lucide-react'
-import { DynamicIcon } from 'lucide-react/dynamic'
+import { DynamicIcon, IconName } from 'lucide-react/dynamic'
 import { useRouter } from 'next/navigation'
 import * as React from 'react'
 
@@ -77,7 +76,7 @@ export function TeamSwitcher() {
               >
                 <div className='bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg'>
                   <DynamicIcon
-                    name={selectedWorkspace?.icon ?? 'folder'}
+                    name={(selectedWorkspace?.icon as IconName) ?? 'folder'}
                     className='size-4'
                     key={selectedWorkspace?.icon}
                   />
@@ -94,7 +93,7 @@ export function TeamSwitcher() {
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className='w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg'
+              className='w-(--radix-dropdown-menu-trigger-width) min-w-40 rounded-lg'
               align='start'
               side={isMobile ? 'bottom' : 'right'}
               sideOffset={4}
@@ -102,17 +101,19 @@ export function TeamSwitcher() {
               <DropdownMenuLabel className='text-muted-foreground text-xs'>
                 Workspaces
               </DropdownMenuLabel>
-              {workspaces?.map(({ icon, name, $id }, index) => (
+              {workspaces?.map(({ icon, name, $id }) => (
                 <DropdownMenuItem
                   key={name}
                   onClick={() => handlerOnselect($id)}
                   className='gap-2 p-2'
                 >
-                  <div className='flex size-6 items-center justify-center rounded-md border'>
-                    <DynamicIcon name={icon} className='size-3.5 shrink-0' />
+                  <div className='flex size-7 items-center justify-center rounded-md border'>
+                    <DynamicIcon
+                      name={(icon as IconName) ?? 'folder'}
+                      className='size-4 shrink-0'
+                    />
                   </div>
                   {name}
-                  <DropdownMenuShortcut>⌘{index + 1}</DropdownMenuShortcut>
                 </DropdownMenuItem>
               ))}
               <DropdownMenuSeparator />
@@ -124,7 +125,7 @@ export function TeamSwitcher() {
                   <Plus className='size-4' />
                 </div>
                 <div className='text-muted-foreground font-medium'>
-                  Add team
+                  Add workspace
                 </div>
               </DropdownMenuItem>
             </DropdownMenuContent>
