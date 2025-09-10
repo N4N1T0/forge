@@ -2,6 +2,7 @@ import { QueryProviders } from '@/components/layout/query-provider'
 import { ThemeProvider } from '@/components/layout/theme-provider'
 import { Toaster } from '@/components/ui/sonner'
 import { cn } from '@/lib/utils'
+import { Layouts } from '@/types'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Noto_Sans_Georgian } from 'next/font/google'
 import './globals.css'
@@ -39,8 +40,9 @@ export default function RootLayout({ children }: Layouts) {
       >
         <QueryProviders>
           <ThemeProvider
-            attribute='class'
             defaultTheme='system'
+            themes={['light', 'dark', 'system']}
+            attribute='class'
             enableSystem
             disableTransitionOnChange
           >
