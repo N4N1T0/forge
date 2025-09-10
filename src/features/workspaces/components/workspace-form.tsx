@@ -18,10 +18,8 @@ import {
 } from '@/components/ui/form'
 import { Icon, IconPicker } from '@/components/ui/icon-picker'
 import { Input } from '@/components/ui/input'
-import { RadioGroup, RadioGroupItem } from '@/components/ui/radio-group'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
-import { THEME_ITEMS } from '@/data'
 import {
   CreateWorkspacesSchema,
   createWorkspacesSchema
@@ -30,8 +28,6 @@ import { useCreateWorkspace } from '@/features/workspaces/server/use-create-work
 import { generateSlug } from '@/lib/utils'
 import { createWorkspacesFormProps } from '@/types/functions'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { CheckIcon, MinusIcon } from 'lucide-react'
-import Image from 'next/image'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
@@ -46,7 +42,6 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
       description: '',
       icon: 'anvil',
       slug: '',
-      theme: 'light'
     }
   })
 
@@ -187,56 +182,6 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
                         disabled={isPending}
                       />
                     </div>
-                  </FormControl>
-                  <FormMessage className='text-red-500' />
-                </FormItem>
-              )}
-            />
-
-            <FormField
-              control={control}
-              name='theme'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-sm font-semibold text-muted-foreground'>
-                    Theme
-                  </FormLabel>
-                  <FormControl>
-                    <RadioGroup
-                      className='flex gap-3'
-                      onValueChange={field.onChange}
-                      defaultValue={field.value}
-                    >
-                      {THEME_ITEMS.map(({ value, label, image }) => (
-                        <label key={`${value}-${value}`}>
-                          <RadioGroupItem
-                            id={`${value}-${value}`}
-                            className='peer sr-only after:absolute after:inset-0'
-                            value={value}
-                          />
-                          <Image
-                            src={image}
-                            alt={label}
-                            width={88}
-                            height={70}
-                            className='border-input peer-focus-visible:ring-ring/50 peer-data-[state=checked]:border-ring peer-data-[state=checked]:bg-accent relative cursor-pointer overflow-hidden rounded-md border shadow-xs transition-[color,box-shadow] outline-none peer-focus-visible:ring-[3px] peer-data-disabled:cursor-not-allowed peer-data-disabled:opacity-50'
-                          />
-                          <span className='group peer-data-[state=unchecked]:text-muted-foreground/70 mt-2 flex items-center gap-1'>
-                            <CheckIcon
-                              size={16}
-                              className='group-peer-data-[state=unchecked]:hidden'
-                              aria-hidden='true'
-                            />
-                            <MinusIcon
-                              size={16}
-                              className='group-peer-data-[state=checked]:hidden'
-                              aria-hidden='true'
-                            />
-                            <span className='text-xs font-medium'>{label}</span>
-                          </span>
-                        </label>
-                      ))}
-                    </RadioGroup>
                   </FormControl>
                   <FormMessage className='text-red-500' />
                 </FormItem>
