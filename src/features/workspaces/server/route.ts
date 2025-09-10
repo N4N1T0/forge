@@ -4,9 +4,9 @@ import {
   MEMBERS_COLLECTION_ID,
   WORKSPACES_COLLECTION_ID
 } from '@/config'
-import { sessionMiddleware } from '@/features/auth/server/middleware'
 import { getMember } from '@/features/members/utils'
 import { createWorkspacesSchema } from '@/features/workspaces/schema'
+import { sessionMiddleware } from '@/lib/middleware'
 import { generateSlug } from '@/lib/utils'
 import { Members, Role, Workspaces } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
@@ -56,7 +56,7 @@ const app = new Hono()
       const workspaces = await databases.listRows<Workspaces>({
         databaseId: DATABASE_ID,
         tableId: WORKSPACES_COLLECTION_ID,
-        queries: [Query.contains('$id', workspaceIds)]
+        queries: [Query.contains('$id', workspaceIds as string[])]
       })
 
       return c.json<WorkspaceListResponse>({
@@ -116,7 +116,7 @@ const app = new Hono()
       try {
         const databases = c.get('tables')
         const user = c.get('user')
-        const { name, description, icon, slug, theme } = c.req.valid('form')
+        const { name, description, icon, slug } = c.req.valid('form')
         const formattedSlug =
           slug === undefined || slug === '' ? generateSlug(name) : slug
 
@@ -129,8 +129,7 @@ const app = new Hono()
             userId: user.$id,
             description,
             icon,
-            slug: formattedSlug,
-            theme
+            slug: formattedSlug
           }
         })
 
@@ -174,7 +173,7 @@ const app = new Hono()
         const user = c.get('user')
 
         const { workspaceId } = c.req.param()
-        const { name, description, icon, slug, theme } = c.req.valid('form')
+        const { name, description, icon, slug } = c.req.valid('form')
         const formattedSlug =
           slug === undefined || slug === '' ? generateSlug(name) : slug
 
@@ -202,8 +201,7 @@ const app = new Hono()
             name,
             description,
             icon,
-            slug: formattedSlug,
-            theme
+            slug: formattedSlug
           }
         })
 
