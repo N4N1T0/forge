@@ -67,10 +67,7 @@ export const Navbar = () => {
             </BreadcrumbList>
           </Breadcrumb>
         </div>
-        <ThemeSwitcher
-          workspaceTheme={workspace?.theme}
-          key={workspace?.theme}
-        />
+        <ThemeSwitcher />
       </div>
     </header>
   )

@@ -7,24 +7,18 @@ import {
   DropdownMenuItem,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
+import { useSpacemanTheme } from '@space-man/react-theme-animation'
 import { Moon, Sun } from 'lucide-react'
-import { useTheme } from 'next-themes'
-import { useEffect, useRef } from 'react'
 
-interface ThemeSwitcherProps {
-  workspaceTheme: string | undefined
-}
+export function ThemeSwitcher() {
+  const { switchThemeFromElement } = useSpacemanTheme()
 
-export function ThemeSwitcher({ workspaceTheme }: ThemeSwitcherProps) {
-  const { setTheme } = useTheme()
-  const isApplied = useRef(false)
-
-  useEffect(() => {
-    if (!isApplied.current && workspaceTheme) {
-      setTheme(workspaceTheme)
-      isApplied.current = true
-    }
-  }, [workspaceTheme, setTheme])
+  const handleCustomThemeSwitch = (
+    event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
+    theme: 'light' | 'dark' | 'system'
+  ) => {
+    switchThemeFromElement(theme, event.currentTarget)
+  }
 
   return (
     <DropdownMenu>
@@ -36,14 +30,32 @@ export function ThemeSwitcher({ workspaceTheme }: ThemeSwitcherProps) {
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align='end'>
-        <DropdownMenuItem onClick={() => setTheme('light')}>
-          Light
+        <DropdownMenuItem asChild>
+          <Button
+            onClick={(e) => handleCustomThemeSwitch(e, 'light')}
+            variant='link'
+            className='w-full'
+          >
+            Light
+          </Button>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('dark')}>
-          Dark
+        <DropdownMenuItem asChild>
+          <Button
+            onClick={(e) => handleCustomThemeSwitch(e, 'dark')}
+            variant='link'
+            className='w-full'
+          >
+            Dark
+          </Button>
         </DropdownMenuItem>
-        <DropdownMenuItem onClick={() => setTheme('system')}>
-          System
+        <DropdownMenuItem asChild>
+          <Button
+            onClick={(e) => handleCustomThemeSwitch(e, 'system')}
+            variant='link'
+            className='w-full'
+          >
+            System
+          </Button>
         </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
