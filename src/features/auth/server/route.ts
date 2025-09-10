@@ -6,13 +6,12 @@ import {
   signUpSchema
 } from '@/features/auth/schemas/auth-schemas'
 import { createAdminClient } from '@/lib/appwrite'
-import { adminMiddleware } from '@/lib/middleware'
+import { adminMiddleware, sessionMiddleware } from '@/lib/middleware'
 import { zValidator } from '@hono/zod-validator'
 import { Context, Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
 import { ID, Models, Query } from 'node-appwrite'
 import { ZodError } from 'zod'
-import { sessionMiddleware } from './middleware'
 
 // TYPES
 type AuthResponse = { success: true } | { success: false; data: string }
