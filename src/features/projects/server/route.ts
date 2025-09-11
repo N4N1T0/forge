@@ -1,7 +1,8 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { DATABASE_ID, PROJECTS_COLLECTION_ID } from '@/config'
 import { getMember } from '@/features/members/utils'
 import { sessionMiddleware } from '@/lib/middleware'
-import { Projects } from '@/types/appwrite'
+import { Projects, Role } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
 import { AppwriteException, ID, Models, Query } from 'node-appwrite'
@@ -157,5 +158,137 @@ const app = new Hono()
       }
     }
   )
+  .patch(
+    '/:projectId',
+    sessionMiddleware,
+    zValidator('form', createProjectSchema),
+    async (c) => {
+      try {
+        const databases = c.get('tables')
+        const user = c.get('user')
+
+        const { projectId } = c.req.param()
+        const { name, shortcut, workspaceId } = c.req.valid('form')
+        console.log('🚀 ~ workspaceId:', workspaceId)
+
+        const member = await getMember({
+          databases,
+          workspaceId,
+          userId: user.$id
+        })
+
+        if (!member) {
+          return c.json<ProjectResponse>(
+            {
+              success: false,
+              data: 'You are not a member of this workspace'
+            },
+            401
+          )
+        }
+
+        if (member.role !== Role.ADMIN) {
+          return c.json<ProjectResponse>(
+            {
+              success: false,
+              data: 'You are not and admin and cannot update this project'
+            },
+            401
+          )
+        }
+
+        const project = await databases.updateRow<Projects>({
+          databaseId: DATABASE_ID,
+          tableId: PROJECTS_COLLECTION_ID,
+          rowId: projectId,
+          data: {
+            name,
+            shortcut
+          }
+        })
+
+        return c.json<ProjectResponse>({
+          success: true,
+          data: project
+        })
+      } catch (error: any) {
+        return c.json<ProjectResponse>({
+          success: false,
+          data: error.message || 'Failed to update project'
+        })
+      }
+    }
+  )
+  .delete('/:projectId', sessionMiddleware, async (c) => {
+    try {
+      const databases = c.get('tables')
+      const user = c.get('user')
+      const { projectId } = c.req.param()
+
+      const project = await databases.getRow<Projects>({
+        databaseId: DATABASE_ID,
+        tableId: PROJECTS_COLLECTION_ID,
+        rowId: projectId
+      })
+
+      if (!project) {
+        return c.json<ProjectResponse>(
+          {
+            success: false,
+            data: 'Project not found'
+          },
+          404
+        )
+      }
+
+      const member = await getMember({
+        databases,
+        workspaceId: project.workspaceId,
+        userId: user.$id
+      })
+
+      if (!member) {
+        return c.json<ProjectResponse>(
+          {
+            success: false,
+            data: 'You are not a member of this workspace'
+          },
+          401
+        )
+      }
+
+      if (member.role !== Role.ADMIN) {
+        return c.json<ProjectResponse>(
+          {
+            success: false,
+            data: 'You are not an admin and cannot delete this project'
+          },
+          401
+        )
+      }
+
+      await databases.deleteRow({
+        databaseId: DATABASE_ID,
+        tableId: PROJECTS_COLLECTION_ID,
+        rowId: projectId
+      })
+
+      return c.json<ProjectResponse>({
+        success: true,
+        data: project
+      })
+    } catch (error: any) {
+      if (error instanceof AppwriteException) {
+        return c.json<ProjectResponse>({
+          success: false,
+          data: 'An Appwrite Error has occurred'
+        })
+      }
+      return c.json<ProjectResponse>({
+        success: false,
+        data: error.message || 'Failed to delete project'
+      })
+    }
+  })
 
 export default app
