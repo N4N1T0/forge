@@ -198,19 +198,6 @@
                     "encrypt": false
                 },
                 {
-                    "key": "theme",
-                    "type": "string",
-                    "required": false,
-                    "array": false,
-                    "elements": [
-                        "light",
-                        "dark",
-                        "system"
-                    ],
-                    "format": "enum",
-                    "default": "light"
-                },
-                {
                     "key": "description",
                     "type": "string",
                     "required": true,
@@ -300,7 +287,36 @@
                     "encrypt": false
                 },
                 {
-                    "key": "icon",
+                    "key": "name",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 250,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "shortcut",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 10,
+                    "default": null,
+                    "encrypt": false
+                }
+            ],
+            "indexes": []
+        },
+        {
+            "$id": "tasks",
+            "$permissions": [],
+            "databaseId": "6889d4420039348bacac",
+            "name": "tasks",
+            "enabled": true,
+            "documentSecurity": false,
+            "attributes": [
+                {
+                    "key": "workspaceId",
                     "type": "string",
                     "required": true,
                     "array": false,
@@ -316,6 +332,65 @@
                     "size": 250,
                     "default": null,
                     "encrypt": false
+                },
+                {
+                    "key": "projectId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "assigneeId",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "size": 50,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "description",
+                    "type": "string",
+                    "required": false,
+                    "array": false,
+                    "size": 2048,
+                    "default": null,
+                    "encrypt": false
+                },
+                {
+                    "key": "dueDate",
+                    "type": "datetime",
+                    "required": true,
+                    "array": false,
+                    "format": "",
+                    "default": null
+                },
+                {
+                    "key": "status",
+                    "type": "string",
+                    "required": true,
+                    "array": false,
+                    "elements": [
+                        "BACKLOG",
+                        "TODO",
+                        "IN_PROGRESS",
+                        "IN_REVIEW",
+                        "DONE"
+                    ],
+                    "format": "enum",
+                    "default": null
+                },
+                {
+                    "key": "position",
+                    "type": "integer",
+                    "required": true,
+                    "array": false,
+                    "min": 1000,
+                    "max": 1000000,
+                    "default": null
                 }
             ],
             "indexes": []
