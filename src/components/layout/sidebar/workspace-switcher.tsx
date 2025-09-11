@@ -66,7 +66,7 @@ export function TeamSwitcher() {
 
   return (
     <>
-      <SidebarMenu>
+      <SidebarMenu className='px-2'>
         <SidebarMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>

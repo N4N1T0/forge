@@ -8,7 +8,7 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ModalProjectForm } from '@/features/projects/components/modal-project-form'
+import ModalProjectForm from '@/features/projects/components/modal-project-form'
 import { useGetProjects } from '@/features/projects/server/use-get-projects'
 import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
 import { Command, Plus } from 'lucide-react'
@@ -55,7 +55,7 @@ export function Projects() {
       </SidebarGroupLabel>
       <SidebarMenu>
         {projects?.rows.map(({ $id, name, shortcut }) => {
-          const href = `/dashboard/workspaces/${workspace?.$id}/projects/${$id}`
+          const href = `/dashboard/workspace/${workspace?.$id}/projects/${$id}`
           const isActive = pathname.includes(href)
 
           return (
