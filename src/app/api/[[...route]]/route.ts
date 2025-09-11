@@ -1,6 +1,7 @@
 import authRoute from '@/features/auth/server/route'
 import memberRoute from '@/features/members/server/route'
 import projectRoute from '@/features/projects/server/route'
+import taskRoute from '@/features/tasks/server/route'
 import workspaceRoute from '@/features/workspaces/server/route'
 import { Hono } from 'hono'
 import { handle } from 'hono/vercel'
@@ -14,6 +15,7 @@ const routes = app
   .route('/workspace', workspaceRoute)
   .route('/member', memberRoute)
   .route('/project', projectRoute)
+  .route('/task', taskRoute)
 
 // EXPORT
 export const GET = handle(routes)
