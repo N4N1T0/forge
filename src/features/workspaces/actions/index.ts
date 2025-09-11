@@ -1,15 +1,11 @@
 import 'server-only'
 
-import {
-  DATABASE_ID,
-  MEMBERS_COLLECTION_ID,
-  WORKSPACES_COLLECTION_ID
-} from '@/config'
+import { DATABASE_ID, WORKSPACES_COLLECTION_ID } from '@/config'
 import { getMember } from '@/features/members/utils'
 import { createSessionClient } from '@/lib/appwrite'
-import { Members, Workspaces } from '@/types/appwrite'
+import { GetWorkspaceActionProps } from '@/types'
+import { Workspaces } from '@/types/appwrite'
 import { Query } from 'node-appwrite'
-import { GetWorkspaceActionProps, GetWorkspaceInfoActionProps } from '@/types'
 
 export const getWorkspacesAction = async () => {
   try {
@@ -17,27 +13,26 @@ export const getWorkspacesAction = async () => {
 
     const user = await account.get()
 
-    const members = await databases.listRows<Members>({
-      databaseId: DATABASE_ID,
-      tableId: MEMBERS_COLLECTION_ID,
-      queries: [Query.equal('userId', user.$id)]
+    const members = await getMember({
+      databases,
+      userId: user.$id
     })
 
-    if (members.total === 0) {
+    if (!members || members.length === 0) {
       return {
         success: true,
         data: []
       }
     }
 
-    const workspaceIds = members.rows.map((member) => member.workspaceId)
+    const workspaceIds = members.map((member) => member.workspaceId)
 
     const workspaces = await databases.listRows<Workspaces>({
       databaseId: DATABASE_ID,
       tableId: WORKSPACES_COLLECTION_ID,
       queries: [
         Query.orderDesc('$createdAt'),
-        Query.contains('$id', workspaceIds)
+        Query.contains('$id', workspaceIds as string[])
       ]
     })
 
@@ -97,7 +92,7 @@ export const getWorkspaceAction = async ({
 
 export const getWorkspaceInfoAction = async ({
   workspaceId
-}: GetWorkspaceInfoActionProps) => {
+}: GetWorkspaceActionProps) => {
   try {
     const { databases } = await createSessionClient()
 
