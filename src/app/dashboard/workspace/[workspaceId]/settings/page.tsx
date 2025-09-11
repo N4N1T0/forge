@@ -1,8 +1,12 @@
 import { getCurrentAction } from '@/features/auth/actions'
 import { getWorkspaceAction } from '@/features/workspaces/actions'
 import EditWorkspacesForm from '@/features/workspaces/components/workspace-edit-form'
-import { WorkspaceIdProps } from '@/types'
+import { Params } from '@/types'
 import { redirect } from 'next/navigation'
+
+interface WorkspaceIdProps {
+  params: Params
+}
 
 export default async function WorkspacePageSettings({
   params

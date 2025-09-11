@@ -1,11 +1,21 @@
 import { getCurrentAction } from '@/features/auth/actions'
+import { Params } from '@/types'
 import { redirect } from 'next/navigation'
 
-export default async function WorkspacePage({ params }: WorkspaceIdProps) {
-  const data = await getCurrentAction()
+interface WorkspacePageProps {
+  params: Params
+}
+
+export default async function WorkspacePage({ params }: WorkspacePageProps) {
+  const user = await getCurrentAction()
   const { workspaceId } = await params
 
-  if (!data.success || !data.data) {
+  if (
+    !user.success ||
+    !user.data ||
+    !workspaceId ||
+    Array.isArray(workspaceId)
+  ) {
     return redirect('/')
   }
 
