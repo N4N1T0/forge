@@ -42,7 +42,10 @@ export function ResponsiveModal({
   if (isDesktop) {
     return (
       <Dialog open={open} onOpenChange={onOpenChange}>
-        <DialogContent className={cn('sm:max-w-[425px] p-0', className)}>
+        <DialogContent
+          className={cn('sm:max-w-[425px] p-0', className)}
+          showCloseButton={false}
+        >
           <DialogHeader className={hideHeader ? 'sr-only' : ''}>
             {title && <DialogTitle>{title}</DialogTitle>}
             {description && (
