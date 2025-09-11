@@ -77,7 +77,7 @@ const app = new Hono()
           members.rows.map(async (member) => {
             try {
               const user = await users.get({
-                userId: member.userId
+                userId: member.userId as string
               })
               return {
                 ...user,
@@ -151,12 +151,14 @@ const app = new Hono()
       const allMembers = await databases.listRows<Members>({
         databaseId: DATABASE_ID,
         tableId: MEMBERS_COLLECTION_ID,
-        queries: [Query.equal('workspaceId', memberToDelete.workspaceId)]
+        queries: [
+          Query.equal('workspaceId', memberToDelete.workspaceId as string)
+        ]
       })
 
       const member = await getMember({
         databases,
-        workspaceId: memberToDelete.workspaceId,
+        workspaceId: memberToDelete.workspaceId as string,
         userId: user.$id
       })
 
@@ -221,12 +223,14 @@ const app = new Hono()
         const allMembers = await databases.listRows<Members>({
           databaseId: DATABASE_ID,
           tableId: MEMBERS_COLLECTION_ID,
-          queries: [Query.equal('workspaceId', memberToUpdate.workspaceId)]
+          queries: [
+            Query.equal('workspaceId', memberToUpdate.workspaceId as string)
+          ]
         })
 
         const member = await getMember({
           databases,
-          workspaceId: memberToUpdate.workspaceId,
+          workspaceId: memberToUpdate.workspaceId as string,
           userId: user.$id
         })
 
