@@ -1,12 +1,16 @@
 import { getCurrentAction } from '@/features/auth/actions'
 import { getWorkspaceInfoAction } from '@/features/workspaces/actions'
 import JoinWorkspaceForm from '@/features/workspaces/components/join-workspace-form'
-import { JoinWorkspaceProps } from '@/types'
+import { Params } from '@/types'
 import { redirect } from 'next/navigation'
+
+interface JoinWorkspacePageProps {
+  searchParams: Params
+}
 
 export default async function JoinWorkspacePage({
   searchParams
-}: JoinWorkspaceProps) {
+}: JoinWorkspacePageProps) {
   const { inviteCode, workspaceId, icon } = await searchParams
   const user = await getCurrentAction()
 
