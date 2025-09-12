@@ -7,8 +7,8 @@ export const createTaskSchema = z.object({
   projectId: z.string().min(1, 'Project ID is required'),
   workspaceId: z.string().min(1, 'Workspace ID is required'),
   assigneeId: z.string().trim().min(1, 'Assignee ID is required'),
-  dueDate: z.coerce.date(),
-  status: z.enum(Status).default(Status.BACKLOG)
+  dueDate: z.date(),
+  status: z.enum(Status)
 })
 
 export type CreateTaskSchema = z.infer<typeof createTaskSchema>
