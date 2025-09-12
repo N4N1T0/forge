@@ -64,7 +64,7 @@ export function WorkspaceSwitcher() {
 
   return (
     <>
-      <SidebarMenu className='px-2'>
+      <SidebarMenu className='px-2 mt-1'>
         <SidebarMenuItem>
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
