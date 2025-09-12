@@ -1,13 +1,13 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { DATABASE_ID, MEMBERS_COLLECTION_ID } from '@/config'
-import { getMember } from '@/features/members/utils'
+import { getMember, getMembers } from '@/features/members/utils'
 import { createAdminClient } from '@/lib/appwrite'
 import { sessionMiddleware } from '@/lib/middleware'
 import { Members, Role } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
-import { Models, Query } from 'node-appwrite'
+import { Models } from 'node-appwrite'
 import { z } from 'zod'
 
 // TYPES
@@ -67,10 +67,9 @@ const app = new Hono()
           })
         }
 
-        const members = await databases.listRows<Members>({
-          databaseId: DATABASE_ID,
-          tableId: MEMBERS_COLLECTION_ID,
-          queries: [Query.equal('workspaceId', workspaceId)]
+        const members = await getMembers({
+          databases,
+          workspaceId
         })
 
         const populatedMembers = await Promise.all(
@@ -148,12 +147,9 @@ const app = new Hono()
         rowId: memberId
       })
 
-      const allMembers = await databases.listRows<Members>({
-        databaseId: DATABASE_ID,
-        tableId: MEMBERS_COLLECTION_ID,
-        queries: [
-          Query.equal('workspaceId', memberToDelete.workspaceId as string)
-        ]
+      const allMembers = await getMembers({
+        databases,
+        workspaceId: memberToDelete.workspaceId as string
       })
 
       const member = await getMember({
@@ -220,12 +216,9 @@ const app = new Hono()
           rowId: memberId
         })
 
-        const allMembers = await databases.listRows<Members>({
-          databaseId: DATABASE_ID,
-          tableId: MEMBERS_COLLECTION_ID,
-          queries: [
-            Query.equal('workspaceId', memberToUpdate.workspaceId as string)
-          ]
+        const allMembers = await getMembers({
+          databases,
+          workspaceId: memberToUpdate.workspaceId as string
         })
 
         const member = await getMember({
