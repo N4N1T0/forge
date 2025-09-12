@@ -1,17 +1,17 @@
 import { DATABASE_ID, MEMBERS_COLLECTION_ID } from '@/config'
 import { Members } from '@/types/appwrite'
-import { GetMembersParams } from '@/types/functions'
+import { GetMemberParams, GetMembersParams } from '@/types/functions'
 import { Query } from 'node-appwrite'
 
-export const getMember = async ({
+export const getMembers = async ({
   databases,
   workspaceId,
   userId
 }: GetMembersParams) => {
-  const queries = [Query.equal('userId', userId)]
+  const queries = [Query.equal('workspaceId', workspaceId)]
 
-  if (workspaceId) {
-    queries.push(Query.equal('workspaceId', workspaceId))
+  if (userId) {
+    queries.push(Query.equal('userId', userId))
   }
 
   const members = await databases.listRows<Members>({
@@ -20,5 +20,26 @@ export const getMember = async ({
     queries
   })
 
-  return members.rows[0]
+  return members
+}
+
+export const getMember = async ({
+  databases,
+  workspaceId,
+  userId
+}: GetMemberParams) => {
+  const queries = []
+
+  if (workspaceId) {
+    queries.push(Query.equal('workspaceId', workspaceId))
+  }
+
+  const member = await databases.getRow<Members>({
+    databaseId: DATABASE_ID,
+    tableId: MEMBERS_COLLECTION_ID,
+    rowId: userId,
+    queries
+  })
+
+  return member
 }
