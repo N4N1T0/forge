@@ -5,9 +5,9 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem
+  SidebarMenuItem,
+  SidebarMenuSkeleton
 } from '@/components/ui/sidebar'
-import { Skeleton } from '@/components/ui/skeleton'
 import ModalProjectForm from '@/features/projects/components/modal-project-form'
 import { useGetProjects } from '@/features/projects/server/use-get-projects'
 import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
@@ -27,12 +27,7 @@ export function Projects() {
         <SidebarGroupLabel>Projects</SidebarGroupLabel>
         <SidebarMenu>
           {Array.from({ length: 3 }).map((_, index) => (
-            <SidebarMenuItem key={index}>
-              <SidebarMenuButton className='p-0 px-2 py-1'>
-                <Skeleton className='h-6 w-full' />
-                <Skeleton className='size-6' />
-              </SidebarMenuButton>
-            </SidebarMenuItem>
+            <SidebarMenuSkeleton key={index} />
           ))}
         </SidebarMenu>
       </SidebarGroup>
@@ -45,6 +40,7 @@ export function Projects() {
         Projects
         <ModalProjectForm className='ml-auto'>
           <SidebarMenuButton
+            tooltip='Create project'
             className='size-6 flex justify-center items-center aspect-square'
             variant='outline'
           >
@@ -60,8 +56,13 @@ export function Projects() {
 
           return (
             <SidebarMenuItem key={$id}>
-              <SidebarMenuButton asChild>
+              <SidebarMenuButton
+                asChild
+                tooltip={`Project: ${name}`}
+                isActive={isActive}
+              >
                 <Link href={href} className={isActive ? 'bg-muted' : ''}>
+                  {/* TODO: */}
                   <span>{name}</span>
                   {shortcut && (
                     <span className='text-sm text-muted-foreground ml-auto flex uppercase gap-1 justify-center items-center'>
