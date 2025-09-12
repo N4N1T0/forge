@@ -26,12 +26,12 @@ import {
 } from '@/features/workspaces/schema'
 import { useCreateWorkspace } from '@/features/workspaces/server/use-create-workspace'
 import { generateSlug } from '@/lib/utils'
-import { createWorkspacesFormProps } from '@/types/functions'
+import { BaseFormProps } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
-const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
+const CreateWorkspacesForm = ({ onCancel }: BaseFormProps) => {
   // HOOKS
   const router = useRouter()
   const { mutate: createWorkspace, isPending } = useCreateWorkspace()
@@ -41,7 +41,7 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
       name: '',
       description: '',
       icon: 'anvil',
-      slug: '',
+      slug: ''
     }
   })
 
@@ -188,7 +188,6 @@ const CreateWorkspacesForm = ({ onCancel }: createWorkspacesFormProps) => {
               )}
             />
 
-            {/* TODO: SHORTCUT */}
             <Separator />
 
             <div className='flex justify-end items-center gap-3 flex-wrap'>
