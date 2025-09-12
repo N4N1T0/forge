@@ -7,7 +7,7 @@ export const createTaskSchema = z.object({
   projectId: z.string().min(1, 'Project ID is required'),
   workspaceId: z.string().min(1, 'Workspace ID is required'),
   assigneeId: z.string().trim().min(1, 'Assignee ID is required'),
-  dueDate: z.date(),
+  dueDate: z.string(),
   status: z.enum(Status)
 })
 
