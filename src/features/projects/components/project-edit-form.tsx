@@ -1,8 +1,5 @@
 'use client'
 
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -21,6 +18,8 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { zodResolver } from '@hookform/resolvers/zod'
+import { useForm } from 'react-hook-form'
 
 import {
   createProjectSchema,
@@ -28,18 +27,13 @@ import {
 } from '@/features/projects/schema'
 import { useUpdateProject } from '@/features/projects/server/use-update-project'
 import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
+import { FormWithInitialValues } from '@/types'
 import { Projects } from '@/types/appwrite'
-
-// TIPOS
-interface EditarProyectoFormProps {
-  onCancel?: () => void
-  initialValues: Projects | undefined
-}
 
 const EditarProyectoForm = ({
   onCancel,
   initialValues
-}: EditarProyectoFormProps) => {
+}: FormWithInitialValues<Projects>) => {
   // HOOKS
   const { workspace } = useGetCurrentWorkspace()
   const { mutate: actualizarProyecto, isPending } = useUpdateProject()
