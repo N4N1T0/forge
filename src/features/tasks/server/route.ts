@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import {
   DATABASE_ID,
   MEMBERS_COLLECTION_ID,
@@ -11,8 +12,8 @@ import { sessionMiddleware } from '@/lib/middleware'
 import { Members, Projects, Status, Tasks } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
-import { ID, Query } from 'node-appwrite'
-import z from 'zod'
+import { AppwriteException, ID, Query } from 'node-appwrite'
+import z, { ZodError } from 'zod'
 
 // TYPES
 type TaskResponse =
@@ -171,58 +172,78 @@ const app = new Hono()
         status
       } = c.req.valid('json')
 
-      const member = getMember({
-        databases,
-        userId: user.$id,
-        workspaceId
-      })
+      try {
+        const member = await getMember({
+          databases,
+          userId: user.$id,
+          workspaceId
+        })
 
-      if (!member) {
-        return c.json<TaskResponse>(
-          {
-            success: false,
-            data: 'You are not a member of this workspace'
-          },
-          403
-        )
-      }
-
-      const highestPosition = await databases.listRows<Tasks>({
-        databaseId: DATABASE_ID,
-        tableId: TASKS_COLLECTION_ID,
-        queries: [
-          Query.equal('status', status),
-          Query.equal('workspaceId', workspaceId),
-          Query.orderAsc('position'),
-          Query.limit(1)
-        ]
-      })
-
-      const position =
-        highestPosition?.total === 0
-          ? 0
-          : highestPosition?.rows[0].position + 1000
-
-      const task = await databases.createRow<Tasks>({
-        databaseId: DATABASE_ID,
-        tableId: TASKS_COLLECTION_ID,
-        rowId: ID.unique(),
-        data: {
-          name,
-          description,
-          projectId,
-          workspaceId,
-          assigneeId,
-          dueDate,
-          status,
-          position
+        if (!member) {
+          return c.json<TaskResponse>(
+            {
+              success: false,
+              data: 'You are not a member of this workspace'
+            },
+            403
+          )
         }
-      })
 
-      return c.json<TaskResponse>({
-        success: true,
-        data: task
-      })
+        const highestPosition = await databases.listRows<Tasks>({
+          databaseId: DATABASE_ID,
+          tableId: TASKS_COLLECTION_ID,
+          queries: [
+            Query.equal('status', status),
+            Query.equal('workspaceId', workspaceId),
+            Query.orderAsc('position'),
+            Query.limit(1)
+          ]
+        })
+
+        const position =
+          highestPosition?.total === 0
+            ? 2000
+            : highestPosition?.rows[0].position + 1000
+
+        const task = await databases.createRow<Tasks>({
+          databaseId: DATABASE_ID,
+          tableId: TASKS_COLLECTION_ID,
+          rowId: ID.unique(),
+          data: {
+            name,
+            description,
+            projectId,
+            workspaceId,
+            assigneeId,
+            dueDate: new Date(dueDate),
+            status,
+            position
+          }
+        })
+
+        return c.json<TaskResponse>({
+          success: true,
+          data: task
+        })
+      } catch (error: any) {
+        console.log('🚀 ~ error:', error)
+        if (error instanceof AppwriteException) {
+          return c.json<TaskResponse>({
+            success: false,
+            data: error.message
+          })
+        }
+        if (error instanceof ZodError) {
+          return c.json<TaskResponse>({
+            success: false,
+            data: error.message
+          })
+        }
+        return c.json<TaskResponse>({
+          success: false,
+          data: error.message || 'Failed to delete project'
+        })
+      }
     }
   )
 
