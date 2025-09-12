@@ -256,7 +256,7 @@ const app = new Hono()
         )
       }
 
-      if (member.role !== Role.ADMIN) {
+      if (member?.role !== Role.ADMIN) {
         return c.json<ProjectResponse>(
           {
             success: false,
