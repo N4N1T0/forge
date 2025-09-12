@@ -169,7 +169,6 @@ const app = new Hono()
 
         const { projectId } = c.req.param()
         const { name, shortcut, workspaceId } = c.req.valid('form')
-        console.log('🚀 ~ workspaceId:', workspaceId)
 
         const member = await getMember({
           databases,
