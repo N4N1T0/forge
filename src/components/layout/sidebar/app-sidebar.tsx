@@ -10,7 +10,8 @@ import {
   SidebarContent,
   SidebarFooter,
   SidebarHeader,
-  SidebarRail
+  SidebarRail,
+  SidebarSeparator
 } from '@/components/ui/sidebar'
 import { Projects } from './nav-projects'
 
@@ -25,6 +26,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
       <SidebarContent>
         <WorkspaceSwitcher />
         <NavMain />
+        <SidebarSeparator />
         <Projects />
       </SidebarContent>
       <SidebarFooter>
