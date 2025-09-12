@@ -31,7 +31,7 @@ export function NavMain() {
               isActive={isActive}
               asChild
             >
-              <Link href={formattedHref} className={isActive ? 'active' : ''}>
+              <Link href={formattedHref} className={isActive ? 'bg-muted' : ''}>
                 {Icon && <Icon />}
                 <span>{name}</span>
               </Link>
