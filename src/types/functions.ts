@@ -5,7 +5,6 @@ import {
   type TablesDB as TablesDBType,
   type Users as UsersType
 } from 'node-appwrite'
-import { Workspaces } from './appwrite'
 
 export interface GetMembersParams {
   databases: TablesDBType
@@ -35,13 +34,4 @@ export type AdminMiddleWareContext = {
     storage: StorageType
     users: UsersType
   }
-}
-
-export interface createWorkspacesFormProps {
-  onCancel?: () => void
-}
-
-export interface editWorkspacesFormProps {
-  onCancel?: () => void
-  initialValues: Workspaces
 }
