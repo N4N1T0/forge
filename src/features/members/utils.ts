@@ -40,5 +40,5 @@ export const getMember = async ({
     queries
   })
 
-  return member
+  return member?.rows[0]
 }
