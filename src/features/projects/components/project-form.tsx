@@ -24,15 +24,12 @@ import {
 } from '@/features/projects/schema'
 import { useCreateProject } from '@/features/projects/server/use-create-project'
 import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
+import { BaseFormProps } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
-interface CreateProjectFormProps {
-  onCancel?: () => void
-}
-
-const CreateProjectForm = ({ onCancel }: CreateProjectFormProps) => {
+const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
   // HOOKS
   const router = useRouter()
   const { workspace } = useGetCurrentWorkspace()
