@@ -6,14 +6,13 @@ import { useState } from 'react'
 import ResponsiveModal from '@/components/ui/responsive-modal'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
+import { ResponsiveModalProps } from '@/types'
 import { Projects } from '@/types/appwrite'
 import CardDeleteProject from './card-delete-project'
 import EditarProyectoForm from './project-edit-form'
 
-interface ModalProjectConfigProps {
-  children: React.ReactNode
+interface ModalProjectConfigProps extends ResponsiveModalProps {
   project: Projects
-  className?: string
 }
 
 const ModalProjectConfig = ({
@@ -26,7 +25,6 @@ const ModalProjectConfig = ({
 
   const handleClose = () => {
     setIsOpen(false)
-    // Reset to edit tab when modal closes
     setTimeout(() => setActiveTab('edit'), 200)
   }
 
