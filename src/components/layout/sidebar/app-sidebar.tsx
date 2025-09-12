@@ -4,7 +4,7 @@ import * as React from 'react'
 
 import { NavMain } from '@/components/layout/sidebar/nav-main'
 import { NavUser } from '@/components/layout/sidebar/nav-user'
-import { TeamSwitcher } from '@/components/layout/sidebar/workspace-switcher'
+import { WorkspaceSwitcher } from '@/components/layout/sidebar/workspace-switcher'
 import {
   Sidebar,
   SidebarContent,
@@ -23,7 +23,7 @@ export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
         </span>
       </SidebarHeader>
       <SidebarContent>
-        <TeamSwitcher />
+        <WorkspaceSwitcher />
         <NavMain />
         <Projects />
       </SidebarContent>
