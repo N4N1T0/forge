@@ -28,16 +28,15 @@ export const getMember = async ({
   workspaceId,
   userId
 }: GetMemberParams) => {
-  const queries = []
+  const queries = [Query.equal('userId', userId)]
 
   if (workspaceId) {
     queries.push(Query.equal('workspaceId', workspaceId))
   }
 
-  const member = await databases.getRow<Members>({
+  const member = await databases.listRows<Members>({
     databaseId: DATABASE_ID,
     tableId: MEMBERS_COLLECTION_ID,
-    rowId: userId,
     queries
   })
 
