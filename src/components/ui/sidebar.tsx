@@ -333,6 +333,12 @@ function SidebarInput({
 }
 
 function SidebarHeader({ className, ...props }: React.ComponentProps<'div'>) {
+  const { state } = useSidebar()
+
+  if (state === 'collapsed') {
+    return null
+  }
+
   return (
     <div
       data-slot='sidebar-header'
@@ -358,11 +364,18 @@ function SidebarSeparator({
   className,
   ...props
 }: React.ComponentProps<typeof Separator>) {
+  const { state } = useSidebar()
+  const responsiveClassName =
+    state === 'collapsed' ? 'block w-[2rem]!' : 'hidden'
   return (
     <Separator
       data-slot='sidebar-separator'
       data-sidebar='separator'
-      className={cn('bg-sidebar-border mx-2 w-auto', className)}
+      className={cn(
+        'bg-sidebar-border mx-2 w-auto',
+        responsiveClassName,
+        className
+      )}
       {...props}
     />
   )
