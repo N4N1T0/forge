@@ -29,7 +29,8 @@ import { useDeleteWorkspace } from '@/features/workspaces/server/use-delete-work
 import { useUpdateWorkspace } from '@/features/workspaces/server/use-update-workspace'
 import { useConfirm } from '@/hooks/use-confirm'
 import { checkIsOwner, generateSlug } from '@/lib/utils'
-import { editWorkspacesFormProps } from '@/types/functions'
+import { FormWithInitialValues } from '@/types'
+import { Workspaces } from '@/types/appwrite'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { LinkIcon, Loader } from 'lucide-react'
 import { useRouter } from 'next/navigation'
@@ -40,7 +41,7 @@ import { toast } from 'sonner'
 const EditWorkspacesForm = ({
   onCancel,
   initialValues
-}: editWorkspacesFormProps) => {
+}: FormWithInitialValues<Workspaces>) => {
   // HOOKS
   const router = useRouter()
   const { data: currentMember, isLoading } = useCurrentMember()
