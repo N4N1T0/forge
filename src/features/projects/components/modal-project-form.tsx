@@ -1,18 +1,14 @@
 'use client'
 
 import ResponsiveModal from '@/components/ui/responsive-modal'
+import { ResponsiveModalProps } from '@/types'
 import { useState } from 'react'
 import CreateProjectForm from './project-form'
-
-interface ModalProjectFormProps {
-  children: React.ReactNode
-  className?: string
-}
 
 export function ModalProjectForm({
   children,
   className
-}: ModalProjectFormProps) {
+}: ResponsiveModalProps) {
   const [isOpen, setIsOpen] = useState(false)
 
   const handleClose = () => {
