@@ -11,7 +11,7 @@ import {
 import ModalProjectForm from '@/features/projects/components/modal-project-form'
 import { useGetProjects } from '@/features/projects/server/use-get-projects'
 import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
-import { Command, Plus } from 'lucide-react'
+import { Command, Folder, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -42,7 +42,7 @@ export function Projects() {
           <SidebarMenuButton
             tooltip='Create project'
             className='size-6 flex justify-center items-center aspect-square'
-            variant='outline'
+            variant='ghost'
           >
             <Plus className='size-3' />
             <span className='sr-only'>Create project</span>
@@ -62,7 +62,7 @@ export function Projects() {
                 isActive={isActive}
               >
                 <Link href={href} className={isActive ? 'bg-muted' : ''}>
-                  {/* TODO: */}
+                  <Folder className='size-3' />
                   <span>{name}</span>
                   {shortcut && (
                     <span className='text-sm text-muted-foreground ml-auto flex uppercase gap-1 justify-center items-center'>
