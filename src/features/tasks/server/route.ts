@@ -118,7 +118,7 @@ const app = new Hono()
         databaseId: DATABASE_ID,
         tableId: PROJECTS_COLLECTION_ID,
         queries:
-          projectsId.length > 0 ? [Query.contains('projectId', projectsId)] : []
+          projectsId.length > 0 ? [Query.contains('$id', projectsId)] : []
       })
 
       const members = await databases.listRows<Members>({
@@ -215,7 +215,7 @@ const app = new Hono()
             projectId,
             workspaceId,
             assigneeId,
-            dueDate: new Date(dueDate),
+            dueDate: dueDate,
             status,
             position
           }
