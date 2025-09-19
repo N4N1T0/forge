@@ -41,7 +41,7 @@ export type Tasks = Models.Row & {
   projectId: string
   assigneeId: string
   description: string | null | undefined
-  dueDate: Date
+  dueDate: string
   status: Status
   position: number
 }
