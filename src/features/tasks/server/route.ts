@@ -9,6 +9,7 @@ import { getMember } from '@/features/members/utils'
 import { createTaskSchema } from '@/features/tasks/schema'
 import { createAdminClient } from '@/lib/appwrite'
 import { sessionMiddleware } from '@/lib/middleware'
+import { FormattedTasks } from '@/types'
 import { Members, Projects, Status, Tasks } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
@@ -23,15 +24,7 @@ type TaskResponse =
 type TaskListResponse =
   | {
       success: true
-      data: (Tasks & {
-        project: Projects | undefined
-        assignee:
-          | (Members & {
-              name: string
-              email: string
-            })
-          | undefined
-      })[]
+      data: FormattedTasks
     }
   | {
       success: false
@@ -246,5 +239,202 @@ const app = new Hono()
       }
     }
   )
+  .patch(
+    '/:taskId',
+    sessionMiddleware,
+    zValidator('json', createTaskSchema),
+    async (c) => {
+      const user = c.get('user')
+      const databases = c.get('tables')
+      const { taskId } = c.req.param()
+      const { name, description, assigneeId, dueDate, status } =
+        c.req.valid('json')
+
+      try {
+        const existingTask = await databases.getRow<Tasks>({
+          databaseId: DATABASE_ID,
+          tableId: TASKS_COLLECTION_ID,
+          rowId: taskId
+        })
+
+        const member = await getMember({
+          databases,
+          userId: user.$id,
+          workspaceId: existingTask.workspaceId
+        })
+
+        if (!member) {
+          return c.json<TaskResponse>(
+            {
+              success: false,
+              data: 'You are not a member of this workspace'
+            },
+            403
+          )
+        }
+
+        const updatedTask = await databases.updateRow<Tasks>({
+          databaseId: DATABASE_ID,
+          tableId: TASKS_COLLECTION_ID,
+          rowId: taskId,
+          data: {
+            name,
+            description,
+            assigneeId,
+            dueDate,
+            status
+          }
+        })
+
+        return c.json<TaskResponse>({
+          success: true,
+          data: updatedTask
+        })
+      } catch (error: any) {
+        console.log('🚀 ~ error:', error)
+        if (error instanceof AppwriteException) {
+          return c.json<TaskResponse>({
+            success: false,
+            data: error.message
+          })
+        }
+        if (error instanceof ZodError) {
+          return c.json<TaskResponse>({
+            success: false,
+            data: error.message
+          })
+        }
+        return c.json<TaskResponse>({
+          success: false,
+          data: error.message || 'Failed to update task'
+        })
+      }
+    }
+  )
+  .patch(
+    '/:taskId/status',
+    sessionMiddleware,
+    zValidator('json', z.object({ status: z.enum(Status) })),
+    async (c) => {
+      const user = c.get('user')
+      const databases = c.get('tables')
+      const { taskId } = c.req.param()
+      const { status } = c.req.valid('json')
+
+      try {
+        const existingTask = await databases.getRow<Tasks>({
+          databaseId: DATABASE_ID,
+          tableId: TASKS_COLLECTION_ID,
+          rowId: taskId
+        })
+
+        const member = await getMember({
+          databases,
+          userId: user.$id,
+          workspaceId: existingTask.workspaceId
+        })
+
+        if (!member) {
+          return c.json<TaskResponse>(
+            {
+              success: false,
+              data: 'You are not a member of this workspace'
+            },
+            403
+          )
+        }
+
+        const updatedTask = await databases.updateRow<Tasks>({
+          databaseId: DATABASE_ID,
+          tableId: TASKS_COLLECTION_ID,
+          rowId: taskId,
+          data: {
+            status
+          }
+        })
+
+        return c.json<TaskResponse>({
+          success: true,
+          data: updatedTask
+        })
+      } catch (error: any) {
+        console.log('🚀 ~ error:', error)
+        if (error instanceof AppwriteException) {
+          return c.json<TaskResponse>({
+            success: false,
+            data: error.message
+          })
+        }
+        if (error instanceof ZodError) {
+          return c.json<TaskResponse>({
+            success: false,
+            data: error.message
+          })
+        }
+        return c.json<TaskResponse>({
+          success: false,
+          data: error.message || 'Failed to update task status'
+        })
+      }
+    }
+  )
+  .delete('/:taskId', sessionMiddleware, async (c) => {
+    const user = c.get('user')
+    const databases = c.get('tables')
+    const { taskId } = c.req.param()
+
+    try {
+      const task = await databases.getRow<Tasks>({
+        databaseId: DATABASE_ID,
+        tableId: TASKS_COLLECTION_ID,
+        rowId: taskId
+      })
+
+      const member = await getMember({
+        databases,
+        userId: user.$id,
+        workspaceId: task.workspaceId
+      })
+
+      if (!member) {
+        return c.json<TaskResponse>(
+          {
+            success: false,
+            data: 'You are not a member of this workspace'
+          },
+          403
+        )
+      }
+
+      await databases.deleteRow({
+        databaseId: DATABASE_ID,
+        tableId: TASKS_COLLECTION_ID,
+        rowId: taskId
+      })
+
+      return c.json<TaskResponse>({
+        success: true,
+        data: task
+      })
+    } catch (error: any) {
+      console.log('🚀 ~ error:', error)
+      if (error instanceof AppwriteException) {
+        return c.json<TaskResponse>({
+          success: false,
+          data: error.message
+        })
+      }
+      if (error instanceof ZodError) {
+        return c.json<TaskResponse>({
+          success: false,
+          data: error.message
+        })
+      }
+      return c.json<TaskResponse>({
+        success: false,
+        data: error.message || 'Failed to delete project'
+      })
+    }
+  })
 
 export default app
