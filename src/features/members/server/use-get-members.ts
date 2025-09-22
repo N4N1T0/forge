@@ -1,10 +1,12 @@
 import { client } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
 
+// TYPES
 interface UseGetMembersProps {
   workspaceId: string
 }
 
+// HOOKS
 export const useGetMembers = ({ workspaceId }: UseGetMembersProps) => {
   const query = useQuery({
     queryKey: ['members', workspaceId],

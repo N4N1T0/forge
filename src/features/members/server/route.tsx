@@ -4,6 +4,7 @@ import { DATABASE_ID, MEMBERS_COLLECTION_ID } from '@/config'
 import { getMember, getMembers } from '@/features/members/utils'
 import { createAdminClient } from '@/lib/appwrite'
 import { sessionMiddleware } from '@/lib/middleware'
+import { FormattedMembers } from '@/types'
 import { Members, Role } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
@@ -14,7 +15,7 @@ import { z } from 'zod'
 type MemberListResponse =
   | {
       success: true
-      data: ((Members & Models.User<Models.Preferences>) | null)[]
+      data: FormattedMembers
     }
   | {
       success: false
