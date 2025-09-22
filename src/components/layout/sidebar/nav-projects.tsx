@@ -18,10 +18,12 @@ import { usePathname } from 'next/navigation'
 export function Projects() {
   // HOOKS
   const pathname = usePathname()
-  const { workspace } = useGetCurrentWorkspace()
-  const { data: projects, isLoading } = useGetProjects(workspace?.$id || '')
+  const { workspace, isLoading: isLoadingWorkspace } = useGetCurrentWorkspace()
+  const { data: projects, isLoading: isLoadingProjects } = useGetProjects({
+    workspaceId: workspace?.$id || ''
+  })
 
-  if (isLoading) {
+  if (isLoadingWorkspace || isLoadingProjects) {
     return (
       <SidebarGroup>
         <SidebarGroupLabel>Projects</SidebarGroupLabel>
