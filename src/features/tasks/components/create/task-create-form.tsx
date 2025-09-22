@@ -33,33 +33,56 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { status } from '@/data'
-import { useGetMembers } from '@/features/members/server/use-get-members'
 import { createTaskSchema, CreateTaskSchema } from '@/features/tasks/schema'
 import { useCreateTask } from '@/features/tasks/server/use-create-task'
-import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
 import { cn } from '@/lib/utils'
-import { BaseFormProps } from '@/types'
-import { Status } from '@/types/appwrite'
+import { BaseFormProps, FormattedMembers } from '@/types'
+import { Status, Workspaces } from '@/types/appwrite'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
 import { CalendarIcon, Loader } from 'lucide-react'
 import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
+import { ModalTaskWrapper } from '../modal-task-wrapper'
 
-interface CreateTaskFormProps extends BaseFormProps {
+interface TaskCreateFormProps extends BaseFormProps {
   projectId: string
 }
 
-export const CreateTaskForm = ({
+export const TaskCreateForm = ({
   onCancel,
   projectId
-}: CreateTaskFormProps) => {
+}: TaskCreateFormProps) => {
+  return (
+    <ModalTaskWrapper>
+      {({ workspace, members, isLoading }) => (
+        <TaskCreateFormContent
+          onCancel={onCancel}
+          projectId={projectId}
+          workspace={workspace}
+          members={members}
+          isLoading={isLoading}
+        />
+      )}
+    </ModalTaskWrapper>
+  )
+}
+
+interface TaskCreateFormContentProps extends TaskCreateFormProps {
+  workspace: Partial<Workspaces> | undefined
+  members: FormattedMembers
+  isLoading: boolean
+}
+
+const TaskCreateFormContent = ({
+  onCancel,
+  projectId,
+  workspace,
+  members,
+  isLoading
+}: TaskCreateFormContentProps) => {
   // HOOKS
-  const { workspace } = useGetCurrentWorkspace()
   const { mutate: createTask, isPending } = useCreateTask()
-  const { data: members, isLoading } = useGetMembers({
-    workspaceId: workspace?.$id as string
-  })
 
   const form = useForm<CreateTaskSchema>({
     resolver: zodResolver(createTaskSchema),

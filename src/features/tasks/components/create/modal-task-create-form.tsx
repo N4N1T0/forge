@@ -3,19 +3,22 @@
 import { ResponsiveModal } from '@/components/ui/responsive-modal'
 import { ResponsiveModalProps } from '@/types'
 import { useState } from 'react'
-import { CreateTaskForm } from './task-form'
+import { TaskCreateForm } from './task-create-form'
 
+// TYPES
 interface ModalTaskFormProps extends ResponsiveModalProps {
   projectId: string
 }
 
-const ModalTaskForm = ({
+export const ModalTaskCreateForm = ({
   children,
   className,
   projectId
 }: ModalTaskFormProps) => {
+  // HOOKS
   const [isOpen, setIsOpen] = useState(false)
 
+  // HANDLERS
   const handleClose = () => {
     setIsOpen(false)
   }
@@ -33,10 +36,8 @@ const ModalTaskForm = ({
         title='Create Task'
         description='Create a new task to keep track of your work'
       >
-        <CreateTaskForm onCancel={handleClose} projectId={projectId} />
+        <TaskCreateForm onCancel={handleClose} projectId={projectId} />
       </ResponsiveModal>
     </>
   )
 }
-
-export default ModalTaskForm
