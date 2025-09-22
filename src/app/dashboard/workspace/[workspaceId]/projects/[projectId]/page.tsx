@@ -2,8 +2,9 @@ import { Button } from '@/components/ui/button'
 import { getCurrentAction } from '@/features/auth/actions'
 import { getProjectAction } from '@/features/projects/actions'
 import ModalProjectConfig from '@/features/projects/components/modal-project-config'
-import ModalTaskForm from '@/features/tasks/components/modal-task-form'
-import { TaskViewSwitcher } from '@/features/tasks/components/task-view-switcher'
+import { ModalTaskCreateForm } from '@/features/tasks/components/create'
+import { TaskFilters } from '@/features/tasks/components/task-filters'
+import { TaskViewSwitcher } from '@/features/tasks/components/views'
 import { Params } from '@/types'
 import { MoreHorizontal, Plus } from 'lucide-react'
 import { redirect } from 'next/navigation'
@@ -32,12 +33,13 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
     <section className='flex flex-col gap-y-4 size-full px-5'>
       <div className='flex items-center justify-between'>
         <h2 className='text-primary text-lg'>{initialValues.data?.name}</h2>
+        <TaskFilters />
         <div className='flex gap-2 items-center justify-center'>
-          <ModalTaskForm projectId={initialValues.data.$id}>
+          <ModalTaskCreateForm projectId={initialValues.data.$id}>
             <Button size='icon'>
               <Plus />
             </Button>
-          </ModalTaskForm>
+          </ModalTaskCreateForm>
           <ModalProjectConfig project={initialValues.data}>
             <Button variant='ghost' size='icon'>
               <MoreHorizontal />
