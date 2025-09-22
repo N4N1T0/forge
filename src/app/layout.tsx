@@ -5,6 +5,7 @@ import { cn } from '@/lib/utils'
 import { Layouts } from '@/types'
 import type { Metadata } from 'next'
 import { Geist, Geist_Mono, Noto_Sans_Georgian } from 'next/font/google'
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import './globals.css'
 
 const geist = Geist({
@@ -38,17 +39,19 @@ export default function RootLayout({ children }: Layouts) {
           'antialiased min-h-screen'
         )}
       >
-        <QueryProviders>
-          <ThemeProvider
-            defaultTheme='system'
-            themes={['light', 'dark', 'system']}
-            attribute='class'
-            enableSystem
-            disableTransitionOnChange
-          >
-            {children}
-          </ThemeProvider>
-        </QueryProviders>
+        <NuqsAdapter>
+          <QueryProviders>
+            <ThemeProvider
+              defaultTheme='system'
+              themes={['light', 'dark', 'system']}
+              attribute='class'
+              enableSystem
+              disableTransitionOnChange
+            >
+              {children}
+            </ThemeProvider>
+          </QueryProviders>
+        </NuqsAdapter>
         <Toaster />
       </body>
     </html>
