@@ -33,7 +33,6 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import { status } from '@/data'
-import { ModalTaskWrapper } from '@/features/tasks/components/modal-task-wrapper'
 import { createTaskSchema, CreateTaskSchema } from '@/features/tasks/schema'
 import { useEditTask } from '@/features/tasks/server/use-edit-task'
 import { cn } from '@/lib/utils'
@@ -44,19 +43,12 @@ import { format } from 'date-fns'
 import { CalendarIcon, Loader } from 'lucide-react'
 import { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
+import { ModalTaskWrapper } from '../modal-task-wrapper'
 
-// TYPES
 interface TaskEditFormProps extends BaseFormProps {
   task: Tasks
 }
 
-interface TaskEditFormContentProps extends TaskEditFormProps {
-  workspace: Partial<Workspaces> | undefined
-  members: FormattedMembers
-  isLoading: boolean
-}
-
-// WRAPPER
 export const TaskEditForm = ({ onCancel, task }: TaskEditFormProps) => {
   return (
     <ModalTaskWrapper>
@@ -71,6 +63,12 @@ export const TaskEditForm = ({ onCancel, task }: TaskEditFormProps) => {
       )}
     </ModalTaskWrapper>
   )
+}
+
+interface TaskEditFormContentProps extends TaskEditFormProps {
+  workspace: Partial<Workspaces> | undefined
+  members: FormattedMembers
+  isLoading: boolean
 }
 
 const TaskEditFormContent = ({
