@@ -10,6 +10,9 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@dnd-kit/core": "^6.3.1",
+    "@dnd-kit/sortable": "^10.0.0",
+    "@dnd-kit/utilities": "^3.2.2",
     "@hono/zod-validator": "^0.7.2",
     "@hookform/resolvers": "^5.2.0",
     "@radix-ui/react-avatar": "^1.1.10",
@@ -49,6 +52,7 @@
     "server-only": "^0.0.1",
     "sonner": "^2.0.6",
     "tailwind-merge": "^3.3.1",
+    "tunnel-rat": "^0.1.2",
     "usehooks-ts": "^3.1.1",
     "vaul": "^1.1.2",
     "zod": "^4.0.10"
