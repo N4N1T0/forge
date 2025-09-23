@@ -1,16 +1,13 @@
 'use client'
 
-import { FormattedTasks } from '@/types'
+import { DataViewProps } from '@/types'
 import { TaskEmptyView } from '../task-empty-view'
 import { DataTable } from './data-table'
 import { TaskTableColumns } from './task-table-columns'
 import { TaskTableSkeleton } from './task-table-skeleton'
 
 // TYPES
-interface TaskTableViewProps {
-  data: FormattedTasks | undefined
-  isLoading: boolean
-}
+type TaskTableViewProps = DataViewProps
 
 export const TaskTableView = ({
   data = undefined,
@@ -27,7 +24,7 @@ export const TaskTableView = ({
   }
 
   return (
-    <section className='py-4'>
+    <section className='py-4 size-full'>
       <DataTable columns={TaskTableColumns} data={data || []} />
     </section>
   )

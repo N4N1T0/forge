@@ -1,9 +1,9 @@
 import { Button } from '@/components/ui/button'
 import { status } from '@/data'
+import { TaskAction } from '@/features/tasks/components/views'
 import { FormattedTasks } from '@/types'
 import { ColumnDef } from '@tanstack/react-table'
 import { ArrowUpDown, MoreVertical } from 'lucide-react'
-import { TaskActionCell } from './task-action-cell'
 import { TaskDateCell } from './task-cell-date'
 
 export const TaskTableColumns: ColumnDef<FormattedTasks[number]>[] = [
@@ -138,11 +138,11 @@ export const TaskTableColumns: ColumnDef<FormattedTasks[number]>[] = [
       const task = row.original
 
       return (
-        <TaskActionCell task={task}>
+        <TaskAction task={task}>
           <Button variant='ghost' size='sm'>
             <MoreVertical className='size-4' />
           </Button>
-        </TaskActionCell>
+        </TaskAction>
       )
     }
   }

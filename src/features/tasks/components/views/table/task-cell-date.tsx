@@ -1,4 +1,4 @@
-import { differenceInDays, format } from 'date-fns'
+import { formatTaskDate } from '@/features/tasks/utils'
 
 // TYPES
 interface TaskDateCellProps {
@@ -6,23 +6,11 @@ interface TaskDateCellProps {
 }
 
 export const TaskDateCell = ({ date }: TaskDateCellProps) => {
-  const today = new Date()
-  const taskDate = new Date(date)
-  const diffInDays = differenceInDays(taskDate, today)
-
-  let textColor = 'text-muted-foreground'
-
-  if (diffInDays < 3) {
-    textColor = 'text-red-500'
-  } else if (diffInDays <= 7) {
-    textColor = 'text-orange-500'
-  } else if (diffInDays <= 14) {
-    textColor = 'text-yellow-500'
-  }
+  const { formattedDate, textColor } = formatTaskDate(date)
 
   return (
     <div className={textColor}>
-      <span className='truncate'>{format(taskDate, 'PPP')}</span>
+      <span className='truncate'>{formattedDate}</span>
     </div>
   )
 }
