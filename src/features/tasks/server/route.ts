@@ -118,7 +118,7 @@ const app = new Hono()
         databaseId: DATABASE_ID,
         tableId: MEMBERS_COLLECTION_ID,
         queries:
-          assigneesId.length > 0 ? [Query.contains('userId', assigneesId)] : []
+          assigneesId.length > 0 ? [Query.contains('$id', assigneesId)] : []
       })
 
       const assignees = await Promise.all(
@@ -133,6 +133,8 @@ const app = new Hono()
           }
         })
       )
+
+      console.log(assigneesId)
 
       const populatedTasks = tasks.rows.map((task) => ({
         ...task,
