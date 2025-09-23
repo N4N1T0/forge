@@ -50,3 +50,8 @@ export type FormattedTasks = (Tasks & {
 export type FormattedMembers =
   | ((Members & Models.User<Models.Preferences>) | null)[]
   | undefined
+
+export interface DataViewProps {
+  data: FormattedTasks | undefined
+  isLoading: boolean
+}
