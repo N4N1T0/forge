@@ -1,11 +1,13 @@
 'use client'
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
+import { TooltipProvider } from '@/components/ui/tooltip'
 import { useProjectParams } from '@/features/projects/client/use-project-id'
 import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters'
 import { useGetTasks } from '@/features/tasks/server/use-get-tasks'
 import { useQueryState } from 'nuqs'
 import { TaskTableView } from '.'
+import { DataKanban } from './kanban/data-kanban-view'
 
 export const TaskViewSwitcher = () => {
   // STATE
@@ -48,18 +50,20 @@ export const TaskViewSwitcher = () => {
           </TabsTrigger>
         </TabsList>
 
-        <TabsContent value='table' className='mt-0'>
-          <TaskTableView data={tasks} isLoading={isLoadingTasks} />
-        </TabsContent>
-        <TabsContent value='kanban' className='mt-0'>
-          Kanban
-        </TabsContent>
-        <TabsContent value='calendar' className='mt-0'>
-          Calendar
-        </TabsContent>
-        <TabsContent value='gantt' className='mt-0'>
-          Gantt
-        </TabsContent>
+        <TooltipProvider>
+          <TabsContent value='table' className='mt-0'>
+            <TaskTableView data={tasks} isLoading={isLoadingTasks} />
+          </TabsContent>
+          <TabsContent value='kanban' className='mt-0'>
+            <DataKanban data={tasks} isLoading={isLoadingTasks} />
+          </TabsContent>
+          <TabsContent value='calendar' className='mt-0'>
+            Calendar
+          </TabsContent>
+          <TabsContent value='gantt' className='mt-0'>
+            Gantt
+          </TabsContent>
+        </TooltipProvider>
       </div>
     </Tabs>
   )
