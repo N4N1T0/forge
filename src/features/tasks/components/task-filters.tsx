@@ -31,7 +31,6 @@ export const TaskFilters = () => {
   // HOOKS
   const workspaceId = useWorkspaceId()
   const [{ assigneeId, dueDate, search, status }, setFilters] = useTaskFilters()
-  console.log('🚀 ~ TaskFilters ~ dueDate:', dueDate)
 
   const { data: members, isLoading: isLoadingMembers } = useGetMembers({
     workspaceId
