@@ -8,7 +8,7 @@ export default function NotFoundPage() {
   return (
     <section
       id='error-page'
-      className='h-screen flex flex-col items-center justify-center'
+      className='h-screen flex flex-col items-center justify-center space-y-2'
     >
       <Ban className='text-primary w-1/2 h-1/2' strokeWidth={0.1} />
       <p className='text-primary text-xl'>Oops! Page not found.</p>
@@ -17,7 +17,11 @@ export default function NotFoundPage() {
       </p>
       <Link
         href='/'
-        className={buttonVariants({ variant: 'outline', className: 'mt-2' })}
+        className={buttonVariants({
+          variant: 'outline',
+          className: 'mt-2',
+          size: 'lg'
+        })}
       >
         Go back
       </Link>
