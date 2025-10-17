@@ -5,9 +5,9 @@ import {
   SidebarGroupLabel,
   SidebarMenu,
   SidebarMenuButton,
-  SidebarMenuItem,
-  SidebarMenuSkeleton
+  SidebarMenuItem
 } from '@/components/ui/sidebar'
+import { Skeleton } from '@/components/ui/skeleton'
 import ModalProjectForm from '@/features/projects/components/modal-project-form'
 import { useGetProjects } from '@/features/projects/server/use-get-projects'
 import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
@@ -29,7 +29,10 @@ export function Projects() {
         <SidebarGroupLabel>Projects</SidebarGroupLabel>
         <SidebarMenu>
           {Array.from({ length: 3 }).map((_, index) => (
-            <SidebarMenuSkeleton key={index} />
+            <Skeleton
+              className='flex h-8 items-center gap-2 rounded-md px-2'
+              key={index}
+            />
           ))}
         </SidebarMenu>
       </SidebarGroup>
