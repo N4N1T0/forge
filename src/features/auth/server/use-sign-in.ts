@@ -10,6 +10,12 @@ type ResponseType = InferResponseType<
 > & {
   redirect?: string | null | undefined
 }
+
+type ResponseError = Error & {
+  data?: string
+  userId?: string
+}
+
 type RequestType = InferRequestType<
   (typeof client.api.login)['sign-in']['$post']
 > & {
@@ -18,19 +24,19 @@ type RequestType = InferRequestType<
 
 export const useSignIn = () => {
   const router = useRouter()
-  const mutation = useMutation<ResponseType, Error, RequestType>({
+  const mutation = useMutation<ResponseType, ResponseError, RequestType>({
     mutationFn: async ({ json, redirect }) => {
       const response = await client.api.login['sign-in']['$post']({ json })
       const data = await response.json()
 
       if (!data.success) {
-        throw new Error(data.data)
+        throw { message: data.data, userId: data.userId }
       }
 
       return { success: true, redirect }
     },
     onSuccess: ({ redirect }) => {
-      toast.success('¡Bienvenido! Has iniciado sesión correctamente')
+      toast.success('Welcome! You have successfully signed in')
       setTimeout(() => {
         if (redirect) {
           router.push(redirect)
@@ -39,21 +45,27 @@ export const useSignIn = () => {
         }
       }, 500)
     },
-    onError: (error) => {
-      const errorMessage = error.message || 'Error al iniciar sesión'
+    onError: ({ message, userId }) => {
+      console.log('🚀 ~ useSignIn ~ data:', message)
+      const errorMessage = message || 'Sign-in error'
 
       switch (true) {
+        case errorMessage.includes('suspicious_login_detected'):
+          toast.warning('Invalid credentials', {
+            description: 'A suspicious sign-in attempt was detected.'
+          })
+          router.push(`/?tab=verify-otp&userId=${userId}`)
+          break
         case errorMessage.includes('user_invalid_credentials'):
-          toast.error('Credenciales inválidas', {
-            description: 'Las credenciales que has ingresado son inválidas.'
+          toast.error('Invalid credentials', {
+            description: 'The credentials you entered are invalid.'
           })
           break
         case errorMessage.includes('user_not_found'):
-          toast.error('Usuario no encontrado', {
-            description:
-              'No se encontró una cuenta con este correo electrónico.',
+          toast.error('User not found', {
+            description: 'No account was found with this email address.',
             action: {
-              label: 'Regístrate',
+              label: 'Sign up',
               onClick: () => {
                 router.push('/?tab=sign-up')
               }
@@ -61,19 +73,18 @@ export const useSignIn = () => {
           })
           break
         case errorMessage.includes('user_blocked'):
-          toast.error('Usuario bloqueado', {
+          toast.error('User blocked', {
             description:
-              'Tu cuenta ha sido bloqueada. Contacta al administrador.'
+              'Your account has been blocked. Contact the administrator.'
           })
           break
         case errorMessage.includes('user_not_found'):
-          toast.error('Usuario no encontrado', {
-            description:
-              'No se encontró una cuenta con este correo electrónico.'
+          toast.error('User not found', {
+            description: 'No account was found with this email address.'
           })
           break
         default:
-          toast.error('Error al iniciar sesión', {
+          toast.error('Sign-in error', {
             description: errorMessage
           })
       }
