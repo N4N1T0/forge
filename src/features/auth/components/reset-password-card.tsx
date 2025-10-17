@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
@@ -16,45 +17,93 @@ import {
   FormLabel,
   FormMessage
 } from '@/components/ui/form'
-import { Input } from '@/components/ui/input'
-import { Separator } from '@/components/ui/separator'
+import { Link } from '@/components/ui/link'
+import { Spinner } from '@/components/ui/spinner'
+import { PasswordInput } from '@/features/auth/components/password-input'
 import {
-  resetPasswordSchema,
-  type ResetPasswordFormData
+  UpdatePasswordFormData,
+  updatePasswordSchema
 } from '@/features/auth/schemas/auth-schemas'
 import { useResetPassword } from '@/features/auth/server/use-reset-password'
 import { zodResolver } from '@hookform/resolvers/zod'
-import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 
-export const ResetPasswordCard = () => {
-  const { mutate } = useResetPassword()
-  const form = useForm<ResetPasswordFormData>({
-    resolver: zodResolver(resetPasswordSchema),
+// TYPES
+export type ResetPasswordCardProps = {
+  userId: string
+  secret: string
+}
+
+export const ResetPasswordCard = ({
+  userId,
+  secret
+}: ResetPasswordCardProps) => {
+  // HOOKS
+  const { mutate: resetPassword, isPending } = useResetPassword()
+  const form = useForm<UpdatePasswordFormData>({
+    resolver: zodResolver(updatePasswordSchema),
     defaultValues: {
-      email: ''
+      password: '',
+      confirmPassword: '',
+      secret,
+      userId
     }
   })
 
+  // CONST
   const {
     control,
     handleSubmit,
     formState: { isSubmitting }
   } = form
+  const isParamsMissing = !userId || !secret
+  const isLoading = isPending || isSubmitting || isParamsMissing
 
-  const onSubmit = (data: ResetPasswordFormData) => {
-    mutate({ json: data })
+  // HANDLERS
+  const onSubmit = (data: UpdatePasswordFormData) => {
+    if (isParamsMissing) return
+    resetPassword({
+      json: {
+        userId,
+        secret,
+        password: data.password,
+        confirmPassword: data.confirmPassword
+      }
+    })
+  }
+
+  // RENDER
+  if (isParamsMissing) {
+    return (
+      <Card className='w-full max-w-md mx-auto'>
+        <CardHeader className='text-center space-y-2'>
+          <CardTitle className='text-2xl font-bold font-display uppercase text-primary'>
+            Invalid Link
+          </CardTitle>
+          <CardDescription>
+            The recovery link is invalid or has expired. Please request a new
+            password reset link.
+          </CardDescription>
+        </CardHeader>
+        <CardFooter className='text-center'>
+          <Button size='lg' className='w-full' asChild>
+            <Link href='/?tab=forgot-password'>
+              Request new password reset link
+            </Link>
+          </Button>
+        </CardFooter>
+      </Card>
+    )
   }
 
   return (
     <Card className='w-full max-w-md mx-auto'>
       <CardHeader className='text-center space-y-2'>
         <CardTitle className='text-2xl font-bold font-display uppercase text-primary'>
-          Restablecer Contraseña
+          Reset Password
         </CardTitle>
         <CardDescription>
-          Ingresa tu correo electrónico y te enviaremos un enlace para
-          restablecer tu contraseña
+          Enter and confirm your new password for your account.
         </CardDescription>
       </CardHeader>
       <CardContent className='space-y-6'>
@@ -62,18 +111,19 @@ export const ResetPasswordCard = () => {
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
             <FormField
               control={control}
-              name='email'
+              name='password'
               render={({ field }) => (
                 <FormItem>
                   <FormLabel className='text-sm font-medium'>
-                    Correo electrónico
+                    New password
                   </FormLabel>
                   <FormControl>
-                    <Input
+                    <PasswordInput
                       {...field}
-                      type='email'
-                      placeholder='tu@ejemplo.com'
+                      placeholder='••••••••'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500'
+                      autoComplete='new-password'
+                      disabled={isLoading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -81,36 +131,34 @@ export const ResetPasswordCard = () => {
               )}
             />
 
-            <Button type='submit' className='w-full' disabled={isSubmitting}>
-              {isSubmitting
-                ? 'Enviando enlace...'
-                : 'Enviar Enlace de Restablecimiento'}
+            <FormField
+              control={control}
+              name='confirmPassword'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-medium'>
+                    Confirm password
+                  </FormLabel>
+                  <FormControl>
+                    <PasswordInput
+                      {...field}
+                      placeholder='••••••••'
+                      className='h-11 transition-all duration-200 focus:ring-2 focus:ring-orange-500/20 focus:border-orange-500'
+                      autoComplete='new-password'
+                      disabled={isLoading}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
+            />
+
+            <Button type='submit' className='w-full' disabled={isLoading}>
+              {isLoading ? <Spinner /> : null}
+              {isLoading ? 'Updating...' : 'Update password'}
             </Button>
           </form>
         </Form>
-
-        <Separator variant='dashed' />
-
-        <div className='text-center text-sm text-muted-foreground space-y-2'>
-          <div>
-            ¿Recordaste tu contraseña?{' '}
-            <Link
-              href='/?tab=sign-in'
-              className='text-orange-600 hover:underline font-medium'
-            >
-              Iniciar Sesión
-            </Link>
-          </div>
-          <div>
-            ¿No tienes una cuenta?{' '}
-            <Link
-              href='/?tab=sign-up'
-              className='text-orange-600 hover:underline font-medium'
-            >
-              Regístrate
-            </Link>
-          </div>
-        </div>
       </CardContent>
     </Card>
   )

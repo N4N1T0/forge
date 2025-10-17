@@ -17,7 +17,9 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { Link } from '@/components/ui/link'
 import { Separator } from '@/components/ui/separator'
+import { Spinner } from '@/components/ui/spinner'
 import {
   signInSchema,
   type SignInFormData
@@ -25,7 +27,6 @@ import {
 import { useSignIn } from '@/features/auth/server/use-sign-in'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
-import Link from 'next/link'
 import { useForm } from 'react-hook-form'
 import { PasswordInput } from './password-input'
 
@@ -45,7 +46,12 @@ export const SignInCard = ({ redirect }: SignInCardProps) => {
   })
 
   // CONST
-  const { control, handleSubmit } = form
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting }
+  } = form
+  const isLoading = isPending || isSubmitting
 
   // HANDLERS
   const onSubmit = (data: SignInFormData) => {
@@ -80,7 +86,7 @@ export const SignInCard = ({ redirect }: SignInCardProps) => {
                       placeholder='you@example.com'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500'
                       autoComplete='email'
-                      disabled={isPending}
+                      disabled={isLoading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -102,7 +108,7 @@ export const SignInCard = ({ redirect }: SignInCardProps) => {
                       placeholder='••••••••'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500'
                       autoComplete='current-password'
-                      disabled={isPending}
+                      disabled={isLoading}
                     />
                   </FormControl>
                   <FormMessage />
@@ -114,9 +120,10 @@ export const SignInCard = ({ redirect }: SignInCardProps) => {
               type='submit'
               className='w-full'
               size='lg'
-              disabled={isPending}
+              disabled={isLoading}
             >
-              {isPending ? 'Signing in...' : 'Sign In'}
+              {isSubmitting ? <Spinner /> : null}
+              {isLoading ? 'Signing in...' : 'Sign In'}
             </Button>
           </form>
         </Form>
@@ -124,11 +131,11 @@ export const SignInCard = ({ redirect }: SignInCardProps) => {
         <Separator className='my-6' />
 
         <div className='grid grid-cols-2 gap-3'>
-          <Button variant='outline' disabled={isPending}>
+          <Button variant='outline' disabled={isLoading}>
             <Image src={GoogleIcon} alt='Google Icon' className='size-5 mr-2' />
             Google
           </Button>
-          <Button variant='outline' disabled={isPending}>
+          <Button variant='outline' disabled={isLoading}>
             <Image src={GitHubIcon} alt='GitHub Icon' className='size-5 mr-2' />
             GitHub
           </Button>
@@ -142,6 +149,7 @@ export const SignInCard = ({ redirect }: SignInCardProps) => {
             <Link
               href={`/?tab=sign-up&redirect=${redirect}`}
               className='text-primary hover:underline font-medium'
+              disabled={isLoading}
             >
               Sign up
             </Link>
@@ -149,8 +157,9 @@ export const SignInCard = ({ redirect }: SignInCardProps) => {
           <div>
             Forgot your password?{' '}
             <Link
-              href='/?tab=reset'
+              href='/?tab=forgot-password'
               className='text-primary hover:underline font-medium'
+              disabled={isLoading}
             >
               Reset
             </Link>

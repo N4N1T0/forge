@@ -6,6 +6,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
@@ -19,6 +20,7 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
+import { Spinner } from '@/components/ui/spinner'
 import {
   signUpSchema,
   type SignUpFormData
@@ -36,7 +38,7 @@ interface SignUpCardProps {
 
 export const SignUpCard = ({ redirect }: SignUpCardProps) => {
   // HOOKS
-  const { mutate, isPending } = useSignUp()
+  const { mutate: signUp, isPending } = useSignUp()
   const form = useForm<SignUpFormData>({
     resolver: zodResolver(signUpSchema),
     defaultValues: {
@@ -48,11 +50,16 @@ export const SignUpCard = ({ redirect }: SignUpCardProps) => {
   })
 
   // CONST
-  const { control, handleSubmit } = form
+  const {
+    control,
+    handleSubmit,
+    formState: { isSubmitting }
+  } = form
+  const isLoading = isPending || isSubmitting
 
   // HANDLERS
   const onSubmit = (data: SignUpFormData) => {
-    mutate({ json: data, redirect })
+    signUp({ json: data, redirect })
   }
 
   return (
@@ -82,7 +89,7 @@ export const SignUpCard = ({ redirect }: SignUpCardProps) => {
                       type='text'
                       placeholder='Your full name'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
-                      disabled={isPending}
+                      disabled={isLoading}
                       autoComplete='name'
                     />
                   </FormControl>
@@ -105,7 +112,7 @@ export const SignUpCard = ({ redirect }: SignUpCardProps) => {
                       type='email'
                       placeholder='you@example.com'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
-                      disabled={isPending}
+                      disabled={isLoading}
                       autoComplete='email'
                     />
                   </FormControl>
@@ -127,7 +134,7 @@ export const SignUpCard = ({ redirect }: SignUpCardProps) => {
                       {...field}
                       placeholder='••••••••'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
-                      disabled={isPending}
+                      disabled={isLoading}
                       autoComplete='new-password'
                     />
                   </FormControl>
@@ -149,7 +156,7 @@ export const SignUpCard = ({ redirect }: SignUpCardProps) => {
                       {...field}
                       placeholder='••••••••'
                       className='h-11 transition-all duration-200 focus:ring-2 focus:ring-green-500/20 focus:border-green-500'
-                      disabled={isPending}
+                      disabled={isLoading}
                       autoComplete='new-password'
                     />
                   </FormControl>
@@ -162,9 +169,10 @@ export const SignUpCard = ({ redirect }: SignUpCardProps) => {
               type='submit'
               className='w-full'
               size='lg'
-              disabled={isPending}
+              disabled={isLoading}
             >
-              {isPending ? 'Creating account...' : 'Create Account'}
+              {isLoading ? <Spinner /> : null}
+              {isLoading ? 'Creating account...' : 'Create Account'}
             </Button>
           </form>
         </Form>
@@ -172,11 +180,11 @@ export const SignUpCard = ({ redirect }: SignUpCardProps) => {
         <Separator />
 
         <div className='grid grid-cols-2 gap-3'>
-          <Button variant='outline' disabled={isPending}>
+          <Button variant='outline' disabled={isLoading}>
             <Image src={GoogleIcon} alt='Google Icon' className='size-5 mr-2' />
             Google
           </Button>
-          <Button variant='outline' disabled={isPending}>
+          <Button variant='outline' disabled={isLoading}>
             <Image src={GitHubIcon} alt='GitHub Icon' className='size-5 mr-2' />
             GitHub
           </Button>
@@ -184,7 +192,7 @@ export const SignUpCard = ({ redirect }: SignUpCardProps) => {
 
         <Separator />
 
-        <div className='text-center text-sm text-muted-foreground'>
+        <CardFooter className='text-center text-sm text-muted-foreground space-y-2 flex-col'>
           Already have an account?{' '}
           <Link
             href={`/?tab=sign-in&redirect=${redirect}`}
@@ -192,7 +200,7 @@ export const SignUpCard = ({ redirect }: SignUpCardProps) => {
           >
             Sign In
           </Link>
-        </div>
+        </CardFooter>
       </CardContent>
     </Card>
   )
