@@ -37,6 +37,29 @@ export const resetPasswordSchema = z.object({
     .email('Ingresa un correo electrónico válido')
 })
 
+export const updatePasswordSchema = z
+  .object({
+    userId: z.string().min(1),
+    secret: z.string().min(1),
+    password: z
+      .string()
+      .min(8, 'La contraseña debe tener al menos 8 caracteres'),
+    confirmPassword: z
+      .string()
+      .min(8, 'La contraseña debe tener al menos 8 caracteres')
+  })
+  .refine((data) => data.password === data.confirmPassword, {
+    path: ['confirmPassword'],
+    message: 'Las contraseñas no coinciden'
+  })
+
+export const otpSchema = z.object({
+  userId: z.string().min(1),
+  secret: z.string().min(4, 'Código demasiado corto').max(10, 'Código inválido')
+})
+
+export type OtpFormData = z.infer<typeof otpSchema>
+export type UpdatePasswordFormData = z.infer<typeof updatePasswordSchema>
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
 export type SignInFormData = z.infer<typeof signInSchema>
 export type SignUpFormData = z.infer<typeof signUpSchema>
