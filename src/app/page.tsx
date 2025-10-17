@@ -1,14 +1,15 @@
 'use client'
 
-import { AnimatePresence, motion } from 'motion/react'
-import { useSearchParams } from 'next/navigation'
-import { Suspense } from 'react'
-
 import { DynamicIconPoster } from '@/features/auth/components/dynamic-icon-poster'
+import { ForgotPasswordCard } from '@/features/auth/components/forgot-password-card'
+import { OtpVerificationCard } from '@/features/auth/components/otp-verification-card'
 import { ResetPasswordCard } from '@/features/auth/components/reset-password-card'
 import { SignInCard } from '@/features/auth/components/sign-in-card'
 import { SignUpCard } from '@/features/auth/components/sign-up-card'
 import { IconName } from 'lucide-react/dynamic'
+import { AnimatePresence, motion } from 'motion/react'
+import { useSearchParams } from 'next/navigation'
+import { Suspense } from 'react'
 
 function AuthContent() {
   // STATE
@@ -17,15 +18,21 @@ function AuthContent() {
   const workspaceId = searchParams.get('workspaceId')
   const icon = searchParams.get('icon')
   const inviteCode = searchParams.get('inviteCode')
-  const redirect = `/join?workspaceId=${workspaceId}&icon=${icon}&inviteCode=${inviteCode}`
+  const userId = searchParams.get('userId') || ''
+  const secret = searchParams.get('secret') || ''
+  const redirect = `/join?workspaceId=${workspaceId}&icon=${icon}&inviteCode=${inviteCode}&userId=${userId}&secret=${secret}`
 
   // RENDER
   const renderCard = () => {
     switch (tab) {
       case 'sign-up':
         return <SignUpCard redirect={redirect} />
-      case 'reset':
-        return <ResetPasswordCard />
+      case 'forgot-password':
+        return <ForgotPasswordCard />
+      case 'reset-password':
+        return <ResetPasswordCard userId={userId} secret={secret} />
+      case 'verify-otp':
+        return <OtpVerificationCard userId={userId} />
       default:
         return <SignInCard redirect={redirect} />
     }
