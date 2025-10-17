@@ -3,6 +3,7 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import {
+  DragEndEvent,
   KanbanBoard,
   KanbanCard,
   KanbanCards,
@@ -13,12 +14,13 @@ import { Tooltip, TooltipContent } from '@/components/ui/tooltip'
 import { status } from '@/data'
 import { TaskAction, TaskEmptyView } from '@/features/tasks/components/views'
 import { TaskKanbanSkeleton } from '@/features/tasks/components/views/kanban'
+import { useChangeTaskStatus } from '@/features/tasks/server/use-change-task-status'
 import { formatTaskDate } from '@/features/tasks/utils'
 import { cn } from '@/lib/utils'
 import { DataViewProps } from '@/types'
 import { TooltipTrigger } from '@radix-ui/react-tooltip'
 import { MoreVertical } from 'lucide-react'
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 
 // TYPE
 type DataKanbanProps = DataViewProps
@@ -36,6 +38,9 @@ const boards: DataKanbanBoard[] = status.map(({ label, value, color }) => ({
 }))
 
 export const DataKanban = ({ data, isLoading }: DataKanbanProps) => {
+  // HOOKS
+  const { mutate: changeTaskStatus } = useChangeTaskStatus()
+
   // STATE
   const [tasks, setTasks] = useState(
     () =>
@@ -44,6 +49,54 @@ export const DataKanban = ({ data, isLoading }: DataKanbanProps) => {
         column: task.status,
         ...task
       })) || []
+  )
+
+  // HANDLERS
+  const HandleDragEnd = useCallback(
+    (event: DragEndEvent) => {
+      const { active, over } = event
+
+      if (!over) return
+
+      const activeId = active.id as string
+      const overId = over.id as string
+
+      // Find the task being dragged
+      const activeTask = tasks.find((task) => task.id === activeId)
+      if (!activeTask) return
+
+      // Determine the new status based on the drop zone
+      let newStatus: string
+
+      // Check if dropped on a column header or within a column
+      if (overId === 'todo' || overId === 'in-progress' || overId === 'done') {
+        newStatus = overId
+      } else {
+        // If dropped on another task, get that task's status
+        const overTask = tasks.find((task) => task.id === overId)
+        if (!overTask) return
+        newStatus = overTask.status
+      }
+
+      // Only update if the status actually changed
+      if (activeTask.status !== newStatus) {
+        // Optimistically update the local state
+        setTasks((prevTasks) =>
+          prevTasks.map((task) =>
+            task.id === activeId
+              ? { ...task, status: newStatus, column: newStatus }
+              : task
+          )
+        )
+
+        // Call the mutation to update the task status
+        changeTaskStatus({
+          taskId: activeId,
+          status: newStatus
+        })
+      }
+    },
+    [tasks, changeTaskStatus]
   )
 
   // RENDER
@@ -58,7 +111,7 @@ export const DataKanban = ({ data, isLoading }: DataKanbanProps) => {
 
   return (
     <section className='pt-4 size-full'>
-      <KanbanProvider columns={boards} data={tasks} onDataChange={setTasks}>
+      <KanbanProvider columns={boards} data={tasks} onDragEnd={HandleDragEnd}>
         {({ color, id, name }: DataKanbanBoard) => (
           <KanbanBoard id={id} key={id}>
             <KanbanHeader className='border-b border-muted-foreground'>
