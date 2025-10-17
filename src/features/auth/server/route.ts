@@ -1,12 +1,15 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { AUTH_COOKIE } from '@/features/auth/constants'
 import {
+  otpSchema,
   resetPasswordSchema,
   signInSchema,
-  signUpSchema
+  signUpSchema,
+  updatePasswordSchema
 } from '@/features/auth/schemas/auth-schemas'
 import { createAdminClient } from '@/lib/appwrite'
 import { adminMiddleware, sessionMiddleware } from '@/lib/middleware'
+import { AdminMiddleWareContext } from '@/types/functions'
 import { zValidator } from '@hono/zod-validator'
 import { Context, Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
@@ -14,7 +17,9 @@ import { ID, Models, Query } from 'node-appwrite'
 import { ZodError } from 'zod'
 
 // TYPES
-type AuthResponse = { success: true } | { success: false; data: string }
+type AuthResponse =
+  | { success: true }
+  | { success: false; data: string; userId?: string }
 
 // ROUTES
 const app = new Hono()
@@ -25,6 +30,7 @@ const app = new Hono()
       data: user
     })
   })
+  // SIGN IN
   .post(
     '/sign-in',
     adminMiddleware,
@@ -51,6 +57,19 @@ const app = new Hono()
           password
         })
 
+        const isSuspicious = await checkSuspiciousSession(
+          c,
+          user.users[0],
+          session
+        )
+        if (isSuspicious) {
+          return c.json<AuthResponse>({
+            success: false,
+            data: 'suspicious_login_detected',
+            userId: user.users[0].$id
+          })
+        }
+
         setAuthCookie(c, session)
 
         return c.json<AuthResponse>({
@@ -70,6 +89,7 @@ const app = new Hono()
       }
     }
   )
+  // SIGN UP
   .post(
     '/sign-up',
     adminMiddleware,
@@ -103,8 +123,9 @@ const app = new Hono()
       }
     }
   )
+  // FORGOT PASSWORD
   .post(
-    '/reset-password',
+    '/forgot-password',
     zValidator('json', resetPasswordSchema),
     async (c) => {
       try {
@@ -113,12 +134,43 @@ const app = new Hono()
         const { account } = await createAdminClient()
         await account.createRecovery({
           email,
-          url: `${process.env.NEXT_PUBLIC_APP_URL}/auth/reset-password`
+          url: `${process.env.NEXT_PUBLIC_API_URL}/?tab=reset-password`
         })
 
         return c.json<AuthResponse>({
           success: true
         })
+      } catch (error: any) {
+        console.log('🚀 ~ error:', error)
+        if (error instanceof ZodError) {
+          return c.json<AuthResponse>({
+            success: false,
+            data: error.name
+          })
+        }
+        return c.json<AuthResponse>({
+          success: false,
+          data: error.type
+        })
+      }
+    }
+  )
+  // RESET PASSWORD
+  .post(
+    '/reset-password',
+    zValidator('json', updatePasswordSchema),
+    async (c) => {
+      try {
+        const { userId, secret, password } = c.req.valid('json')
+        const { account } = await createAdminClient()
+
+        await account.updateRecovery({
+          userId,
+          secret,
+          password
+        })
+
+        return c.json<AuthResponse>({ success: true })
       } catch (error: any) {
         if (error instanceof ZodError) {
           return c.json<AuthResponse>({
@@ -133,6 +185,33 @@ const app = new Hono()
       }
     }
   )
+  // OTP VERIFICATION
+  .post('/verify-otp', zValidator('json', otpSchema), async (c) => {
+    try {
+      const { userId, secret } = c.req.valid('json')
+      const { account } = await createAdminClient()
+
+      const session = await account.createSession({
+        userId,
+        secret
+      })
+      setAuthCookie(c, session)
+
+      return c.json<AuthResponse>({ success: true })
+    } catch (error: any) {
+      if (error instanceof ZodError) {
+        return c.json<AuthResponse>({
+          success: false,
+          data: error.name
+        })
+      }
+      return c.json<AuthResponse>({
+        success: false,
+        data: error.type
+      })
+    }
+  })
+  // SIGN OUT
   .post('/logout', sessionMiddleware, async (c) => {
     const account = c.get('account')
     deleteCookie(c, AUTH_COOKIE)
@@ -154,6 +233,46 @@ function setAuthCookie(c: Context, session: Models.Session) {
     secure: true,
     maxAge: 60 * 60 * 24 * 7
   })
+}
+
+async function checkSuspiciousSession(
+  c: Context<AdminMiddleWareContext>,
+  user: Models.User,
+  currentSession: Models.Session
+): Promise<boolean> {
+  try {
+    const account = c.get('account')
+    const users = c.get('users')
+    const sessions = await users.listSessions({
+      userId: user.$id
+    })
+
+    if (!sessions.sessions?.length) return false
+
+    const previous = sessions.sessions.find(
+      (s: any) => s.$id !== currentSession.$id
+    )
+    if (!previous) return false
+
+    const ipChanged = previous.ip !== currentSession.ip
+    const countryChanged = previous.countryCode !== currentSession.countryCode
+    const deviceChanged = previous.clientName !== currentSession.clientName
+    const tooManySessions = sessions.total > 5
+
+    const isSuspicious =
+      ipChanged || countryChanged || deviceChanged || tooManySessions
+    if (!isSuspicious) return false
+
+    await account.createEmailToken({
+      userId: user.$id,
+      email: user.email
+    })
+
+    return true
+  } catch (err) {
+    console.error('Error in checkSuspiciousSession:', err)
+    return false
+  }
 }
 
 export default app
