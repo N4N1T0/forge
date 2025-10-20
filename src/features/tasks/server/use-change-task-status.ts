@@ -57,6 +57,8 @@ export const useChangeTaskStatus = () => {
           })
           break
       }
+
+      queryClient.invalidateQueries({ queryKey: ['tasks'] })
     }
   })
 
