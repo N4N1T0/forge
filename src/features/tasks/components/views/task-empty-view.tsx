@@ -1,17 +1,30 @@
 import { Button } from '@/components/ui/button'
+import {
+  Empty,
+  EmptyContent,
+  EmptyDescription,
+  EmptyHeader,
+  EmptyTitle
+} from '@/components/ui/empty'
 import { useProjectId } from '@/features/projects/client/use-project-id'
 import { ModalTaskCreateForm } from '@/features/tasks/components/create'
 
 export const TaskEmptyView = () => {
-  // HOOKS
   const projectId = useProjectId()
 
   return (
-    <div className='flex flex-col items-center justify-center py-8 gap-4 size-full'>
-      <p className='text-lg'>No tasks have been created yet</p>
-      <ModalTaskCreateForm projectId={projectId}>
-        <Button>Create New Task</Button>
-      </ModalTaskCreateForm>
-    </div>
+    <Empty className='border size-full'>
+      <EmptyHeader>
+        <EmptyTitle>No tasks yet</EmptyTitle>
+        <EmptyDescription>
+          Create your first task to get started.
+        </EmptyDescription>
+      </EmptyHeader>
+      <EmptyContent>
+        <ModalTaskCreateForm projectId={projectId}>
+          <Button>Create New Task</Button>
+        </ModalTaskCreateForm>
+      </EmptyContent>
+    </Empty>
   )
 }
