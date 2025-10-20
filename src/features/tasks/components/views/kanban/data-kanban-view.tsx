@@ -18,6 +18,7 @@ import { useChangeTaskStatus } from '@/features/tasks/server/use-change-task-sta
 import { formatTaskDate } from '@/features/tasks/utils'
 import { cn } from '@/lib/utils'
 import { DataViewProps } from '@/types'
+import { Status } from '@/types/appwrite'
 import { TooltipTrigger } from '@radix-ui/react-tooltip'
 import { MoreVertical } from 'lucide-react'
 import { useCallback, useState } from 'react'
@@ -58,45 +59,27 @@ export const DataKanban = ({ data, isLoading }: DataKanbanProps) => {
 
       if (!over) return
 
-      const activeId = active.id as string
-      const overId = over.id as string
+      const status = boards.find((board) => board.id === over.id)?.id
 
-      // Find the task being dragged
-      const activeTask = tasks.find((task) => task.id === activeId)
-      if (!activeTask) return
-
-      // Determine the new status based on the drop zone
-      let newStatus: string
-
-      // Check if dropped on a column header or within a column
-      if (overId === 'todo' || overId === 'in-progress' || overId === 'done') {
-        newStatus = overId
-      } else {
-        // If dropped on another task, get that task's status
-        const overTask = tasks.find((task) => task.id === overId)
-        if (!overTask) return
-        newStatus = overTask.status
+      if (!status) {
+        return
       }
 
-      // Only update if the status actually changed
-      if (activeTask.status !== newStatus) {
-        // Optimistically update the local state
-        setTasks((prevTasks) =>
-          prevTasks.map((task) =>
-            task.id === activeId
-              ? { ...task, status: newStatus, column: newStatus }
-              : task
-          )
-        )
+      changeTaskStatus({
+        json: { status: status as Status },
+        param: { taskId: active.id as string }
+      })
 
-        // Call the mutation to update the task status
-        changeTaskStatus({
-          taskId: activeId,
-          status: newStatus
+      setTasks(
+        tasks.map((task) => {
+          if (task.id === active.id) {
+            return { ...task, column: status as Status }
+          }
+          return task
         })
-      }
+      )
     },
-    [tasks, changeTaskStatus]
+    [changeTaskStatus, tasks]
   )
 
   // RENDER
