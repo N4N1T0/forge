@@ -140,7 +140,6 @@ const app = new Hono()
       const databases = c.get('tables')
       const user = c.get('user')
       const { memberId } = c.req.param()
-      console.log('🚀 ~ memberId:', memberId)
 
       const memberToDelete = await databases.getRow<Members>({
         databaseId: DATABASE_ID,
