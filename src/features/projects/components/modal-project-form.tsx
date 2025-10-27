@@ -1,6 +1,6 @@
 'use client'
 
-import ResponsiveModal from '@/components/ui/responsive-modal'
+import ResponsiveModal from '@/components/ui/modal/responsive-modal'
 import { ResponsiveModalProps } from '@/types'
 import { useState } from 'react'
 import CreateProjectForm from './project-form'

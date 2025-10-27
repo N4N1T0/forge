@@ -26,7 +26,7 @@ import {
   CreateProjectSchema
 } from '@/features/projects/schema'
 import { useUpdateProject } from '@/features/projects/server/use-update-project'
-import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
+import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
 import { FormWithInitialValues } from '@/types'
 import { Projects } from '@/types/appwrite'
 

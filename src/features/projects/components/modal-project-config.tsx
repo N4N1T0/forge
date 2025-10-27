@@ -3,7 +3,7 @@
 import { Edit, Trash2 } from 'lucide-react'
 import { useState } from 'react'
 
-import ResponsiveModal from '@/components/ui/responsive-modal'
+import ResponsiveModal from '@/components/ui/modal/responsive-modal'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 
 import { ResponsiveModalProps } from '@/types'
