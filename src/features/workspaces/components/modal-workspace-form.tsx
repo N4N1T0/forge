@@ -1,4 +1,4 @@
-import ResponsiveModal from '@/components/ui/responsive-modal'
+import ResponsiveModal from '@/components/ui/modal/responsive-modal'
 import { ResponsiveModalProps } from '@/types'
 import React, { Ref, useState } from 'react'
 import CreateWorkspacesForm from './workspace-form'
