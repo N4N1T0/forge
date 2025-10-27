@@ -6,7 +6,7 @@ import {
   EmptyHeader,
   EmptyTitle
 } from '@/components/ui/empty'
-import { useProjectId } from '@/features/projects/client/use-project-id'
+import { useProjectId } from '@/features/projects/hooks/use-project-id'
 import { ModalTaskCreateForm } from '@/features/tasks/components/create'
 
 export const TaskEmptyView = () => {

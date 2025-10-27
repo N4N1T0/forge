@@ -1,3 +1,5 @@
+'use client'
+
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -71,6 +73,13 @@ export const TaskAction = ({
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
+          <DropdownMenuItem
+            disabled={false}
+            onClick={() => handleOpen()}
+            className='font-medium p-2'
+          >
+            View
+          </DropdownMenuItem>
           <DropdownMenuItem
             disabled={false}
             onClick={() => handleOpen()}

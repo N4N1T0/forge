@@ -1,15 +1,24 @@
 'use client'
 
+import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import { useProjectParams } from '@/features/projects/client/use-project-id'
+import ModalProjectConfig from '@/features/projects/components/modal-project-config'
+import { useProjectParams } from '@/features/projects/hooks/use-project-id'
 import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters'
 import { useGetTasks } from '@/features/tasks/server/use-get-tasks'
+import { Projects } from '@/types/appwrite'
+import { MoreHorizontal } from 'lucide-react'
 import { useQueryState } from 'nuqs'
 import { TaskTableView } from '.'
+import { TaskFilters } from '../task-filters'
 import { DataKanban } from './kanban/data-kanban-view'
 
-export const TaskViewSwitcher = () => {
+export const TaskViewSwitcher = ({
+  initialValues
+}: {
+  initialValues: Projects
+}) => {
   // STATE
   const [view, setView] = useQueryState('view', {
     defaultValue: 'table'
@@ -29,26 +38,48 @@ export const TaskViewSwitcher = () => {
 
   // RENDER
   return (
-    <Tabs
-      className='flex-1 w-full border'
-      defaultValue={view}
-      onValueChange={setView}
-    >
+    <Tabs className='flex-1 w-full' defaultValue={view} onValueChange={setView}>
       <div className='h-full flex flex-col overflow-auto p-2'>
-        <TabsList className='w-full lg:w-auto bg-transparent border-b h-12 pb-2'>
-          <TabsTrigger value='table' className='w-full lg:w-auto'>
-            Table
-          </TabsTrigger>
-          <TabsTrigger value='kanban' className='w-full lg:w-auto'>
-            Kanban
-          </TabsTrigger>
-          <TabsTrigger value='calendar' className='w-full lg:w-auto'>
-            Calendar
-          </TabsTrigger>
-          <TabsTrigger value='gantt' className='w-full lg:w-auto'>
-            Gantt
-          </TabsTrigger>
-        </TabsList>
+        <div className='w-full flex justify-between items-center flex-wrap'>
+          <TabsList className='bg-transparent h-12 pb-2'>
+            <TabsTrigger
+              value='table'
+              className='w-full lg:w-auto px-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
+            >
+              Table
+            </TabsTrigger>
+            <TabsTrigger
+              value='kanban'
+              className='w-full lg:w-auto px-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
+            >
+              Kanban
+            </TabsTrigger>
+            <TabsTrigger
+              value='calendar'
+              className='w-full lg:w-auto px-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
+            >
+              Calendar
+            </TabsTrigger>
+            <TabsTrigger
+              value='gantt'
+              className='w-full lg:w-auto px-5 data-[state=active]:bg-primary data-[state=active]:text-primary-foreground dark:data-[state=active]:bg-primary dark:data-[state=active]:text-primary-foreground'
+            >
+              Gantt
+            </TabsTrigger>
+          </TabsList>
+
+          <div className='flex items-center justify-center'>
+            {/* FILTERS */}
+            <TaskFilters />
+            <ModalProjectConfig project={initialValues}>
+              <Button variant='ghost' size='icon'>
+                <MoreHorizontal />
+              </Button>
+
+              {/* PROJECT CONFIG */}
+            </ModalProjectConfig>
+          </div>
+        </div>
 
         <TooltipProvider>
           <TabsContent value='table' className='mt-0'>
