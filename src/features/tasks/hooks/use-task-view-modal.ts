@@ -1,8 +1,8 @@
 import { parseAsBoolean, parseAsString, useQueryState } from 'nuqs'
 
-export const useTaskEditModal = () => {
+export const useTaskViewModal = () => {
   // HOOKS
-  const [isOpen, setIsOpen] = useQueryState('taskEditModal', parseAsBoolean)
+  const [isOpen, setIsOpen] = useQueryState('taskViewModal', parseAsBoolean)
   const [taskId, setTaskId] = useQueryState('taskId', parseAsString)
 
   // HANDLERS
