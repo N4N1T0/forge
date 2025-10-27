@@ -1,29 +1,22 @@
 'use client'
 
 import { ThemeSwitcher } from '@/components/layout/navbar/theme-switcher'
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator
-} from '@/components/ui/breadcrumb'
+import { Button } from '@/components/ui/button'
 import { Separator } from '@/components/ui/separator'
 import { SidebarTrigger } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
-import { usePathname } from 'next/navigation'
+import { useGetCurrentProject } from '@/features/projects/hooks/use-project-id'
+import { ModalTaskCreateForm } from '@/features/tasks/components/create'
+import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
+import { Plus } from 'lucide-react'
 
 export const Navbar = () => {
   // HOOKS
-  const { workspace, isLoading } = useGetCurrentWorkspace()
-  const pathname = usePathname()
+  const { workspace, isLoading: isWorkspaceLoading } = useGetCurrentWorkspace()
+  const { project, isLoading: isProjectLoading } = useGetCurrentProject()
 
   // CONST
-  const pathnameSegments = pathname
-    .split('/')
-    .filter((segment) => segment !== workspace?.$id)
+  const loading = isProjectLoading || isWorkspaceLoading
 
   // RENDER
   if (workspace === null) {
@@ -31,7 +24,7 @@ export const Navbar = () => {
   }
 
   // RENDER
-  if (isLoading) {
+  if (loading) {
     return (
       <header className='flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 w-full px-4'>
         <Skeleton className='size-4 aspect-square' />
@@ -51,23 +44,18 @@ export const Navbar = () => {
             orientation='vertical'
             className='mr-2 data-[orientation=vertical]:h-4'
           />
-          <Breadcrumb>
-            <BreadcrumbList>
-              <BreadcrumbItem className='hidden md:block'>
-                <BreadcrumbLink href='#'>{workspace?.name}</BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator className='hidden md:block' />
-              <BreadcrumbItem>
-                <BreadcrumbPage>
-                  {pathnameSegments.length > 3
-                    ? pathnameSegments[3]
-                    : 'Dashboard'}
-                </BreadcrumbPage>
-              </BreadcrumbItem>
-            </BreadcrumbList>
-          </Breadcrumb>
+          {project ? project.name : workspace?.name}
         </div>
-        <ThemeSwitcher />
+        <div className='flex justify-center items-center gap-2'>
+          {project && (
+            <ModalTaskCreateForm>
+              <Button size='icon'>
+                <Plus />
+              </Button>
+            </ModalTaskCreateForm>
+          )}
+          <ThemeSwitcher />
+        </div>
       </div>
     </header>
   )
