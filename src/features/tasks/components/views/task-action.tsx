@@ -15,7 +15,8 @@ import {
 } from '@/components/ui/dropdown-menu'
 import { status } from '@/data'
 import { ModalTaskEditForm } from '@/features/tasks/components/edit'
-import { useTaskEditModal } from '@/features/tasks/hooks/use-task-edit-modal'
+import { ModalTaskInfo } from '@/features/tasks/components/info/modal-task-info'
+import { useTaskEditModal, useTaskViewModal } from '@/features/tasks/hooks'
 import { useChangeTaskStatus } from '@/features/tasks/server/use-change-task-status'
 import { useDeleteTask } from '@/features/tasks/server/use-delete-task'
 import { useConfirm } from '@/hooks/use-confirm'
@@ -35,7 +36,8 @@ export const TaskAction = ({
 }: TaskActionProps) => {
   // HOOKS
   const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask()
-  const { handleOpen } = useTaskEditModal()
+  const { handleOpen: handleOpenEditModal } = useTaskEditModal()
+  const { handleOpen: handleOpenViewModal } = useTaskViewModal()
   const { mutate: changeStatus, isPending: isChangingStatus } =
     useChangeTaskStatus()
   const [confirmDelete, DeleteWorkspaceModal] = useConfirm(
@@ -66,24 +68,32 @@ export const TaskAction = ({
       })
     }
   }
+
+  // CONST
+  const isLoading = isDeleting || isChangingStatus
+
   return (
     <div className='flex justify-start'>
+      {/* MODALS */}
       <DeleteWorkspaceModal />
       <ModalTaskEditForm task={task} />
+      <ModalTaskInfo task={task} />
+
+      {/* DROPDOWN MENU */}
       <DropdownMenu modal={false}>
         <DropdownMenuTrigger asChild>{children}</DropdownMenuTrigger>
         <DropdownMenuContent align='end'>
           <DropdownMenuItem
-            disabled={false}
-            onClick={() => handleOpen()}
+            disabled={isLoading}
             className='font-medium p-2'
+            onClick={() => handleOpenViewModal(task.$id)}
           >
             View
           </DropdownMenuItem>
           <DropdownMenuItem
-            disabled={false}
-            onClick={() => handleOpen()}
+            disabled={isLoading}
             className='font-medium p-2'
+            onClick={() => handleOpenEditModal(task.$id)}
           >
             Edit
           </DropdownMenuItem>
@@ -98,7 +108,7 @@ export const TaskAction = ({
                       value={value}
                       circleColor={color}
                       onClick={() => handleStatusChange(value as Status)}
-                      disabled={isChangingStatus}
+                      disabled={isLoading}
                     >
                       {label}
                     </DropdownMenuRadioItem>
@@ -110,8 +120,9 @@ export const TaskAction = ({
           <DropdownMenuSeparator />
           <DropdownMenuItem
             onClick={handleDelete}
-            disabled={isDeleting}
-            className='font-medium p-2 text-red-500 hover:bg-red-300/30'
+            disabled={isLoading}
+            variant='destructive'
+            className='font-medium p-2'
           >
             Delete
             <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
