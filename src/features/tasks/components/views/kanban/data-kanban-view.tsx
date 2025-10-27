@@ -16,7 +16,7 @@ import { TaskAction, TaskEmptyView } from '@/features/tasks/components/views'
 import { TaskKanbanSkeleton } from '@/features/tasks/components/views/kanban'
 import { useChangeTaskStatus } from '@/features/tasks/server/use-change-task-status'
 import { formatTaskDate } from '@/features/tasks/utils'
-import { cn } from '@/lib/utils'
+import { cn, sanitizeHtml } from '@/lib/utils'
 import { DataViewProps } from '@/types'
 import { Status } from '@/types/appwrite'
 import { TooltipTrigger } from '@radix-ui/react-tooltip'
@@ -110,6 +110,7 @@ export const DataKanban = ({ data, isLoading }: DataKanbanProps) => {
               {(data: (typeof tasks)[number]) => {
                 const { status, id, name, assignee, dueDate, description } =
                   data
+                const formattedDescription = sanitizeHtml(description)
                 const { formattedDate, textColor } = formatTaskDate(dueDate)
 
                 return (
@@ -138,7 +139,7 @@ export const DataKanban = ({ data, isLoading }: DataKanbanProps) => {
                       )}
                     </div>
                     <p className='m-0 text-muted-foreground text-xs line-clamp-2'>
-                      {description}
+                      {formattedDescription}
                     </p>
                     <div className='flex w-full justify-between items-center'>
                       {dueDate && (
