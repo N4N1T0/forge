@@ -19,7 +19,7 @@ import { Skeleton } from '@/components/ui/skeleton'
 import { status as statusData } from '@/data'
 import { useGetMembers } from '@/features/members/server/use-get-members'
 import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters'
-import { useWorkspaceId } from '@/features/workspaces/client/use-workspace-id'
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
 import { cn, debounce } from '@/lib/utils'
 import { Status } from '@/types/appwrite'
 import { SelectSeparator } from '@radix-ui/react-select'
@@ -69,7 +69,7 @@ export const TaskFilters = () => {
   }
 
   return (
-    <div className='flex items-center justify-center flex-1 px-5 gap-2'>
+    <div className='flex items-center justify-center px-5 gap-2'>
       {/* SEARCH */}
       <Input
         placeholder='Search tasks'
