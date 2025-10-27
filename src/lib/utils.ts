@@ -76,3 +76,24 @@ export function debounce(func: () => void, wait: number): () => void {
     timeout = setTimeout(() => func(...args), wait)
   }
 }
+
+/**
+ * Sanitizes HTML content by stripping all HTML tags and returning only the text content
+ *
+ * @param {string} html - The HTML string to sanitize
+ * @returns {string} The plain text content without HTML tags
+ */
+export const sanitizeHtml = (html: string | null | undefined): string => {
+  if (!html) return ''
+
+  // Remove HTML tags using regex
+  return html
+    .replace(/<[^>]*>/g, '')
+    .replace(/&nbsp;/g, ' ')
+    .replace(/&amp;/g, '&')
+    .replace(/&lt;/g, '<')
+    .replace(/&gt;/g, '>')
+    .replace(/&quot;/g, '"')
+    .replace(/&#39;/g, "'")
+    .trim()
+}
