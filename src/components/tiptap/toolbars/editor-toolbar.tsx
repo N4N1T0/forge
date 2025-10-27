@@ -16,7 +16,13 @@ import { StrikeThroughToolbar } from './strikethrough'
 import { ToolbarProvider } from './toolbar-provider'
 import { UnderlineToolbar } from './underline'
 
-export const EditorToolbar = ({ editor }: { editor: Editor }) => {
+export const EditorToolbar = ({
+  editor,
+  disabled
+}: {
+  editor: Editor
+  disabled: boolean | undefined
+}) => {
   return (
     <div className='w-fit border-b bg-muted border border-input hidden sm:block'>
       <ToolbarProvider editor={editor}>
@@ -28,27 +34,27 @@ export const EditorToolbar = ({ editor }: { editor: Editor }) => {
                 <Separator orientation='vertical' className='mx-1 h-7' />
 
                 {/* TEXT STRUCTURE */}
-                <BlockquoteToolbar />
-                <CodeToolbar />
-                <CodeBlockToolbar />
+                <BlockquoteToolbar disabled={disabled} />
+                <CodeToolbar disabled={disabled} />
+                <CodeBlockToolbar disabled={disabled} />
                 <Separator orientation='vertical' className='mx-1 h-7' />
 
                 {/* FORMATTING*/}
-                <BoldToolbar />
-                <ItalicToolbar />
-                <UnderlineToolbar />
-                <StrikeThroughToolbar />
-                <LinkToolbar />
+                <BoldToolbar disabled={disabled} />
+                <ItalicToolbar disabled={disabled} />
+                <UnderlineToolbar disabled={disabled} />
+                <StrikeThroughToolbar disabled={disabled} />
+                <LinkToolbar disabled={disabled} />
                 <Separator orientation='vertical' className='mx-1 h-7' />
 
                 {/* LIST */}
-                <BulletListToolbar />
-                <OrderedListToolbar />
-                <HorizontalRuleToolbar />
+                <BulletListToolbar disabled={disabled} />
+                <OrderedListToolbar disabled={disabled} />
+                <HorizontalRuleToolbar disabled={disabled} />
                 <Separator orientation='vertical' className='mx-1 h-7' />
 
                 {/* ALIGNMENT */}
-                <AlignmentToolbar />
+                <AlignmentToolbar disabled={disabled} />
                 <Separator orientation='vertical' className='mx-1 h-7' />
               </div>
             </div>

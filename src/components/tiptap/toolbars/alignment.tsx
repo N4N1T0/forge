@@ -26,7 +26,11 @@ import {
 } from '@/components/ui/tooltip'
 import { useToolbar } from './toolbar-provider'
 
-export const AlignmentToolbar = () => {
+export const AlignmentToolbar = ({
+  disabled
+}: {
+  disabled: boolean | undefined
+}) => {
   const { editor } = useToolbar()
   const isMobile = useMediaQuery('(max-width: 640px)')
   const handleAlign = (value: string) => {
@@ -34,7 +38,10 @@ export const AlignmentToolbar = () => {
   }
 
   const isDisabled =
-    editor?.isActive('image') || editor?.isActive('video') || !editor
+    editor?.isActive('image') ||
+    editor?.isActive('video') ||
+    !editor ||
+    disabled
 
   const currentTextAlign = () => {
     if (editor?.isActive({ textAlign: 'left' })) {

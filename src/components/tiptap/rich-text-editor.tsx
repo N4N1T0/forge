@@ -95,7 +95,7 @@ export function RichTextEditor({
 
   return (
     <div className='space-y-1 relative'>
-      <EditorToolbar editor={editor} />
+      <EditorToolbar editor={editor} disabled={disabled} />
       <TipTapFloatingMenu editor={editor} />
       <EditorContent editor={editor} />
     </div>
