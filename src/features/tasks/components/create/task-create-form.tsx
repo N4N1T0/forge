@@ -41,7 +41,7 @@ import { BaseFormProps, FormattedMembers } from '@/types'
 import { Status, Workspaces } from '@/types/appwrite'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { format } from 'date-fns'
-import { CalendarIcon, Loader } from 'lucide-react'
+import { CalendarIcon, Loader, X } from 'lucide-react'
 import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
 import { ModalTaskWrapper } from '../modal-task-wrapper'
@@ -124,13 +124,26 @@ const TaskCreateFormContent = ({
 
   return (
     <Card className='size-full overflow-y-auto pt-3.5 pb-0 gap-4'>
-      <CardHeader className='gap-0'>
-        <CardTitle className='text-2xl font-bold text-primary'>
-          Create a new task
-        </CardTitle>
-        <CardDescription className='sr-only'>
-          Create a new task to keep track of your work.
-        </CardDescription>
+      <CardHeader className='gap-0 flex justify-between items-center'>
+        <div>
+          <CardTitle className='text-2xl font-bold text-primary'>
+            Create a new task
+          </CardTitle>
+          <CardDescription className='sr-only'>
+            Create a new task to keep track of your work.
+          </CardDescription>
+        </div>
+
+        <div>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon'
+            onClick={handleCancel}
+          >
+            <X />
+          </Button>
+        </div>
       </CardHeader>
       <Separator />
       <Form {...form}>
