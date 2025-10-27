@@ -218,6 +218,61 @@ const app = new Hono()
       }
     }
   )
+  .get('/:projectId', sessionMiddleware, async (c) => {
+    try {
+      const databases = c.get('tables')
+      const user = c.get('user')
+      const { projectId } = c.req.param()
+
+      const project = await databases.getRow<Projects>({
+        databaseId: DATABASE_ID,
+        tableId: PROJECTS_COLLECTION_ID,
+        rowId: projectId
+      })
+
+      if (!project) {
+        return c.json<ProjectResponse>(
+          {
+            success: false,
+            data: 'Project not found'
+          },
+          404
+        )
+      }
+
+      const member = await getMember({
+        databases,
+        workspaceId: project.workspaceId,
+        userId: user.$id
+      })
+
+      if (!member) {
+        return c.json<ProjectResponse>(
+          {
+            success: false,
+            data: 'You are not a member of this workspace'
+          },
+          401
+        )
+      }
+
+      return c.json<ProjectResponse>({
+        success: true,
+        data: project
+      })
+    } catch (error: any) {
+      if (error instanceof AppwriteException) {
+        return c.json<ProjectResponse>({
+          success: false,
+          data: 'An Appwrite Error has occurred'
+        })
+      }
+      return c.json<ProjectResponse>({
+        success: false,
+        data: error.message || 'Failed to fetch project'
+      })
+    }
+  })
   .delete('/:projectId', sessionMiddleware, async (c) => {
     try {
       const databases = c.get('tables')
