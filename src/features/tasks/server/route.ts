@@ -134,8 +134,6 @@ const app = new Hono()
         })
       )
 
-      console.log(assigneesId)
-
       const populatedTasks = tasks.rows.map((task) => ({
         ...task,
         project: projects.rows.find(
