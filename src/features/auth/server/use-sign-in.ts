@@ -46,7 +46,6 @@ export const useSignIn = () => {
       }, 500)
     },
     onError: ({ message, userId }) => {
-      console.log('🚀 ~ useSignIn ~ data:', message)
       const errorMessage = message || 'Sign-in error'
 
       switch (true) {
