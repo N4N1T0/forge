@@ -1,5 +1,6 @@
 'use client'
 
+import { RichTextEditor } from '@/components/tiptap/rich-text-editor'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
@@ -31,7 +32,6 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { Textarea } from '@/components/ui/textarea'
 import { status } from '@/data'
 import { createTaskSchema, CreateTaskSchema } from '@/features/tasks/schema'
 import { useEditTask } from '@/features/tasks/server/use-edit-task'
@@ -136,7 +136,7 @@ const TaskEditFormContent = ({
 
   return (
     <Card className='w-full max-w-2xl mx-auto shadow-lg overflow-y-auto'>
-      <CardHeader className='space-y-2'>
+      <CardHeader className='gap-0'>
         <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
           Edit task
         </CardTitle>
@@ -175,11 +175,10 @@ const TaskEditFormContent = ({
                 <FormItem>
                   <FormLabel>Description</FormLabel>
                   <FormControl>
-                    <Textarea
-                      {...field}
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={field.onChange}
                       disabled={isPending}
-                      placeholder='Enter task description (optional)'
-                      rows={3}
                     />
                   </FormControl>
                   <FormMessage />

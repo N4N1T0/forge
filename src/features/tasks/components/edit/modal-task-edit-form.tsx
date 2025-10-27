@@ -1,6 +1,6 @@
 'use client'
 
-import { ResponsiveModal } from '@/components/ui/responsive-modal'
+import { ResponsiveModal } from '@/components/ui/modal/responsive-modal'
 import { useTaskEditModal } from '@/features/tasks/hooks/use-task-edit-modal'
 import { ResponsiveModalProps } from '@/types'
 import { Tasks } from '@/types/appwrite'
