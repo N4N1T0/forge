@@ -1,11 +1,13 @@
 'use client'
 
+import { RichTextEditor } from '@/components/tiptap/rich-text-editor'
 import { Button } from '@/components/ui/button'
 import { Calendar } from '@/components/ui/calendar'
 import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
@@ -31,7 +33,6 @@ import {
   SelectValue
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
-import { Textarea } from '@/components/ui/textarea'
 import { status } from '@/data'
 import { createTaskSchema, CreateTaskSchema } from '@/features/tasks/schema'
 import { useCreateTask } from '@/features/tasks/server/use-create-task'
@@ -49,13 +50,10 @@ interface TaskCreateFormProps extends BaseFormProps {
   projectId: string
 }
 
-export const TaskCreateForm = ({
-  onCancel,
-  projectId
-}: TaskCreateFormProps) => {
+export const TaskCreateForm = ({ onCancel }: BaseFormProps) => {
   return (
     <ModalTaskWrapper>
-      {({ workspace, members, isLoading }) => (
+      {({ workspace, members, isLoading, projectId }) => (
         <TaskCreateFormContent
           onCancel={onCancel}
           projectId={projectId}
@@ -84,6 +82,7 @@ const TaskCreateFormContent = ({
   // HOOKS
   const { mutate: createTask, isPending } = useCreateTask()
 
+  // FORM
   const form = useForm<CreateTaskSchema>({
     resolver: zodResolver(createTaskSchema),
     defaultValues: {
@@ -96,9 +95,10 @@ const TaskCreateFormContent = ({
       dueDate: ''
     }
   })
+  const { handleSubmit } = form
 
   // HANDLERS
-  const handleSubmit = useCallback(
+  const handleCreateTaskSubmit = useCallback(
     (values: CreateTaskSchema) => {
       const finalValues = {
         ...values,
@@ -123,111 +123,47 @@ const TaskCreateFormContent = ({
   }, [onCancel])
 
   return (
-    <Card className='w-full max-w-2xl mx-auto shadow-lg overflow-y-auto'>
-      <CardHeader className='space-y-2'>
-        <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
+    <Card className='size-full overflow-y-auto pt-3.5 pb-0 gap-4'>
+      <CardHeader className='gap-0'>
+        <CardTitle className='text-2xl font-bold text-primary'>
           Create a new task
         </CardTitle>
-        <CardDescription className='text-sm md:text-base text-muted-foreground'>
+        <CardDescription className='sr-only'>
           Create a new task to keep track of your work.
         </CardDescription>
       </CardHeader>
       <Separator />
-      <CardContent>
-        <Form {...form}>
-          <form
-            onSubmit={form.handleSubmit(handleSubmit)}
-            className='space-y-4'
-          >
-            <FormField
-              control={form.control}
-              name='name'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Task Name</FormLabel>
-                  <FormControl>
-                    <Input
-                      {...field}
-                      disabled={isPending}
-                      placeholder='Enter task name'
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name='description'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Description</FormLabel>
-                  <FormControl>
-                    <Textarea
-                      {...field}
-                      disabled={isPending}
-                      placeholder='Enter task description (optional)'
-                      rows={3}
-                    />
-                  </FormControl>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-
-            <fieldset className='w-full flex gap-6'>
+      <Form {...form}>
+        <form
+          onSubmit={handleSubmit(handleCreateTaskSubmit)}
+          className='flex-1'
+        >
+          <CardContent className='space-y-4'>
+            {/* NAME & STATUS */}
+            <fieldset className='w-full flex gap-4'>
               <FormField
                 control={form.control}
-                name='assigneeId'
+                name='name'
                 render={({ field }) => (
-                  <FormItem>
-                    <FormLabel>Assignee</FormLabel>
-                    <Select
-                      disabled={isPending}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
-                      <FormControl className='flex-1'>
-                        <SelectTrigger>
-                          <SelectValue placeholder='Select an assignee' />
-                        </SelectTrigger>
-                      </FormControl>
-                      <SelectContent>
-                        {isLoading && (
-                          <SelectItem
-                            key='loading'
-                            value='loading'
-                            disabled={isLoading}
-                          >
-                            <Loader className='animate-spin' />
-                          </SelectItem>
-                        )}
-                        {members &&
-                          members
-                            ?.filter((member) => member !== null)
-                            .map(({ $id, name }) => (
-                              <SelectItem key={$id} value={$id}>
-                                <span
-                                  data-square
-                                  className='bg-muted text-muted-foreground flex size-5 items-center justify-center rounded text-xs font-medium'
-                                  aria-hidden='true'
-                                >
-                                  {name.charAt(0)}
-                                </span>
-                                <span className='truncate'>{name}</span>
-                              </SelectItem>
-                            ))}
-                      </SelectContent>
-                    </Select>
+                  <FormItem className='flex-1'>
+                    <FormLabel>Task Name</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        disabled={isPending}
+                        placeholder='Enter task name'
+                      />
+                    </FormControl>
                     <FormMessage />
                   </FormItem>
                 )}
               />
+
               <FormField
                 control={form.control}
                 name='status'
                 render={({ field }) => (
-                  <FormItem>
+                  <FormItem className='min-w-2/6'>
                     <FormLabel>Status</FormLabel>
                     <Select
                       disabled={isPending}
@@ -266,73 +202,145 @@ const TaskCreateFormContent = ({
               />
             </fieldset>
 
+            {/* DESCRIPTION */}
             <FormField
               control={form.control}
-              name='dueDate'
+              name='description'
               render={({ field }) => (
-                <FormItem>
-                  <FormLabel>Due Date</FormLabel>
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <FormControl>
-                        <Button
-                          variant='outline'
-                          className={cn(
-                            'w-full pl-3 text-left font-normal',
-                            !field.value && 'text-muted-foreground'
-                          )}
-                          disabled={isPending}
-                        >
-                          {field.value ? (
-                            format(new Date(field.value), 'PPP')
-                          ) : (
-                            <span>Pick a date</span>
-                          )}
-                          <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
-                        </Button>
-                      </FormControl>
-                    </PopoverTrigger>
-                    <PopoverContent className='w-auto p-0' align='start'>
-                      <Calendar
-                        mode='single'
-                        selected={new Date(field.value)}
-                        onSelect={(date) => field.onChange(date?.toISOString())}
-                        disabled={(date) =>
-                          date < new Date() || date < new Date('1900-01-01')
-                        }
-                      />
-                    </PopoverContent>
-                  </Popover>
+                <FormItem className='h-full'>
+                  <FormLabel>Description</FormLabel>
+                  <FormControl>
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
                   <FormMessage />
                 </FormItem>
               )}
             />
 
-            <Separator />
+            {/* ASSIGNEE  & DUE DATE */}
+            <fieldset className='w-full flex gap-6'>
+              <FormField
+                control={form.control}
+                name='assigneeId'
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <FormLabel>Assignee</FormLabel>
+                    <Select
+                      disabled={isPending}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <FormControl>
+                        <SelectTrigger className='w-full'>
+                          <SelectValue placeholder='Select an assignee' />
+                        </SelectTrigger>
+                      </FormControl>
+                      <SelectContent>
+                        {isLoading && (
+                          <SelectItem
+                            key='loading'
+                            value='loading'
+                            disabled={isLoading}
+                          >
+                            <Loader className='animate-spin' />
+                          </SelectItem>
+                        )}
+                        {members &&
+                          members
+                            ?.filter((member) => member !== null)
+                            .map(({ $id, name }) => (
+                              <SelectItem key={$id} value={$id}>
+                                <span
+                                  data-square
+                                  className='bg-muted text-muted-foreground flex size-5 items-center justify-center rounded text-xs font-medium'
+                                  aria-hidden='true'
+                                >
+                                  {name.charAt(0)}
+                                </span>
+                                <span className='truncate'>{name}</span>
+                              </SelectItem>
+                            ))}
+                      </SelectContent>
+                    </Select>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
 
-            <div className='flex justify-end items-center gap-3 flex-wrap'>
-              <Button
-                type='button'
-                size='lg'
-                variant='secondary'
-                onClick={handleCancel}
-                disabled={isPending}
-                className='flex-1'
-              >
-                Cancel
-              </Button>
-              <Button
-                type='submit'
-                size='lg'
-                disabled={isPending}
-                className='flex-1'
-              >
-                {isPending ? 'Creating...' : 'Create Task'}
-              </Button>
-            </div>
-          </form>
-        </Form>
-      </CardContent>
+              <FormField
+                control={form.control}
+                name='dueDate'
+                render={({ field }) => (
+                  <FormItem className='flex-1'>
+                    <FormLabel>Due Date</FormLabel>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <FormControl>
+                          <Button
+                            variant='outline'
+                            className={cn(
+                              'w-full pl-3 text-left font-normal',
+                              !field.value && 'text-muted-foreground'
+                            )}
+                            disabled={isPending}
+                          >
+                            {field.value ? (
+                              format(new Date(field.value), 'PPP')
+                            ) : (
+                              <span>Pick a date</span>
+                            )}
+                            <CalendarIcon className='ml-auto h-4 w-4 opacity-50' />
+                          </Button>
+                        </FormControl>
+                      </PopoverTrigger>
+                      <PopoverContent className='w-auto p-0' align='start'>
+                        <Calendar
+                          mode='single'
+                          selected={new Date(field.value)}
+                          onSelect={(date) =>
+                            field.onChange(date?.toISOString())
+                          }
+                          disabled={(date) =>
+                            date < new Date() || date < new Date('1900-01-01')
+                          }
+                        />
+                      </PopoverContent>
+                    </Popover>
+                    <FormMessage />
+                  </FormItem>
+                )}
+              />
+            </fieldset>
+          </CardContent>
+
+          <Separator className='my-4' />
+
+          <CardFooter className='flex justify-end items-center gap-3 flex-wrap mt-auto'>
+            <Button
+              type='button'
+              size='lg'
+              variant='secondary'
+              onClick={handleCancel}
+              disabled={isPending}
+              className='flex-1'
+            >
+              Cancel
+            </Button>
+            <Button
+              type='submit'
+              size='lg'
+              disabled={isPending}
+              className='flex-1'
+            >
+              {isPending ? 'Creating...' : 'Create Task'}
+            </Button>
+          </CardFooter>
+        </form>
+      </Form>
     </Card>
   )
 }
