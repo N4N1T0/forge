@@ -45,9 +45,9 @@ export function TaskKanbanSkeleton() {
                       <Skeleton className='size-4 rounded-full shrink-0' />
                     </div>
                     <Skeleton className='h-3 w-full mt-2' />
-                    <div className='flex items-start justify-between gap-2'>
+                    <div className='flex items-center justify-between gap-2'>
                       <Skeleton className='h-3 w-3/4 mt-2' />
-                      <Skeleton className='size-2 rounded-full shrink-0' />
+                      <Skeleton className='size-3 rounded-full shrink-0' />
                     </div>
                   </div>
                 ))}
