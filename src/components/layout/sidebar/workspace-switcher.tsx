@@ -15,8 +15,8 @@ import {
   useSidebar
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useWorkspaceId } from '@/features/workspaces/client/use-workspace-id'
 import { ModalWorkspaceForm } from '@/features/workspaces/components/modal-workspace-form'
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
 import { useGetWorkspaces } from '@/features/workspaces/server/use-current-workspace'
 import { Workspaces } from '@/types/appwrite'
 import { ChevronsUpDown, Plus } from 'lucide-react'

@@ -7,7 +7,7 @@ import {
   SidebarMenuButton
 } from '@/components/ui/sidebar'
 import { routes } from '@/data'
-import { useWorkspaceId } from '@/features/workspaces/client/use-workspace-id'
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
 import Link from 'next/link'
 
 export function NavMain() {

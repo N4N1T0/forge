@@ -10,7 +10,7 @@ import {
 import { Skeleton } from '@/components/ui/skeleton'
 import ModalProjectForm from '@/features/projects/components/modal-project-form'
 import { useGetProjects } from '@/features/projects/server/use-get-projects'
-import { useGetCurrentWorkspace } from '@/features/workspaces/client/use-workspace-id'
+import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
 import { Command, Folder, Plus } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
