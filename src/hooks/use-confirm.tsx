@@ -8,7 +8,7 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
-import ResponsiveModal from '@/components/ui/responsive-modal'
+import ResponsiveModal from '@/components/ui/modal/responsive-modal'
 import { useState } from 'react'
 
 export const useConfirm = (
