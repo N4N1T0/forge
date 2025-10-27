@@ -1,9 +1,10 @@
 import { Button } from '@/components/ui/button'
 import { status } from '@/data'
 import { TaskAction } from '@/features/tasks/components/views'
+import { sanitizeHtml } from '@/lib/utils'
 import { FormattedTasks } from '@/types'
 import { ColumnDef } from '@tanstack/react-table'
-import { ArrowUpDown, MoreVertical } from 'lucide-react'
+import { ArrowUpDown, MoreHorizontal } from 'lucide-react'
 import { TaskDateCell } from './task-cell-date'
 
 export const TaskTableColumns: ColumnDef<FormattedTasks[number]>[] = [
@@ -21,7 +22,7 @@ export const TaskTableColumns: ColumnDef<FormattedTasks[number]>[] = [
       )
     },
     cell: ({ row }) => {
-      const name = row.original.project?.name || row.original.name
+      const name = row.original.name || row.original.project?.name
 
       return <p className='line-clamp-1'>{name}</p>
     }
@@ -41,8 +42,9 @@ export const TaskTableColumns: ColumnDef<FormattedTasks[number]>[] = [
     },
     cell: ({ row }) => {
       const description = row.original.description
+      const formattedDescription = sanitizeHtml(description)
 
-      return <p className='line-clamp-1'>{description}</p>
+      return <p className='line-clamp-1'>{formattedDescription}</p>
     }
   },
   {
@@ -140,7 +142,7 @@ export const TaskTableColumns: ColumnDef<FormattedTasks[number]>[] = [
       return (
         <TaskAction task={task}>
           <Button variant='ghost' size='sm'>
-            <MoreVertical className='size-4' />
+            <MoreHorizontal className='size-4' />
           </Button>
         </TaskAction>
       )
