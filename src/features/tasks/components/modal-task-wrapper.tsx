@@ -1,5 +1,6 @@
 'use client'
 
+import { useCurrent } from '@/features/auth/server/use-current'
 import { useGetMembers } from '@/features/members/server/use-get-members'
 import { useProjectId } from '@/features/projects/hooks/use-project-id'
 import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
@@ -12,6 +13,7 @@ interface ModalTaskWrapperProps {
     workspace: Partial<Workspaces> | undefined
     members: FormattedMembers
     projectId: string
+    currentUserId: string | undefined
     isLoading: boolean
   }) => ReactNode
 }
@@ -19,12 +21,13 @@ interface ModalTaskWrapperProps {
 export const ModalTaskWrapper = ({ children }: ModalTaskWrapperProps) => {
   // DATA FETCHING
   const { workspace, isLoading: isLoadingWorkspace } = useGetCurrentWorkspace()
+  const { data: currentUser, isLoading: isLoadingUser } = useCurrent()
   const projectId = useProjectId()
   const { data: members, isLoading: isLoadingMembers } = useGetMembers({
     workspaceId: workspace?.$id as string
   })
 
-  const isLoading = isLoadingWorkspace || isLoadingMembers
+  const isLoading = isLoadingWorkspace || isLoadingMembers || isLoadingUser
 
   return (
     <>
@@ -32,6 +35,7 @@ export const ModalTaskWrapper = ({ children }: ModalTaskWrapperProps) => {
         workspace,
         members,
         projectId,
+        currentUserId: currentUser?.$id,
         isLoading
       })}
     </>
