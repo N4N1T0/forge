@@ -1,5 +1,6 @@
 'use client'
 
+import { Trash2 } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useState } from 'react'
 
@@ -7,7 +8,6 @@ import { Button } from '@/components/ui/button'
 import {
   Card,
   CardContent,
-  CardDescription,
   CardFooter,
   CardHeader,
   CardTitle
@@ -19,15 +19,15 @@ import { Separator } from '@/components/ui/separator'
 import { useDeleteProject } from '@/features/projects/server/use-delete-project'
 import { Projects } from '@/types/appwrite'
 
-interface CardDeleteProjectProps {
+interface ProjectDeleteDangerZoneProps {
   project: Projects
   onCancel?: () => void
 }
 
-const CardDeleteProject = ({ project, onCancel }: CardDeleteProjectProps) => {
+const ProjectDeleteDangerZone = ({ project, onCancel }: ProjectDeleteDangerZoneProps) => {
+  const router = useRouter()
   const [confirmationText, setConfirmationText] = useState('')
   const { mutate: deleteProject, isPending } = useDeleteProject()
-  const router = useRouter()
 
   const requiredText = `${project.name.toLowerCase().split(' ').join('-')}-delete-project`
   const isConfirmationValid = confirmationText === requiredText
@@ -36,9 +36,7 @@ const CardDeleteProject = ({ project, onCancel }: CardDeleteProjectProps) => {
     if (!isConfirmationValid) return
 
     deleteProject(
-      {
-        param: { projectId: project.$id }
-      },
+      { param: { projectId: project.$id } },
       {
         onSuccess: () => {
           router.push(`/dashboard/workspace/${project.workspaceId}`)
@@ -51,13 +49,9 @@ const CardDeleteProject = ({ project, onCancel }: CardDeleteProjectProps) => {
   return (
     <Card className='border-destructive/50 bg-destructive/5'>
       <CardHeader>
-        <CardTitle className='text-2xl md:text-3xl font-bold text-destructive'>
-          Delete Project
+        <CardTitle className='text-2xl md:text-3xl font-bold text-destructive flex items-center gap-2'>
+          <Trash2 className='size-5' /> Danger Zone
         </CardTitle>
-        <CardDescription className='text-sm text-muted-foreground'>
-          This action cannot be undone. This will permanently delete the project
-          and all of its data.
-        </CardDescription>
       </CardHeader>
       <Separator className='bg-destructive/50' />
       <CardContent className='pt-2.5 flex flex-col gap-y-5'>
@@ -107,4 +101,4 @@ const CardDeleteProject = ({ project, onCancel }: CardDeleteProjectProps) => {
   )
 }
 
-export default CardDeleteProject
+export default ProjectDeleteDangerZone

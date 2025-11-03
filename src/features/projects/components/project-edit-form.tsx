@@ -1,13 +1,8 @@
 'use client'
 
+import { RichTextEditor } from '@/components/tiptap/rich-text-editor'
 import { Button } from '@/components/ui/button'
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle
-} from '@/components/ui/card'
+import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -17,6 +12,13 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -42,6 +44,8 @@ const EditarProyectoForm = ({
     defaultValues: {
       name: initialValues?.name || '',
       shortcut: initialValues?.shortcut || '',
+      description: '',
+      projectType: '',
       workspaceId: workspace?.$id || ''
     }
   })
@@ -80,13 +84,10 @@ const EditarProyectoForm = ({
 
   return (
     <Card className='w-full max-w-2xl mx-auto shadow-lg overflow-y-auto'>
-      <CardHeader className='space-y-2'>
+      <CardHeader>
         <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
           Edit Project
         </CardTitle>
-        <CardDescription className='text-sm md:text-base text-muted-foreground'>
-          Edit the details of your project.
-        </CardDescription>
       </CardHeader>
       <Separator />
       <CardContent>
@@ -144,6 +145,62 @@ const EditarProyectoForm = ({
                 )}
               />
             </fieldset>
+
+            {/* DESCRIPTION */}
+            <FormField
+              control={control}
+              name='description'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-muted-foreground'>
+                    Description
+                  </FormLabel>
+                  <p className='text-xs text-muted-foreground'>
+                    This description will help power upcoming AI features.
+                  </p>
+                  <FormControl>
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage className='text-red-500' />
+                </FormItem>
+              )}
+            />
+
+            {/* PROJECT TYPE */}
+            <FormField
+              control={control}
+              name='projectType'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-muted-foreground'>
+                    Project Type
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      disabled={isPending}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <SelectTrigger className='w-full'>
+                        <SelectValue placeholder='Select a type' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='software'>Software</SelectItem>
+                        <SelectItem value='marketing'>Marketing</SelectItem>
+                        <SelectItem value='design'>Design</SelectItem>
+                        <SelectItem value='research'>Research</SelectItem>
+                        <SelectItem value='operations'>Operations</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage className='text-red-500' />
+                </FormItem>
+              )}
+            />
 
             <Separator />
 
