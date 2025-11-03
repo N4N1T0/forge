@@ -1,8 +1,8 @@
 'use client'
 
-import ResponsiveModal from '@/components/ui/modal/responsive-modal'
+import ResponsiveDrawer from '@/components/ui/drawer/responsive-drawer'
 import { ResponsiveModalProps } from '@/types'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import CreateProjectForm from './project-form'
 
 export function ModalProjectForm({
@@ -10,6 +10,20 @@ export function ModalProjectForm({
   className
 }: ResponsiveModalProps) {
   const [isOpen, setIsOpen] = useState(false)
+
+  // Listen to global event to open via keyboard: Cmd/Ctrl + +
+  useEffect(() => {
+    const handler = () => setIsOpen(true)
+    window.addEventListener(
+      'forge:open-create-project',
+      handler as EventListener
+    )
+    return () =>
+      window.removeEventListener(
+        'forge:open-create-project',
+        handler as EventListener
+      )
+  }, [])
 
   const handleClose = () => {
     setIsOpen(false)
@@ -20,16 +34,16 @@ export function ModalProjectForm({
       <div onClick={() => setIsOpen(true)} className={className}>
         {children}
       </div>
-      <ResponsiveModal
+      <ResponsiveDrawer
         open={isOpen}
         onOpenChange={setIsOpen}
         title='Create Project'
         description='Create a new project to organize your work'
-        className='max-w-2xl'
+        className='sm:max-w-2xl'
         hideHeader={true}
       >
         <CreateProjectForm onCancel={handleClose} />
-      </ResponsiveModal>
+      </ResponsiveDrawer>
     </>
   )
 }
