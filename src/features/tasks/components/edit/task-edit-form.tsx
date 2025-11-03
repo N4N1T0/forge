@@ -35,7 +35,7 @@ import {
 import { Separator } from '@/components/ui/separator'
 import { status } from '@/data'
 import { createTaskSchema, CreateTaskSchema } from '@/features/tasks/schema'
-import { useEditTask } from '@/features/tasks/server/use-edit-task'
+import { useEditTask } from '@/features/tasks/server/patch/use-edit-task'
 import { cn } from '@/lib/utils'
 import { BaseFormProps, FormattedMembers } from '@/types'
 import { Tasks, Workspaces } from '@/types/appwrite'
