@@ -1,5 +1,6 @@
 'use client'
 
+import { RichTextEditor } from '@/components/tiptap/rich-text-editor'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -17,6 +18,13 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue
+} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import {
   CreateProjectSchema,
@@ -38,6 +46,8 @@ const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
     resolver: zodResolver(createProjectSchema),
     defaultValues: {
       name: '',
+      description: '',
+      projectType: '',
       workspaceId: workspace?.$id || ''
     }
   })
@@ -139,6 +149,62 @@ const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
                 )}
               />
             </fieldset>
+
+            {/* DESCRIPTION */}
+            <FormField
+              control={control}
+              name='description'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-muted-foreground'>
+                    Description
+                  </FormLabel>
+                  <p className='text-xs text-muted-foreground'>
+                    This description will help power upcoming AI features.
+                  </p>
+                  <FormControl>
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={field.onChange}
+                      disabled={isPending}
+                    />
+                  </FormControl>
+                  <FormMessage className='text-red-500' />
+                </FormItem>
+              )}
+            />
+
+            {/* PROJECT TYPE */}
+            <FormField
+              control={control}
+              name='projectType'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className='text-sm font-semibold text-muted-foreground'>
+                    Project Type
+                  </FormLabel>
+                  <FormControl>
+                    <Select
+                      disabled={isPending}
+                      onValueChange={field.onChange}
+                      value={field.value}
+                    >
+                      <SelectTrigger className='w-full'>
+                        <SelectValue placeholder='Select a type' />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value='software'>Software</SelectItem>
+                        <SelectItem value='marketing'>Marketing</SelectItem>
+                        <SelectItem value='design'>Design</SelectItem>
+                        <SelectItem value='research'>Research</SelectItem>
+                        <SelectItem value='operations'>Operations</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  <FormMessage className='text-red-500' />
+                </FormItem>
+              )}
+            />
 
             <Separator />
 
