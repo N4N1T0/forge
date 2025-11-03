@@ -180,3 +180,72 @@
     @apply bg-background text-foreground;
   }
 }
+
+/* CALENDAR */
+.rbc-calendar {
+  @apply border-muted mt-2 border-t pt-2;
+}
+
+.rbc-month-row {
+  @apply border-x border-t;
+}
+
+.rbc-header + .rbc-header {
+  @apply !border-l-0;
+}
+
+.rbc-button-link {
+  @apply text-muted-foreground text-xs font-normal;
+}
+
+.rbc-header {
+  @apply text-muted-foreground !border-b-0 !py-2 text-sm font-normal;
+}
+
+.rbc-toolbar-label {
+  @apply !flex-grow-0;
+}
+
+.rbc-toolbar {
+  @apply !justify-between;
+}
+
+.rbc-btn-group:last-of-type {
+  @apply !hidden;
+}
+
+.rbc-month-view {
+  @apply !border-muted;
+}
+
+.rbc-day-bg + .rbc-day-bg {
+  @apply !border-muted !border-l;
+}
+
+.rbc-month-row + .rbc-month-row {
+  @apply !border-muted;
+}
+
+.rbc-day-bg {
+  @apply !border-muted;
+}
+
+.rbc-off-range-bg {
+  @apply !bg-muted !border-muted-foreground;
+}
+
+.rbc-today {
+  @apply !bg-primary;
+}
+
+.rbc-btn-group > button {
+  @apply !text-foreground !border-muted !rounded-none;
+}
+
+.rbc-month-row:last-of-type {
+  @apply border-b;
+}
+
+.rbc-event {
+  @apply !bg-transparent;
+}
