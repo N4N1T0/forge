@@ -2,15 +2,18 @@
 
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardFooter, CardHeader } from '@/components/ui/card'
+import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { status as statusData } from '@/data'
+import { TaskCommentsSection } from '@/features/tasks/components/comments'
 import { ModalTaskWrapper } from '@/features/tasks/components/modal-task-wrapper'
+import { useDeleteTask } from '@/features/tasks/server/use-delete-task'
 import { formatTaskDate } from '@/features/tasks/utils'
+import { useConfirm } from '@/hooks/use-confirm'
 import { cn } from '@/lib/utils'
 import { BaseFormProps, FormattedMembers } from '@/types'
 import { Tasks } from '@/types/appwrite'
-import { CalendarDays, Pencil, Share, X } from 'lucide-react'
+import { CalendarDays, Pencil, Share, Trash, X } from 'lucide-react'
 import { toast } from 'sonner'
 
 interface TaskInfoView extends BaseFormProps {
@@ -21,9 +24,10 @@ interface TaskInfoView extends BaseFormProps {
 export const TaskInfoView = ({ onCancel, task, setIsEdit }: TaskInfoView) => {
   return (
     <ModalTaskWrapper>
-      {({ members, isLoading }) => (
+      {({ members, currentUserId, isLoading }) => (
         <TaskInfoViewContent
           members={members}
+          currentUserId={currentUserId}
           isLoading={isLoading}
           onCancel={onCancel}
           task={task}
@@ -38,6 +42,7 @@ interface TaskInfoViewProps {
   task: Tasks
   onCancel: (() => void) | undefined
   members: FormattedMembers
+  currentUserId: string | undefined
   isLoading: boolean
   setIsEdit: (isEdit: boolean) => void
 }
@@ -47,8 +52,17 @@ export const TaskInfoViewContent = ({
   onCancel,
   isLoading,
   members,
+  currentUserId,
   setIsEdit
 }: TaskInfoViewProps) => {
+  // MUTATIONS & CONFIRM
+  const { mutate: deleteTask, isPending: isDeleting } = useDeleteTask()
+  const [confirmDelete, ConfirmDeleteDialog] = useConfirm(
+    'Delete task',
+    'This action cannot be undone. Do you want to delete this task?',
+    'destructive'
+  )
+
   // RENDER
   if (!task) return null
 
@@ -74,8 +88,22 @@ export const TaskInfoViewContent = ({
       })
   }
 
+  const handleDelete = async () => {
+    const ok = await confirmDelete()
+    if (!ok) return
+
+    if (task) {
+      deleteTask({
+        param: {
+          taskId: task.$id
+        }
+      })
+    }
+  }
+
   return (
-    <Card className='size-full overflow-y-auto pt-3.5 pb-0 gap-4 min-w-[500px]'>
+    <Card className='size-full flex flex-col pt-3.5 pb-0 gap-4 min-w-[500px]'>
+      <ConfirmDeleteDialog />
       <CardHeader className='gap-2 flex justify-between'>
         <div>
           <Button
@@ -94,6 +122,14 @@ export const TaskInfoViewContent = ({
           >
             <Pencil /> Edit
           </Button>
+          <Button
+            variant='link'
+            size='sm'
+            disabled={isLoading || isDeleting}
+            onClick={handleDelete}
+          >
+            <Trash /> Delete
+          </Button>
         </div>
 
         <Button
@@ -108,7 +144,7 @@ export const TaskInfoViewContent = ({
 
       <Separator />
 
-      <CardContent className='space-y-6'>
+      <CardContent className='space-y-6 flex-1 overflow-y-auto min-h-0'>
         {/* NAME */}
         <section className='space-y-2'>
           <div className='flex flex-wrap items-center gap-2 mt-2'>
@@ -153,7 +189,7 @@ export const TaskInfoViewContent = ({
         <Separator />
 
         {/* ASSIGNEE */}
-        <CardFooter className='space-y-2 mt-auto px-0 flex-col items-start'>
+        <section className='space-y-2'>
           <h3 className='text-sm font-semibold'>Assignee</h3>
           <div className='flex flex-wrap items-center gap-2'>
             {member ? (
@@ -164,7 +200,16 @@ export const TaskInfoViewContent = ({
               <p className='text-sm text-muted-foreground'>No assignees.</p>
             )}
           </div>
-        </CardFooter>
+        </section>
+
+        {/* COMMENTS SECTION */}
+        {currentUserId && (
+          <TaskCommentsSection
+            key={task.$id}
+            taskId={task.$id}
+            currentUserId={currentUserId}
+          />
+        )}
       </CardContent>
     </Card>
   )

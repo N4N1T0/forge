@@ -9,7 +9,7 @@ import { TaskEditForm } from '../edit'
 import { TaskInfoView } from './task-info-view'
 
 interface ModalTaskInfoProps extends Omit<ResponsiveModalProps, 'children'> {
-  task: Tasks
+  task: Tasks | undefined
   children?: ReactNode
 }
 
@@ -31,6 +31,11 @@ export const ModalTaskInfo = ({
   const handleClose = () => {
     handleCloseModal()
     setIsEdit(false)
+  }
+
+  // RENDER
+  if (!task) {
+    return null
   }
 
   return (
