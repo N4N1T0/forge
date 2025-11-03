@@ -5,14 +5,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { TooltipProvider } from '@/components/ui/tooltip'
 import ModalProjectConfig from '@/features/projects/components/modal-project-config'
 import { useProjectParams } from '@/features/projects/hooks/use-project-id'
+import { TaskFilters } from '@/features/tasks/components/task-filters'
 import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters'
 import { useGetTasks } from '@/features/tasks/server/use-get-tasks'
 import { Projects } from '@/types/appwrite'
 import { MoreHorizontal } from 'lucide-react'
 import { useQueryState } from 'nuqs'
-import { TaskTableView } from '.'
-import { TaskFilters } from '../task-filters'
-import { DataKanban } from './kanban/data-kanban-view'
+import {
+  DataCalendarView,
+  DataGanttView,
+  DataKanban,
+  TaskTableView
+} from './index'
 
 export const TaskViewSwitcher = ({
   initialValues
@@ -89,10 +93,10 @@ export const TaskViewSwitcher = ({
             <DataKanban data={tasks} isLoading={isLoadingTasks} />
           </TabsContent>
           <TabsContent value='calendar' className='mt-0'>
-            Calendar
+            <DataCalendarView data={tasks} isLoading={isLoadingTasks} />
           </TabsContent>
           <TabsContent value='gantt' className='mt-0'>
-            Gantt
+            <DataGanttView data={tasks} isLoading={isLoadingTasks} />
           </TabsContent>
         </TooltipProvider>
       </div>

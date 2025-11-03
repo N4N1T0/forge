@@ -6,12 +6,9 @@ import {
   EmptyHeader,
   EmptyTitle
 } from '@/components/ui/empty'
-import { useProjectId } from '@/features/projects/hooks/use-project-id'
 import { ModalTaskCreateForm } from '@/features/tasks/components/create'
 
 export const TaskEmptyView = () => {
-  const projectId = useProjectId()
-
   return (
     <Empty className='border size-full'>
       <EmptyHeader>
@@ -21,7 +18,7 @@ export const TaskEmptyView = () => {
         </EmptyDescription>
       </EmptyHeader>
       <EmptyContent>
-        <ModalTaskCreateForm projectId={projectId}>
+        <ModalTaskCreateForm>
           <Button>Create New Task</Button>
         </ModalTaskCreateForm>
       </EmptyContent>
