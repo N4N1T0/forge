@@ -1,5 +1,5 @@
-import { Models } from 'node-appwrite'
-import { Members, Projects, Tasks } from './appwrite'
+import { Models, Role } from 'node-appwrite'
+import { Members, Projects, Status, TaskComments, Tasks } from './appwrite'
 
 export type Layouts = Readonly<{
   children: React.ReactNode
@@ -51,7 +51,38 @@ export type FormattedMembers =
   | ((Members & Models.User<Models.Preferences>) | null)[]
   | undefined
 
+export type MentionableMember = {
+  $id: string
+  name: string
+  email: string
+  avatar?: string
+}
+
+export type PopulatedComment = TaskComments & {
+  author: MentionableMember
+  mentionedUsers: MentionableMember[]
+}
+
 export interface DataViewProps {
   data: FormattedTasks | undefined
   isLoading: boolean
+}
+
+export interface DataCalendarFormattedEvents {
+  title: string
+  project: Projects | undefined
+  status: Status
+  id: string
+  assignee:
+    | (Models.Row & {
+        userId: string | null
+        workspaceId: string | null
+        role: Role
+      } & {
+        name: string
+        email: string
+      })
+    | undefined
+  start: Date
+  end: Date
 }
