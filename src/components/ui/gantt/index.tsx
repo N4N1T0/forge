@@ -314,7 +314,7 @@ export const GanttContentHeader: FC<GanttContentHeaderProps> = ({
 
   return (
     <div
-      className='sticky top-0 z-20 grid w-full shrink-0 bg-backdrop/90 backdrop-blur-sm'
+      className='sticky top-0 z-20 grid w-full shrink-0 bg-background border-b'
       style={{ height: 'var(--gantt-header-height)' }}
     >
       <div>
@@ -651,7 +651,7 @@ export const GanttColumn: FC<GanttColumnProps> = ({
     // biome-ignore lint/nursery/noNoninteractiveElementInteractions: "This is a clickable column"
     <div
       className={cn(
-        'group relative h-full overflow-hidden',
+        'group relative h-full overflow-hidden bg-background',
         isColumnSecondary?.(index) ? 'bg-secondary' : ''
       )}
       onMouseEnter={handleMouseEnter}
@@ -1448,7 +1448,7 @@ export const GanttToday: FC<GanttTodayProps> = ({ className }) => {
     >
       <div
         className={cn(
-          'group pointer-events-auto sticky top-0 flex select-auto flex-col flex-nowrap items-center justify-center whitespace-nowrap rounded-b-md bg-card px-2 py-1 text-foreground text-xs',
+          'group pointer-events-auto sticky top-0 flex select-auto flex-col flex-nowrap items-center justify-center whitespace-nowrap rounded-b-md px-2 py-1 text-xs bg-primary text-primary-foreground',
           className
         )}
       >
@@ -1457,7 +1457,7 @@ export const GanttToday: FC<GanttTodayProps> = ({ className }) => {
           {formatDate(date, 'MMM dd, yyyy')}
         </span>
       </div>
-      <div className={cn('h-full w-px bg-card', className)} />
+      <div className={cn('h-full w-px bg-primary', className)} />
     </div>
   )
 }
