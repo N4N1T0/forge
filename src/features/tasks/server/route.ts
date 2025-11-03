@@ -15,6 +15,8 @@ import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
 import { AppwriteException, ID, Query } from 'node-appwrite'
 import z, { ZodError } from 'zod'
+import commentsRoute from './comments/route'
+import patchRoute from './patch/route'
 
 // TYPES
 type TaskResponse =
@@ -33,6 +35,8 @@ type TaskListResponse =
 
 // ROUTES
 const app = new Hono()
+  .route('/', commentsRoute)
+  .route('/', patchRoute)
   .get(
     '/',
     sessionMiddleware,
@@ -235,145 +239,6 @@ const app = new Hono()
         return c.json<TaskResponse>({
           success: false,
           data: error.message || 'Failed to delete project'
-        })
-      }
-    }
-  )
-  .patch(
-    '/:taskId',
-    sessionMiddleware,
-    zValidator('json', createTaskSchema),
-    async (c) => {
-      const user = c.get('user')
-      const databases = c.get('tables')
-      const { taskId } = c.req.param()
-      const { name, description, assigneeId, dueDate, status } =
-        c.req.valid('json')
-
-      try {
-        const existingTask = await databases.getRow<Tasks>({
-          databaseId: DATABASE_ID,
-          tableId: TASKS_COLLECTION_ID,
-          rowId: taskId
-        })
-
-        const member = await getMember({
-          databases,
-          userId: user.$id,
-          workspaceId: existingTask.workspaceId
-        })
-
-        if (!member) {
-          return c.json<TaskResponse>(
-            {
-              success: false,
-              data: 'You are not a member of this workspace'
-            },
-            403
-          )
-        }
-
-        const updatedTask = await databases.updateRow<Tasks>({
-          databaseId: DATABASE_ID,
-          tableId: TASKS_COLLECTION_ID,
-          rowId: taskId,
-          data: {
-            name,
-            description,
-            assigneeId,
-            dueDate,
-            status
-          }
-        })
-
-        return c.json<TaskResponse>({
-          success: true,
-          data: updatedTask
-        })
-      } catch (error: any) {
-        console.log('🚀 ~ error:', error)
-        if (error instanceof AppwriteException) {
-          return c.json<TaskResponse>({
-            success: false,
-            data: error.message
-          })
-        }
-        if (error instanceof ZodError) {
-          return c.json<TaskResponse>({
-            success: false,
-            data: error.message
-          })
-        }
-        return c.json<TaskResponse>({
-          success: false,
-          data: error.message || 'Failed to update task'
-        })
-      }
-    }
-  )
-  .patch(
-    '/:taskId/status',
-    sessionMiddleware,
-    zValidator('json', z.object({ status: z.enum(Status) })),
-    async (c) => {
-      const user = c.get('user')
-      const databases = c.get('tables')
-      const { taskId } = c.req.param()
-      const { status } = c.req.valid('json')
-
-      try {
-        const existingTask = await databases.getRow<Tasks>({
-          databaseId: DATABASE_ID,
-          tableId: TASKS_COLLECTION_ID,
-          rowId: taskId
-        })
-
-        const member = await getMember({
-          databases,
-          userId: user.$id,
-          workspaceId: existingTask.workspaceId
-        })
-
-        if (!member) {
-          return c.json<TaskResponse>(
-            {
-              success: false,
-              data: 'You are not a member of this workspace'
-            },
-            403
-          )
-        }
-
-        const updatedTask = await databases.updateRow<Tasks>({
-          databaseId: DATABASE_ID,
-          tableId: TASKS_COLLECTION_ID,
-          rowId: taskId,
-          data: {
-            status
-          }
-        })
-
-        return c.json<TaskResponse>({
-          success: true,
-          data: updatedTask
-        })
-      } catch (error: any) {
-        console.log('🚀 ~ error:', error)
-        if (error instanceof AppwriteException) {
-          return c.json<TaskResponse>({
-            success: false,
-            data: error.message
-          })
-        }
-        if (error instanceof ZodError) {
-          return c.json<TaskResponse>({
-            success: false,
-            data: error.message
-          })
-        }
-        return c.json<TaskResponse>({
-          success: false,
-          data: error.message || 'Failed to update task status'
         })
       }
     }
