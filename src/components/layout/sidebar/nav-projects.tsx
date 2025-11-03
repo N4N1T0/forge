@@ -1,5 +1,6 @@
 'use client'
 
+import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import {
   SidebarGroup,
   SidebarGroupLabel,
@@ -8,12 +9,13 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
-import ModalProjectForm from '@/features/projects/components/modal-project-form'
 import { useGetProjects } from '@/features/projects/server/use-get-projects'
 import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
-import { Command, Folder, Plus } from 'lucide-react'
+import { useProjectShortcuts } from '@/features/projects/hooks/use-project-shortcuts'
+import { Command, Folder } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
+import { NavProjectCreate } from './nav-projects-create'
 
 export function Projects() {
   // HOOKS
@@ -22,6 +24,9 @@ export function Projects() {
   const { data: projects, isLoading: isLoadingProjects } = useGetProjects({
     workspaceId: workspace?.$id || ''
   })
+
+  // Keyboard shortcuts: Cmd/Ctrl + <shortcut> and Cmd/Ctrl + +
+  useProjectShortcuts({ projects: projects?.rows, workspaceId: workspace?.$id })
 
   if (isLoadingWorkspace || isLoadingProjects) {
     return (
@@ -41,19 +46,7 @@ export function Projects() {
 
   return (
     <SidebarGroup>
-      <SidebarGroupLabel>
-        Projects
-        <ModalProjectForm className='ml-auto'>
-          <SidebarMenuButton
-            tooltip='Create project'
-            className='size-6 flex justify-center items-center aspect-square'
-            variant='ghost'
-          >
-            <Plus className='size-3' />
-            <span className='sr-only'>Create project</span>
-          </SidebarMenuButton>
-        </ModalProjectForm>
-      </SidebarGroupLabel>
+      <SidebarGroupLabel>Projects</SidebarGroupLabel>
       <SidebarMenu>
         {projects?.rows.map(({ $id, name, shortcut }) => {
           const href = `/dashboard/workspace/${workspace?.$id}/projects/${$id}`
@@ -68,17 +61,21 @@ export function Projects() {
               >
                 <Link href={href} className={isActive ? 'bg-muted' : ''}>
                   <Folder className='size-3' />
-                  <span>{name}</span>
+                  <span className='truncate'>{name}</span>
                   {shortcut && (
-                    <span className='text-sm text-muted-foreground ml-auto flex uppercase gap-1 justify-center items-center'>
-                      <Command className='size-3' /> {shortcut}
-                    </span>
+                    <KbdGroup className='text-sm text-muted-foreground ml-auto flex uppercase gap-1 justify-center items-center'>
+                      <Kbd>
+                        <Command className='size-3' />
+                      </Kbd>
+                      <Kbd>{shortcut}</Kbd>
+                    </KbdGroup>
                   )}
                 </Link>
               </SidebarMenuButton>
             </SidebarMenuItem>
           )
         })}
+        <NavProjectCreate />
       </SidebarMenu>
     </SidebarGroup>
   )
