@@ -45,3 +45,9 @@ export type Tasks = Models.Row & {
   status: Status
   position: number
 }
+
+export type TaskComments = Models.Row & {
+  taskId: string
+  authorId: string
+  content: string
+}
