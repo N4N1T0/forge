@@ -93,7 +93,7 @@ const app = new Hono()
       }
 
       if (search) {
-        query.push(Query.search('name', search))
+        query.push(Query.contains('name', search))
       }
 
       if (dueDate) {
