@@ -193,7 +193,9 @@ For support and questions, please refer to the project documentation or contact 
 
 ## TODO
 
-- [ ] use Empty from shadcn/ui
+- [ ] No refresh on the taskfilter
+- [ ] the name fikter is not wirking
+- [ ] kanban stoppropagation
 
 ---
 
