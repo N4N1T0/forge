@@ -20,12 +20,13 @@ import { status as statusData } from '@/data'
 import { useGetMembers } from '@/features/members/server/use-get-members'
 import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters'
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
-import { cn, debounce } from '@/lib/utils'
+import { useDebounce } from '@/hooks/use-debounce'
+import { cn } from '@/lib/utils'
 import { Status } from '@/types/appwrite'
 import { SelectSeparator } from '@radix-ui/react-select'
 import { format } from 'date-fns'
 import { CalendarIcon, XIcon } from 'lucide-react'
-import { ChangeEvent } from 'react'
+import { useEffect, useState } from 'react'
 
 export const TaskFilters = () => {
   // HOOKS
@@ -36,6 +37,12 @@ export const TaskFilters = () => {
     workspaceId
   })
 
+  // STATE
+  const [localSearch, setLocalSearch] = useState(search || '')
+
+  // DEBOUNCE
+  const debouncedSearch = useDebounce(localSearch, 300)
+
   // CONST
   const isLoading = isLoadingMembers
 
@@ -43,6 +50,15 @@ export const TaskFilters = () => {
     label: member?.name || '-',
     value: member?.$id || '-'
   }))
+
+  // EFFECTS
+  useEffect(() => {
+    setFilters({ search: debouncedSearch || null })
+  }, [debouncedSearch, setFilters])
+
+  useEffect(() => {
+    setLocalSearch(search || '')
+  }, [search])
 
   // HANDLERS
   const handleStatusChange = (value: string | undefined) => {
@@ -54,8 +70,8 @@ export const TaskFilters = () => {
   const handleDueDateChange = (value: Date | undefined) => {
     setFilters({ dueDate: value?.toISOString() })
   }
-  const handleSearchChange = (value: ChangeEvent<HTMLInputElement>) => {
-    debounce(() => setFilters({ search: value.target.value }), 500)
+  const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setLocalSearch(e.target.value)
   }
 
   if (isLoading) {
@@ -73,7 +89,7 @@ export const TaskFilters = () => {
       {/* SEARCH */}
       <Input
         placeholder='Search tasks'
-        value={search || ''}
+        value={localSearch}
         onChange={handleSearchChange}
         className='w-full lg:w-auto'
       />
@@ -165,14 +181,15 @@ export const TaskFilters = () => {
           variant='ghost'
           size='sm'
           className='h-9'
-          onClick={() =>
+          onClick={() => {
+            setLocalSearch('')
             setFilters({
               status: null,
               assigneeId: null,
               dueDate: null,
               search: null
             })
-          }
+          }}
         >
           <XIcon /> Reset
         </Button>
