@@ -66,7 +66,7 @@ const LoadingGrid = ({ className }: { className?: string }) => (
 
 // EMPTY - NO DATA
 const NoTasksEmpty = () => (
-  <Empty>
+  <Empty className='size-full'>
     <EmptyHeader>
       <EmptyMedia variant='icon'>
         <CheckSquare />
@@ -81,7 +81,7 @@ const NoTasksEmpty = () => (
 
 // EMPTY - NO RESULTS
 const NoSearchResultsEmpty = ({ searchQuery }: { searchQuery: string }) => (
-  <Empty>
+  <Empty className='size-full'>
     <EmptyHeader>
       <EmptyMedia variant='icon'>
         <Search />
