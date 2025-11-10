@@ -9,10 +9,12 @@ import {
 import { routes } from '@/data'
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
 import Link from 'next/link'
+import { usePathname } from 'next/navigation'
 
 export function NavMain() {
   // HOOKS
   const workspaceId = useWorkspaceId()
+  const pathname = usePathname()
 
   // RENDERS
   return (
@@ -20,9 +22,12 @@ export function NavMain() {
       <SidebarGroupLabel>Workspace</SidebarGroupLabel>
       <SidebarMenu>
         {routes.map(({ href, icon, name }) => {
-          const isActive = false
-          const Icon = icon
           const formattedHref = `/dashboard/workspace/${workspaceId}${href}`
+          const isActive =
+            href === '/dashboard'
+              ? pathname === formattedHref
+              : pathname.startsWith(formattedHref)
+          const Icon = icon
 
           return (
             <SidebarMenuButton
