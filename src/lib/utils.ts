@@ -61,23 +61,6 @@ export const checkIsOwner = (
 }
 
 /**
- * Creates a debounced version of a function that delays its execution
- * until after a specified wait time has elapsed since the last call.
- *
- * @param {Function} func - The function to debounce
- * @param {number} wait - The number of milliseconds to delay
- * @returns {Function} The debounced function
- */
-export function debounce(func: () => void, wait: number): () => void {
-  let timeout: NodeJS.Timeout | undefined
-
-  return (...args: Parameters<typeof func>) => {
-    clearTimeout(timeout)
-    timeout = setTimeout(() => func(...args), wait)
-  }
-}
-
-/**
  * Sanitizes HTML content by stripping all HTML tags and returning only the text content
  *
  * @param {string} html - The HTML string to sanitize
