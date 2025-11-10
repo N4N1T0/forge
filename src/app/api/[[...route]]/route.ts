@@ -1,4 +1,5 @@
 import authRoute from '@/features/auth/server/route'
+import dashboardRoute from '@/features/dashboard/server/route'
 import memberRoute from '@/features/members/server/route'
 import projectRoute from '@/features/projects/server/route'
 import taskRoute from '@/features/tasks/server/route'
@@ -13,6 +14,7 @@ const app = new Hono().basePath('/api')
 const routes = app
   .route('/login', authRoute)
   .route('/workspace', workspaceRoute)
+  .route('/dashboard', dashboardRoute)
   .route('/member', memberRoute)
   .route('/project', projectRoute)
   .route('/task', taskRoute)
