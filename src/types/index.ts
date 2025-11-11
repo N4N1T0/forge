@@ -1,3 +1,4 @@
+import { QueryObserverResult } from '@tanstack/react-query'
 import { Models, Role } from 'node-appwrite'
 import { Members, Projects, Status, TaskComments, Tasks } from './appwrite'
 
@@ -66,6 +67,8 @@ export type PopulatedComment = TaskComments & {
 export interface DataViewProps {
   data: FormattedTasks | undefined
   isLoading: boolean
+  error?: boolean
+  refetch?: () => Promise<QueryObserverResult<FormattedTasks>>
 }
 
 export interface DataCalendarFormattedEvents {
