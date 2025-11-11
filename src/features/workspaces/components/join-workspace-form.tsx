@@ -25,7 +25,10 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
   // HANDLERS
   const handlerJoinWorkspace = () => {
     joinWorkspace(
-      { json: { code: inviteCode }, param: { workspaceId } },
+      {
+        json: { code: inviteCode || '' },
+        param: { workspaceId: workspaceId || '' }
+      },
       {
         onSuccess: () => {
           router.push(`/dashboard/workspace/${workspaceId}`)
