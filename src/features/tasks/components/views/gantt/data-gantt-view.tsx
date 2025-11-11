@@ -11,17 +11,27 @@ import {
   GanttToday
 } from '@/components/ui/gantt'
 import { status as statusData } from '@/data'
-import { TaskEmptyView } from '@/features/tasks/components/views'
+import {
+  TaskEmptySearchView,
+  TaskEmptyView
+} from '@/features/tasks/components/views/empty'
 import { TaskContextMenu } from '@/features/tasks/components/views/task-context-menu'
+import { useTaskFilters } from '@/features/tasks/hooks'
 import { useChangeTaskDueDate } from '@/features/tasks/server/patch/use-change-task-due-date'
 import { cn } from '@/lib/utils'
 import { DataViewProps } from '@/types'
 import { useMemo } from 'react'
+import { TaskViewError } from '../task-view-error'
 import { DataGanttSkeleton } from './data-gantt-skeleton'
 
 type DataGanttViewProps = DataViewProps
 
-export const DataGanttView = ({ data, isLoading }: DataGanttViewProps) => {
+export const DataGanttView = ({
+  data,
+  isLoading,
+  error,
+  refetch
+}: DataGanttViewProps) => {
   // DATA
   const features = useMemo(() => {
     return (
@@ -64,6 +74,7 @@ export const DataGanttView = ({ data, isLoading }: DataGanttViewProps) => {
 
   // HOOKS
   const changeDueDate = useChangeTaskDueDate()
+  const { isAnyFilterActive } = useTaskFilters()
 
   // HANDLERS
   const handleMoveFeature = (
@@ -84,10 +95,17 @@ export const DataGanttView = ({ data, isLoading }: DataGanttViewProps) => {
     return <DataGanttSkeleton />
   }
 
-  if (!data || data.length === 0) {
+  if (error && !isLoading) {
+    return <TaskViewError handleRetry={refetch} />
+  }
+
+  if ((!data || data.length === 0) && !isAnyFilterActive) {
     return <TaskEmptyView />
   }
 
+  if ((!data || data.length === 0) && isAnyFilterActive) {
+    return <TaskEmptySearchView />
+  }
   return (
     <GanttProvider className='border mt-2' range='monthly' zoom={100}>
       <GanttTimeline>

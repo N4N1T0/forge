@@ -12,8 +12,13 @@ import {
 } from '@/components/ui/kanban'
 import { Tooltip, TooltipContent } from '@/components/ui/tooltip'
 import { status } from '@/data'
-import { TaskAction, TaskEmptyView } from '@/features/tasks/components/views'
+import { TaskAction, TaskViewError } from '@/features/tasks/components/views'
+import {
+  TaskEmptySearchView,
+  TaskEmptyView
+} from '@/features/tasks/components/views/empty'
 import { TaskKanbanSkeleton } from '@/features/tasks/components/views/kanban'
+import { useTaskFilters } from '@/features/tasks/hooks'
 import { useChangeTaskStatus } from '@/features/tasks/server/patch/use-change-task-status'
 import { formatTaskDate } from '@/features/tasks/utils'
 import { cn, sanitizeHtml } from '@/lib/utils'
@@ -38,9 +43,15 @@ const boards: DataKanbanBoard[] = status.map(({ label, value, color }) => ({
   color
 }))
 
-export const DataKanban = ({ data, isLoading }: DataKanbanProps) => {
+export const DataKanban = ({
+  data,
+  isLoading,
+  error = false,
+  refetch
+}: DataKanbanProps) => {
   // HOOKS
   const { mutate: changeTaskStatus } = useChangeTaskStatus()
+  const { isAnyFilterActive } = useTaskFilters()
 
   // STATE
   const [tasks, setTasks] = useState(
@@ -87,9 +98,16 @@ export const DataKanban = ({ data, isLoading }: DataKanbanProps) => {
     return <TaskKanbanSkeleton />
   }
 
-  // RENDER
-  if (!data || data?.length === 0) {
+  if (error && !isLoading) {
+    return <TaskViewError handleRetry={refetch} />
+  }
+
+  if ((!data || data.length === 0) && !isAnyFilterActive) {
     return <TaskEmptyView />
+  }
+
+  if ((!data || data.length === 0) && isAnyFilterActive) {
+    return <TaskEmptySearchView />
   }
 
   return (

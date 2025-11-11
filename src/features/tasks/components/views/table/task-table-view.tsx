@@ -1,26 +1,45 @@
 'use client'
 
+import { TaskViewError } from '@/features/tasks/components/views'
+import {
+  TaskEmptySearchView,
+  TaskEmptyView
+} from '@/features/tasks/components/views/empty'
+import {
+  DataTable,
+  TaskTableColumns,
+  TaskTableSkeleton
+} from '@/features/tasks/components/views/table'
+import { useTaskFilters } from '@/features/tasks/hooks'
 import { DataViewProps } from '@/types'
-import { TaskEmptyView } from '../task-empty-view'
-import { DataTable } from './data-table'
-import { TaskTableColumns } from './task-table-columns'
-import { TaskTableSkeleton } from './task-table-skeleton'
 
 // TYPES
 type TaskTableViewProps = DataViewProps
 
 export const TaskTableView = ({
-  data = undefined,
-  isLoading
+  data,
+  isLoading,
+  error = false,
+  refetch
 }: TaskTableViewProps) => {
+  // HOOKS
+  const { isAnyFilterActive } = useTaskFilters()
+
   // RENDER
   if (isLoading) {
     return <TaskTableSkeleton />
   }
 
-  // RENDER
-  if (!data || data?.length === 0) {
+  if (error && !isLoading) {
+    return <TaskViewError handleRetry={refetch} />
+  }
+
+  if ((!data || data.length === 0) && !isAnyFilterActive) {
     return <TaskEmptyView />
+  }
+
+  if ((!data || data.length === 0) && isAnyFilterActive) {
+    return <TaskEmptySearchView />
   }
 
   return (

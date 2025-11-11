@@ -1,6 +1,16 @@
 'use client'
 
-import { useTaskViewModal } from '@/features/tasks/hooks'
+import { ModalTaskInfo } from '@/features/tasks/components/info'
+import {
+  DataCalendarEventCard,
+  DataCalendarSkeleton,
+  DataCalendarToolbar
+} from '@/features/tasks/components/views/calendar'
+import {
+  TaskEmptySearchView,
+  TaskEmptyView
+} from '@/features/tasks/components/views/empty'
+import { useTaskFilters, useTaskViewModal } from '@/features/tasks/hooks'
 import { DataCalendarFormattedEvents, DataViewProps } from '@/types'
 import { Tasks } from '@/types/appwrite'
 import {
@@ -15,13 +25,7 @@ import { enUS } from 'date-fns/locale'
 import { useCallback, useState } from 'react'
 import { Calendar, dateFnsLocalizer, NavigateAction } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import {
-  DataCalendarEventCard,
-  DataCalendarSkeleton,
-  DataCalendarToolbar
-} from '.'
-import { ModalTaskInfo } from '../../info'
-import { TaskEmptyView } from '../task-empty-view'
+import { TaskViewError } from '../task-view-error'
 
 type DataCalendarViewProps = DataViewProps
 
@@ -41,10 +45,13 @@ const localizer = dateFnsLocalizer({
 
 export const DataCalendarView = ({
   data,
-  isLoading
+  isLoading,
+  error = false,
+  refetch
 }: DataCalendarViewProps) => {
   // STATE
   const [selectedTask, setSelectedTask] = useState<Tasks | undefined>(undefined)
+  const { isAnyFilterActive } = useTaskFilters()
   const { handleOpen } = useTaskViewModal()
   const [value, setValue] = useState(
     data && data?.length > 0 ? new Date(data?.[0].dueDate) : new Date()
@@ -89,8 +96,16 @@ export const DataCalendarView = ({
     return <DataCalendarSkeleton />
   }
 
-  if (!data || data.length === 0) {
+  if (error && !isLoading) {
+    return <TaskViewError handleRetry={refetch} />
+  }
+
+  if ((!data || data.length === 0) && !isAnyFilterActive) {
     return <TaskEmptyView />
+  }
+
+  if ((!data || data.length === 0) && isAnyFilterActive) {
+    return <TaskEmptySearchView />
   }
 
   return (
