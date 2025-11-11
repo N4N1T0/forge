@@ -11,7 +11,7 @@ import { useMedia } from '@/hooks/use-media'
 import { cn } from '@/lib/utils'
 import * as React from 'react'
 
-interface ResponsiveDrawerProps {
+export interface ResponsiveDrawerProps {
   children: React.ReactNode
   open?: boolean
   onOpenChange?: (open: boolean) => void
@@ -19,6 +19,7 @@ interface ResponsiveDrawerProps {
   description?: string
   className?: string
   hideHeader?: boolean
+  side?: 'left' | 'right'
 }
 
 export function ResponsiveDrawer({
@@ -28,18 +29,19 @@ export function ResponsiveDrawer({
   title,
   description,
   className,
-  hideHeader = false
+  hideHeader = false,
+  side = 'right'
 }: ResponsiveDrawerProps) {
   // HOOKS
   const isDesktop = useMedia('(min-width: 768px)')
-  const direction = isDesktop ? 'right' : 'top'
+  const direction = isDesktop ? side : 'top'
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange} direction={direction}>
       <DrawerContent
         className={cn(
           isDesktop
-            ? 'data-[vaul-drawer-direction=right]:sm:max-w-fit'
+            ? `data-[vaul-drawer-direction=left]:sm:max-w-fit data-[vaul-drawer-direction=right]:sm:max-w-fit`
             : 'max-h-[90vh] p-0',
           className
         )}
