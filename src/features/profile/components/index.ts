@@ -1,0 +1,8 @@
+export { DangerZone } from './danger-zone'
+export { PasswordChangeForm } from './password-change-form'
+export { ProfileHeader } from './profile-header'
+export { ProfileInfoForm } from './profile-info-form'
+export { WorkspaceList } from './workspace-list'
+
+// MFA SECTION
+export { MFASection } from './mfa-section'
