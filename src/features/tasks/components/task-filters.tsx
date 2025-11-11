@@ -31,7 +31,15 @@ import { useEffect, useState } from 'react'
 export const TaskFilters = () => {
   // HOOKS
   const workspaceId = useWorkspaceId()
-  const [{ assigneeId, dueDate, search, status }, setFilters] = useTaskFilters()
+  const {
+    assigneeId,
+    dueDate,
+    search,
+    status,
+    setFilters,
+    resetFilters,
+    isAnyFilterActive
+  } = useTaskFilters()
 
   const { data: members, isLoading: isLoadingMembers } = useGetMembers({
     workspaceId
@@ -72,6 +80,10 @@ export const TaskFilters = () => {
   }
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setLocalSearch(e.target.value)
+  }
+  const handleReset = () => {
+    setLocalSearch('')
+    resetFilters()
   }
 
   if (isLoading) {
@@ -176,21 +188,8 @@ export const TaskFilters = () => {
       </Popover>
 
       {/* RESET BUTTON */}
-      {(status || assigneeId || dueDate || search) && (
-        <Button
-          variant='ghost'
-          size='sm'
-          className='h-9'
-          onClick={() => {
-            setLocalSearch('')
-            setFilters({
-              status: null,
-              assigneeId: null,
-              dueDate: null,
-              search: null
-            })
-          }}
-        >
+      {isAnyFilterActive && (
+        <Button variant='ghost' size='sm' className='h-9' onClick={handleReset}>
           <XIcon /> Reset
         </Button>
       )}
