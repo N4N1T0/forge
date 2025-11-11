@@ -1,4 +1,4 @@
-import { Modal } from '@/components/ui/modal'
+import { Drawer } from '@/components/ui/drawer'
 import { getCurrentAction } from '@/features/auth/actions'
 import { redirect } from 'next/navigation'
 
@@ -10,7 +10,12 @@ export default async function ProfileModal() {
   }
 
   return (
-    <Modal title='Profile' description='Manage your profile settings'>
+    <Drawer
+      title='Profile'
+      description='Manage your profile settings'
+      hideHeader
+      side='left'
+    >
       <div className='p-6 space-y-4'>
         <div>
           <label className='text-sm font-medium'>Name</label>
@@ -21,6 +26,6 @@ export default async function ProfileModal() {
           <p className='text-sm text-muted-foreground'>{user.data.email}</p>
         </div>
       </div>
-    </Modal>
+    </Drawer>
   )
 }

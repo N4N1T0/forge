@@ -1,4 +1,4 @@
-import { Modal } from '@/components/ui/modal'
+import { Drawer } from '@/components/ui/drawer'
 import { getCurrentAction } from '@/features/auth/actions'
 import { getWorkspaceAction } from '@/features/workspaces/actions'
 import EditWorkspacesForm from '@/features/workspaces/components/workspace-edit-form'
@@ -31,10 +31,13 @@ export default async function SettingsModal({ params }: SettingsModalProps) {
   }
 
   return (
-    <Modal>
-      <div className='overflow-auto pb-16 size-full p-6'>
-        <EditWorkspacesForm initialValues={initialValues.data} />
-      </div>
-    </Modal>
+    <Drawer
+      title='Settings'
+      description='Manage your workspace settings'
+      hideHeader
+      side='left'
+    >
+      <EditWorkspacesForm initialValues={initialValues.data} />
+    </Drawer>
   )
 }

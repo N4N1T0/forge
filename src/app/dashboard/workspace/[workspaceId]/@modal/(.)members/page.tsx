@@ -1,4 +1,4 @@
-import { Modal } from '@/components/ui/modal'
+import { Drawer } from '@/components/ui/drawer'
 import { getCurrentAction } from '@/features/auth/actions'
 import MembersList from '@/features/members/components/members-list'
 import { redirect } from 'next/navigation'
@@ -11,10 +11,15 @@ export default async function MembersModal() {
   }
 
   return (
-    <Modal>
+    <Drawer
+      title='Members'
+      description='Manage your workspace members'
+      hideHeader
+      side='left'
+    >
       <div className='w-full lg:max-w-xl mx-auto p-6'>
         <MembersList />
       </div>
-    </Modal>
+    </Drawer>
   )
 }
