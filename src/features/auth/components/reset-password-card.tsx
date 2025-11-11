@@ -18,8 +18,8 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Link } from '@/components/ui/link'
+import { PasswordInput } from '@/components/ui/password-input'
 import { Spinner } from '@/components/ui/spinner'
-import { PasswordInput } from '@/features/auth/components/password-input'
 import {
   UpdatePasswordFormData,
   updatePasswordSchema

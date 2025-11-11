@@ -1,5 +1,6 @@
 import { DynamicIcon, IconName } from 'lucide-react/dynamic'
 
+// TYPES
 interface DynamicIconPosterProps {
   icon?: IconName
 }
