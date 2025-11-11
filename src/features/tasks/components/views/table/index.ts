@@ -1,4 +1,4 @@
-export { DataTable as default } from './data-table'
+export { DataTable } from './data-table'
 export { TaskDateCell } from './task-cell-date'
 export { TaskTableColumns } from './task-table-columns'
 export { TaskTableSkeleton } from './task-table-skeleton'
