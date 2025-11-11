@@ -19,9 +19,9 @@ export interface GetProjectActionProps {
 
 export interface JoinWorkspaceFormProps {
   initialValues: {
-    workspaceId: string
-    name: string
-    inviteCode: string
+    workspaceId: string | null
+    name: string | null
+    inviteCode: string | null
   }
 }
 
