@@ -1,6 +1,6 @@
 'use client'
 
-import { BadgeCheck, Bell, ChevronsUpDown, Coffee, LogOut } from 'lucide-react'
+import { BadgeCheck, ChevronsUpDown, Coffee, LogOut } from 'lucide-react'
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
@@ -20,6 +20,7 @@ import {
 } from '@/components/ui/sidebar'
 import { useLogout } from '@/features/auth/server/use-logout'
 import { useCurrentMember } from '@/features/members/server/use-current-member'
+import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
 import { getInitials } from '@/lib/utils'
 import Link from 'next/link'
 
@@ -28,6 +29,7 @@ export function NavUser() {
   const { isMobile } = useSidebar()
   const { mutate: logout } = useLogout()
   const { data: currentMember } = useCurrentMember()
+  const workspaceId = useWorkspaceId()
 
   // CONST
   const initials = getInitials(currentMember?.name)
@@ -42,13 +44,10 @@ export function NavUser() {
           <DropdownMenuTrigger asChild>
             <SidebarMenuButton
               size='lg'
+              variant='outline'
               className='data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground'
             >
               <Avatar className='h-8 w-8 rounded-lg'>
-                {/* <AvatarImage
-                  src={currentMember?.prefs?.avatar}
-                  alt={currentMember?.name}
-                /> */}
                 <AvatarFallback className='rounded-lg'>
                   {initials}
                 </AvatarFallback>
@@ -71,10 +70,6 @@ export function NavUser() {
             <DropdownMenuLabel className='p-0 font-normal'>
               <div className='flex items-center gap-2 px-1 py-1.5 text-left text-sm'>
                 <Avatar className='h-8 w-8 rounded-lg'>
-                  {/* <AvatarImage
-                  src={currentMember?.prefs?.avatar}
-                  alt={currentMember?.name}
-                /> */}
                   <AvatarFallback className='rounded-lg'>
                     {initials}
                   </AvatarFallback>
@@ -98,13 +93,11 @@ export function NavUser() {
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
-              <DropdownMenuItem>
-                <BadgeCheck />
-                Account
-              </DropdownMenuItem>
-              <DropdownMenuItem>
-                <Bell />
-                Notifications
+              <DropdownMenuItem asChild>
+                <Link href={`/dashboard/workspace/${workspaceId}/profile`}>
+                  <BadgeCheck />
+                  Account
+                </Link>
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
