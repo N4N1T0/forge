@@ -9,7 +9,14 @@ import { AUTH_COOKIE } from '@/features/auth/constants'
 import { AdminMiddleWareContext, MiddleWareContext } from '@/types/functions'
 import { getCookie } from 'hono/cookie'
 import { createMiddleware } from 'hono/factory'
-import { Account, Client, Storage, TablesDB, Users } from 'node-appwrite'
+import {
+  Account,
+  Avatars,
+  Client,
+  Storage,
+  TablesDB,
+  Users
+} from 'node-appwrite'
 
 export const sessionMiddleware = createMiddleware<MiddleWareContext>(
   async (c, next) => {
@@ -33,6 +40,7 @@ export const sessionMiddleware = createMiddleware<MiddleWareContext>(
 
     const account = new Account(client)
     const tables = new TablesDB(client)
+    const avatar = new Avatars(client)
     const storage = new Storage(client)
     const user = await account?.get()
 
@@ -40,6 +48,7 @@ export const sessionMiddleware = createMiddleware<MiddleWareContext>(
     c.set('tables', tables)
     c.set('storage', storage)
     c.set('user', user)
+    c.set('avatar', avatar)
 
     await next()
   }
