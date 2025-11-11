@@ -12,5 +12,5 @@ export default async function Page() {
     return redirect('/create')
   }
 
-  redirect(`/dashboard/workspace/${workspaces.data[0].$id}`)
+  redirect(`/dashboard/workspace/${workspaces.data[0].$id}/dashboard`)
 }
