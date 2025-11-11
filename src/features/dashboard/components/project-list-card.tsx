@@ -3,11 +3,10 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
+import { useGetProjectSummaries } from '@/features/dashboard/server/use-get-project-summaries'
 import { Folder } from 'lucide-react'
 import Link from 'next/link'
-import { useGetProjectSummaries } from '../api/use-get-project-summaries'
-import { DashboardCardError } from './dashboard-card-error'
-import { DashboardCardSkeleton } from './dashboard-card-skeleton'
+import { DashboardCardError, DashboardCardSkeleton } from '.'
 
 interface ProjectListCardProps {
   workspaceId: string

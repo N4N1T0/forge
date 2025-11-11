@@ -6,11 +6,10 @@ import {
   ChartTooltip,
   ChartTooltipContent
 } from '@/components/ui/chart'
+import { useGetTaskStats } from '@/features/dashboard/server/use-get-task-stats'
 import { CheckCircle2, Circle } from 'lucide-react'
 import { Cell, Pie, PieChart } from 'recharts'
-import { useGetTaskStats } from '../api/use-get-task-stats'
-import { DashboardCardError } from './dashboard-card-error'
-import { DashboardCardSkeleton } from './dashboard-card-skeleton'
+import { DashboardCardError, DashboardCardSkeleton } from '.'
 
 interface TaskCompletionCardProps {
   workspaceId: string

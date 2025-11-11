@@ -10,16 +10,13 @@ import {
 } from '@/components/ui/card'
 import { AlertCircle } from 'lucide-react'
 
+// TYPES
 interface DashboardCardErrorProps {
   title?: string
   description?: string
   onRetry?: () => void
 }
 
-/**
- * Reusable error state component for dashboard cards
- * Displays a consistent error UI with optional retry functionality
- */
 export function DashboardCardError({
   title = 'Failed to load data',
   description = 'There was an error loading this information. Please try again.',

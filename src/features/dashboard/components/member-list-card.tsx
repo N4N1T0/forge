@@ -3,20 +3,13 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import { useGetMemberSummaries } from '@/features/dashboard/server/use-get-member-summaries'
+import { getInitials } from '@/lib/utils'
 import { Users } from 'lucide-react'
-import { useGetMemberSummaries } from '../api/use-get-member-summaries'
-import { DashboardCardError } from './dashboard-card-error'
-import { DashboardCardSkeleton } from './dashboard-card-skeleton'
+import { DashboardCardError, DashboardCardSkeleton } from '.'
 
 interface MemberListCardProps {
   workspaceId: string
-}
-
-function getInitials(name: string): string {
-  const parts = name.trim().split(' ')
-  if (parts.length === 0) return '?'
-  if (parts.length === 1) return parts[0].charAt(0).toUpperCase()
-  return (parts[0].charAt(0) + parts[parts.length - 1].charAt(0)).toUpperCase()
 }
 
 export function MemberListCard({ workspaceId }: MemberListCardProps) {
