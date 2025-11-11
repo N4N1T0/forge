@@ -123,7 +123,7 @@ const TaskCreateFormContent = ({
   }, [onCancel])
 
   return (
-    <Card className='size-full overflow-y-auto pt-3.5 pb-0 gap-4'>
+    <Card className='size-full overflow-y-auto pt-3 pb-0 gap-4'>
       <CardHeader className='gap-0 flex justify-between items-center'>
         <div>
           <CardTitle className='text-2xl font-bold text-primary'>
