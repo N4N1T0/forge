@@ -1,6 +1,7 @@
 import authRoute from '@/features/auth/server/route'
 import dashboardRoute from '@/features/dashboard/server/route'
 import memberRoute from '@/features/members/server/route'
+import profileRoute from '@/features/profile/server/route'
 import projectRoute from '@/features/projects/server/route'
 import taskRoute from '@/features/tasks/server/route'
 import workspaceRoute from '@/features/workspaces/server/route'
@@ -18,6 +19,7 @@ const routes = app
   .route('/member', memberRoute)
   .route('/project', projectRoute)
   .route('/task', taskRoute)
+  .route('/profile', profileRoute)
 
 // EXPORT
 export const GET = handle(routes)
