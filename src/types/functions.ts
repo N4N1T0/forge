@@ -1,5 +1,6 @@
 import {
   type Account as AccountType,
+  type Avatars as AvatarType,
   type Models,
   type Storage as StorageType,
   type TablesDB as TablesDBType,
@@ -24,6 +25,7 @@ export type MiddleWareContext = {
     tables: TablesDBType
     storage: StorageType
     user: Models.User<Models.Preferences>
+    avatar: AvatarType
   }
 }
 
