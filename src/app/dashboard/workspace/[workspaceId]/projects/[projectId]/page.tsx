@@ -25,7 +25,7 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
   }
 
   return (
-    <section className='flex flex-col gap-y-4 size-full px-5'>
+    <section className='flex flex-col gap-y-5 size-full px-5'>
       <TaskViewSwitcher initialValues={initialValues.data} />
     </section>
   )
