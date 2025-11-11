@@ -7,7 +7,6 @@ import { ResetPasswordCard } from '@/features/auth/components/reset-password-car
 import { SignInCard } from '@/features/auth/components/sign-in-card'
 import { SignUpCard } from '@/features/auth/components/sign-up-card'
 import { IconName } from 'lucide-react/dynamic'
-import { AnimatePresence, motion } from 'motion/react'
 import { useSearchParams } from 'next/navigation'
 import { Suspense } from 'react'
 
@@ -43,19 +42,7 @@ function AuthContent() {
       <DynamicIconPoster icon={icon as IconName} />
 
       <div className='flex-1 flex items-center justify-center p-4 lg:p-8 bg-background'>
-        <div className='w-full max-w-md'>
-          <AnimatePresence mode='wait'>
-            <motion.div
-              key={tab}
-              initial={{ opacity: 0, y: 20, scale: 0.95 }}
-              animate={{ opacity: 1, y: 0, scale: 1 }}
-              exit={{ opacity: 0, y: -20, scale: 0.95 }}
-              transition={{ duration: 0.4, ease: 'easeInOut' }}
-            >
-              {renderCard()}
-            </motion.div>
-          </AnimatePresence>
-        </div>
+        <div className='w-full max-w-md'>{renderCard()}</div>
       </div>
     </div>
   )
