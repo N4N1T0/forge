@@ -1,6 +1,7 @@
 import { client } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
 
+// HOOK
 export const useCurrent = () => {
   const query = useQuery({
     queryKey: ['current'],

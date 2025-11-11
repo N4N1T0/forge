@@ -13,6 +13,7 @@ type RequestType = InferRequestType<
   (typeof client.api.login)['reset-password']['$post']
 >
 
+// HOOK
 export const useResetPassword = () => {
   const router = useRouter()
   const mutation = useMutation<ResponseType, Error, RequestType>({

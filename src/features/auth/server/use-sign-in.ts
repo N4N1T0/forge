@@ -22,6 +22,7 @@ type RequestType = InferRequestType<
   redirect?: string | null | undefined
 }
 
+// HOOK
 export const useSignIn = () => {
   const router = useRouter()
   const mutation = useMutation<ResponseType, ResponseError, RequestType>({

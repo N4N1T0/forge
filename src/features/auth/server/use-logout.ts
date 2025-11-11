@@ -3,10 +3,12 @@ import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { InferResponseType } from 'hono'
 import { useRouter } from 'next/navigation'
 
+// TYPES
 type ResponseType = InferResponseType<
   (typeof client.api.login)['logout']['$post']
 >
 
+// HOOK
 export const useLogout = () => {
   const router = useRouter()
   const queryClient = useQueryClient()

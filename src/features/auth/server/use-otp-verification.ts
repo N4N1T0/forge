@@ -4,6 +4,7 @@ import type { InferRequestType, InferResponseType } from 'hono/client'
 import { useRouter } from 'next/navigation'
 import { toast } from 'sonner'
 
+// TYPES
 export type ResponseType = InferResponseType<
   (typeof client.api.login)['verify-otp']['$post']
 >
@@ -11,6 +12,7 @@ export type RequestType = InferRequestType<
   (typeof client.api.login)['verify-otp']['$post']
 >
 
+// HOOK
 export const useOtpVerification = () => {
   const router = useRouter()
   return useMutation<ResponseType, Error, RequestType>({

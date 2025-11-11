@@ -3,6 +3,7 @@ import { useMutation } from '@tanstack/react-query'
 import { InferRequestType, InferResponseType } from 'hono'
 import { toast } from 'sonner'
 
+// TYPES
 type ResponseType = InferResponseType<
   (typeof client.api.login)['forgot-password']['$post']
 >
@@ -10,6 +11,7 @@ type RequestType = InferRequestType<
   (typeof client.api.login)['forgot-password']['$post']
 >
 
+// HOOK
 export const useForgotPassword = () => {
   const mutation = useMutation<ResponseType, Error, RequestType>({
     mutationFn: async (json) => {
