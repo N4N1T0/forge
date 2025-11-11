@@ -9,9 +9,9 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
+import { useProjectShortcuts } from '@/features/projects/hooks/use-project-shortcuts'
 import { useGetProjects } from '@/features/projects/server/use-get-projects'
 import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
-import { useProjectShortcuts } from '@/features/projects/hooks/use-project-shortcuts'
 import { Command, Folder } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
@@ -25,7 +25,7 @@ export function Projects() {
     workspaceId: workspace?.$id || ''
   })
 
-  // Keyboard shortcuts: Cmd/Ctrl + <shortcut> and Cmd/Ctrl + +
+  // KBD HOOKS
   useProjectShortcuts({ projects: projects?.rows, workspaceId: workspace?.$id })
 
   if (isLoadingWorkspace || isLoadingProjects) {
