@@ -4,6 +4,7 @@ import JoinWorkspaceForm from '@/features/workspaces/components/join-workspace-f
 import { Params } from '@/types'
 import { redirect } from 'next/navigation'
 
+// TYPES
 interface JoinWorkspacePageProps {
   searchParams: Params
 }
@@ -11,15 +12,18 @@ interface JoinWorkspacePageProps {
 export default async function JoinWorkspacePage({
   searchParams
 }: JoinWorkspacePageProps) {
+  // VALIDATE SEARCH PARAMS
   const { inviteCode, workspaceId, icon } = await searchParams
   const user = await getCurrentAction()
 
+  // VALIDATE USER
   if (!user.success || !user.data) {
     return redirect(
       `/?workspaceId=${workspaceId}&inviteCode=${inviteCode}&icon=${icon}`
     )
   }
 
+  // VALIDATE INVITE CODE AND WORKSPACE ID
   if (!inviteCode || !workspaceId) {
     return redirect('/dashboard')
   }
