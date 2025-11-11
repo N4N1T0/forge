@@ -18,13 +18,6 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import {
   CreateProjectSchema,
@@ -34,6 +27,7 @@ import { useCreateProject } from '@/features/projects/server/use-create-project'
 import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
 import { BaseFormProps } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
@@ -47,7 +41,6 @@ const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
     defaultValues: {
       name: '',
       description: '',
-      projectType: '',
       workspaceId: workspace?.$id || ''
     }
   })
@@ -79,19 +72,32 @@ const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
   }
 
   const handleCancel = () => {
-    form.reset()
+    reset()
     onCancel?.()
   }
 
   return (
-    <Card className='w-full max-w-2xl mx-auto shadow-lg overflow-y-auto'>
-      <CardHeader className='space-y-2'>
-        <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
-          Create Project
-        </CardTitle>
-        <CardDescription className='text-sm md:text-base text-muted-foreground'>
-          Create a new project to organize your work.
-        </CardDescription>
+    <Card className='size-full overflow-y-auto pt-3 pb-0 gap-4'>
+      <CardHeader className='gap-0 flex justify-between items-center'>
+        <div>
+          <CardTitle className='text-2xl font-bold text-primary'>
+            Create Project
+          </CardTitle>
+          <CardDescription className='sr-only'>
+            Create a new project to organize your work.
+          </CardDescription>
+        </div>
+
+        <div>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon'
+            onClick={handleCancel}
+          >
+            <X />
+          </Button>
+        </div>
       </CardHeader>
       <Separator />
       <CardContent>
@@ -168,38 +174,6 @@ const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
                       onChange={field.onChange}
                       disabled={isPending}
                     />
-                  </FormControl>
-                  <FormMessage className='text-red-500' />
-                </FormItem>
-              )}
-            />
-
-            {/* PROJECT TYPE */}
-            <FormField
-              control={control}
-              name='projectType'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-sm font-semibold text-muted-foreground'>
-                    Project Type
-                  </FormLabel>
-                  <FormControl>
-                    <Select
-                      disabled={isPending}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
-                      <SelectTrigger className='w-full'>
-                        <SelectValue placeholder='Select a type' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='software'>Software</SelectItem>
-                        <SelectItem value='marketing'>Marketing</SelectItem>
-                        <SelectItem value='design'>Design</SelectItem>
-                        <SelectItem value='research'>Research</SelectItem>
-                        <SelectItem value='operations'>Operations</SelectItem>
-                      </SelectContent>
-                    </Select>
                   </FormControl>
                   <FormMessage className='text-red-500' />
                 </FormItem>

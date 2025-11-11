@@ -2,7 +2,13 @@
 
 import { RichTextEditor } from '@/components/tiptap/rich-text-editor'
 import { Button } from '@/components/ui/button'
-import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle
+} from '@/components/ui/card'
 import {
   Form,
   FormControl,
@@ -12,13 +18,6 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import {
-  Select,
-  SelectContent,
-  SelectItem,
-  SelectTrigger,
-  SelectValue
-} from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
@@ -31,6 +30,7 @@ import { useUpdateProject } from '@/features/projects/server/use-update-project'
 import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
 import { FormWithInitialValues } from '@/types'
 import { Projects } from '@/types/appwrite'
+import { X } from 'lucide-react'
 
 const EditarProyectoForm = ({
   onCancel,
@@ -39,13 +39,12 @@ const EditarProyectoForm = ({
   // HOOKS
   const { workspace } = useGetCurrentWorkspace()
   const { mutate: actualizarProyecto, isPending } = useUpdateProject()
-  const formulario = useForm<CreateProjectSchema>({
+  const form = useForm<CreateProjectSchema>({
     resolver: zodResolver(createProjectSchema),
     defaultValues: {
       name: initialValues?.name || '',
       shortcut: initialValues?.shortcut || '',
       description: '',
-      projectType: '',
       workspaceId: workspace?.$id || ''
     }
   })
@@ -56,7 +55,7 @@ const EditarProyectoForm = ({
   }
 
   // CONST
-  const { control, handleSubmit } = formulario
+  const { control, handleSubmit, reset } = form
 
   // HANDLERS
   const alEnviar = async (valores: CreateProjectSchema) => {
@@ -78,20 +77,37 @@ const EditarProyectoForm = ({
     )
   }
 
-  const alCancelar = () => {
+  const handleCancel = () => {
+    reset()
     onCancel?.()
   }
 
   return (
-    <Card className='w-full max-w-2xl mx-auto shadow-lg overflow-y-auto'>
-      <CardHeader>
-        <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
-          Edit Project
-        </CardTitle>
+    <Card className='size-full overflow-y-auto pt-3 pb-0 gap-4'>
+      <CardHeader className='gap-0 flex justify-between items-center'>
+        <div>
+          <CardTitle className='text-2xl font-bold text-primary'>
+            Edit Project
+          </CardTitle>
+          <CardDescription className='sr-only'>
+            Edit the project details.
+          </CardDescription>
+        </div>
+
+        <div>
+          <Button
+            type='button'
+            variant='ghost'
+            size='icon'
+            onClick={handleCancel}
+          >
+            <X />
+          </Button>
+        </div>
       </CardHeader>
       <Separator />
       <CardContent>
-        <Form {...formulario}>
+        <Form {...form}>
           <form onSubmit={handleSubmit(alEnviar)} className='space-y-6'>
             <fieldset className='flex gap-4 items-center w-full'>
               <FormField
@@ -170,45 +186,13 @@ const EditarProyectoForm = ({
               )}
             />
 
-            {/* PROJECT TYPE */}
-            <FormField
-              control={control}
-              name='projectType'
-              render={({ field }) => (
-                <FormItem>
-                  <FormLabel className='text-sm font-semibold text-muted-foreground'>
-                    Project Type
-                  </FormLabel>
-                  <FormControl>
-                    <Select
-                      disabled={isPending}
-                      onValueChange={field.onChange}
-                      value={field.value}
-                    >
-                      <SelectTrigger className='w-full'>
-                        <SelectValue placeholder='Select a type' />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value='software'>Software</SelectItem>
-                        <SelectItem value='marketing'>Marketing</SelectItem>
-                        <SelectItem value='design'>Design</SelectItem>
-                        <SelectItem value='research'>Research</SelectItem>
-                        <SelectItem value='operations'>Operations</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  <FormMessage className='text-red-500' />
-                </FormItem>
-              )}
-            />
-
             <Separator />
 
             <div className='flex justify-end items-center gap-3 flex-wrap'>
               <Button
                 type='button'
                 variant='outline'
-                onClick={alCancelar}
+                onClick={handleCancel}
                 className='flex-1'
                 disabled={isPending}
               >
