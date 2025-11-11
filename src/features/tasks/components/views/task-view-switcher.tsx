@@ -27,11 +27,16 @@ export const TaskViewSwitcher = ({
   const [view, setView] = useQueryState('view', {
     defaultValue: 'table'
   })
-  const [{ assigneeId, dueDate, search, status }] = useTaskFilters()
+  const { assigneeId, dueDate, search, status } = useTaskFilters()
 
   // HOOKS
   const { workspaceId, projectId } = useProjectParams()
-  const { data: tasks, isLoading: isLoadingTasks } = useGetTasks({
+  const {
+    data: tasks,
+    isLoading: isLoadingTasks,
+    isError: isErrorTasks,
+    refetch: refetchTasks
+  } = useGetTasks({
     workspaceId,
     projectId,
     assigneeId: assigneeId || undefined,
@@ -87,16 +92,36 @@ export const TaskViewSwitcher = ({
 
         <TooltipProvider>
           <TabsContent value='table' className='mt-0'>
-            <TaskTableView data={tasks} isLoading={isLoadingTasks} />
+            <TaskTableView
+              data={tasks}
+              isLoading={isLoadingTasks}
+              error={isErrorTasks}
+              refetch={refetchTasks}
+            />
           </TabsContent>
           <TabsContent value='kanban' className='mt-0'>
-            <DataKanban data={tasks} isLoading={isLoadingTasks} />
+            <DataKanban
+              data={tasks}
+              isLoading={isLoadingTasks}
+              error={isErrorTasks}
+              refetch={refetchTasks}
+            />
           </TabsContent>
           <TabsContent value='calendar' className='mt-0'>
-            <DataCalendarView data={tasks} isLoading={isLoadingTasks} />
+            <DataCalendarView
+              data={tasks}
+              isLoading={isLoadingTasks}
+              error={isErrorTasks}
+              refetch={refetchTasks}
+            />
           </TabsContent>
           <TabsContent value='gantt' className='mt-0'>
-            <DataGanttView data={tasks} isLoading={isLoadingTasks} />
+            <DataGanttView
+              data={tasks}
+              isLoading={isLoadingTasks}
+              error={isErrorTasks}
+              refetch={refetchTasks}
+            />
           </TabsContent>
         </TooltipProvider>
       </div>
