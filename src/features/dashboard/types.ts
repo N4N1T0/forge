@@ -1,5 +1,3 @@
-// TODO: Add to the cards
-
 /**
  * Task completion statistics
  */

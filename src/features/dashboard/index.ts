@@ -12,7 +12,6 @@ export type {
 // COMPONENTS
 export { DashboardCardError } from './components/dashboard-card-error'
 export { DashboardCardSkeleton } from './components/dashboard-card-skeleton'
-export { DashboardErrorBoundary } from './components/dashboard-error-boundary'
 export { MemberListCard } from './components/member-list-card'
 export { ProjectListCard } from './components/project-list-card'
 export { TaskCompletionCard } from './components/task-completion-card'
@@ -24,7 +23,4 @@ export {
   useGetMemberSummaries,
   useGetProjectSummaries,
   useGetTaskStats
-} from './api'
-
-// QUERY KEYS
-export { dashboardKeys } from './lib/query-keys'
+} from './server'

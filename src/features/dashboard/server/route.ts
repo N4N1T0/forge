@@ -35,7 +35,7 @@ const app = new Hono().get(
     const { users } = await createAdminClient()
 
     try {
-      // Verify user is a member of the workspace
+      // VERIFY USER
       const member = await getMember({
         databases,
         workspaceId,
@@ -52,14 +52,13 @@ const app = new Hono().get(
         )
       }
 
-      // Fetch all tasks for the workspace
+      // FETCH ALL WORKSPACE TASKS
       const tasks = await databases.listRows<Tasks>({
         databaseId: DATABASE_ID,
         tableId: TASKS_COLLECTION_ID,
         queries: [Query.equal('workspaceId', workspaceId)]
       })
 
-      // Calculate task statistics
       const completedTasks = tasks.rows.filter(
         (task) => task.status === Status.DONE
       ).length
@@ -71,7 +70,7 @@ const app = new Hono().get(
         completionRate: totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
       }
 
-      // Fetch all projects for the workspace
+      // FETCH ALL WORKSPACE PROJECTS
       const projects = await databases.listRows<Projects>({
         databaseId: DATABASE_ID,
         tableId: PROJECTS_COLLECTION_ID,
@@ -81,7 +80,6 @@ const app = new Hono().get(
         ]
       })
 
-      // Calculate project summaries with completion rates
       const projectSummaries = projects.rows.map((project) => {
         const projectTasks = tasks.rows.filter(
           (task) => task.projectId === project.$id
@@ -104,14 +102,13 @@ const app = new Hono().get(
         }
       })
 
-      // Fetch all members for the workspace
+      // FETCH ALL WORKSPACE MEMBERS
       const members = await databases.listRows<Members>({
         databaseId: DATABASE_ID,
         tableId: MEMBERS_COLLECTION_ID,
         queries: [Query.equal('workspaceId', workspaceId)]
       })
 
-      // Populate member data with user information
       const memberSummaries = await Promise.all(
         members.rows.map(async (member) => {
           try {
@@ -141,7 +138,6 @@ const app = new Hono().get(
         })
       )
 
-      // Calculate quick stats
       const quickStats = {
         totalProjects: projects.total,
         totalTasks: tasks.total,
