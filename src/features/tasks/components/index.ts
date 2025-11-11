@@ -1,21 +1,21 @@
-// Page components
+// PAGE
 export * from './page'
 
-// Other components
+// OTHERS
 export { ModalTaskWrapper } from './modal-task-wrapper'
 export { TaskFilters } from './task-filters'
 
-// Views
+// VIEWS
 export * from './views'
 
-// Create
+// CREATE
 export * from './create'
 
-// Edit
+// EDIT
 export * from './edit'
 
-// Info
+// INFO
 export * from './info'
 
-// Comments
+// COMMENTS
 export * from './comments'
