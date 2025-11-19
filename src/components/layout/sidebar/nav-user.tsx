@@ -19,7 +19,7 @@ import {
   useSidebar
 } from '@/components/ui/sidebar'
 import { useLogout } from '@/features/auth/hooks/use-logout'
-import { useCurrentMember } from '@/features/members/server/use-current-member'
+import { useCurrentMember } from '@/features/members/hooks/use-current-member'
 import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
 import { getInitials } from '@/lib/utils'
 import Link from 'next/link'
