@@ -60,16 +60,15 @@ export default function TaskListingPage({ params }: TaskListingPageProps) {
   }
 
   return (
-    <div className='flex flex-col size-full max-w-screen-2xl mx-auto p-4'>
+    <section
+      id='workspace-tasks'
+      className='size-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8'
+    >
       {/* HEADER */}
-      <div className='flex flex-col gap-4 mb-6'>
-        <div className='flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4'>
-          <div>
-            <h1 className='text-2xl font-semibold tracking-tight'>Tasks</h1>
-            <p className='text-muted-foreground'>
-              Manage and track all workspace tasks
-            </p>
-          </div>
+      <header className='border-b pb-4 flex justify-between items-center'>
+        <div>
+          <h1 className='text-2xl font-bold tracking-tight'>Members</h1>
+          <p className='text-muted-foreground'>Workspace members list</p>
         </div>
 
         {/* SEARCH */}
@@ -79,7 +78,7 @@ export default function TaskListingPage({ params }: TaskListingPageProps) {
             isSearching={isSearching}
           />
         </div>
-      </div>
+      </header>
 
       {/* NETWORK ERROR BANNER */}
       {isNetworkError && (
@@ -87,7 +86,7 @@ export default function TaskListingPage({ params }: TaskListingPageProps) {
       )}
 
       {/* TASK GRID */}
-      <div className='flex-1'>
+      <div className='flex-1 pt-4'>
         <TaskGrid
           tasks={isNetworkError ? [] : tasks || []}
           members={isNetworkError ? [] : members || []}
@@ -96,6 +95,6 @@ export default function TaskListingPage({ params }: TaskListingPageProps) {
           error={isNetworkError}
         />
       </div>
-    </div>
+    </section>
   )
 }

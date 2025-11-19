@@ -5,6 +5,7 @@ import {
   Card,
   CardContent,
   CardDescription,
+  CardFooter,
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
@@ -85,8 +86,8 @@ export const EditWorkspacesForm = ({
 
   return (
     <div className='flex flex-col gap-3 col-span-3'>
-      <Card className='w-full shadow-lg overflow-y-auto'>
-        <CardHeader className='space-y-2'>
+      <Card className='w-full shadow-lg overflow-y-auto py-4'>
+        <CardHeader>
           <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
             {initialValues?.name ?? 'Edit Workspace'}
           </CardTitle>
@@ -218,7 +219,7 @@ export const EditWorkspacesForm = ({
 
               <Separator />
 
-              <div className='flex justify-end items-center gap-3 flex-wrap'>
+              <CardFooter className='flex justify-end items-center gap-3 flex-wrap px-0 pb-3'>
                 <Button
                   type='button'
                   variant='secondary'
@@ -237,7 +238,7 @@ export const EditWorkspacesForm = ({
                 >
                   {isUpdating ? 'Updating...' : 'Update Workspace'}
                 </Button>
-              </div>
+              </CardFooter>
             </form>
           </Form>
         </CardContent>

@@ -25,7 +25,7 @@ export const MemberItem = ({
 
   return (
     <Fragment key={member.$id}>
-      <TableRow>
+      <TableRow className='border-b'>
         <TableCell>
           <div className='flex items-center gap-2'>
             <MemberAvatar member={member} />

@@ -67,7 +67,7 @@ export const MembersList = () => {
         <p className='text-muted-foreground'>Workspace members list</p>
       </header>
       <Table>
-        <TableHeader>
+        <TableHeader className='bg-muted border'>
           <TableRow>
             <TableHead>Name</TableHead>
             <TableHead>Email</TableHead>
