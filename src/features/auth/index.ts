@@ -2,7 +2,6 @@
 export {
   DynamicIconPoster,
   ForgotPasswordCard,
-  MfaVerificationCard,
   OtpVerificationCard,
   ResetPasswordCard,
   SignInCard,
@@ -14,8 +13,6 @@ export {
   useCurrent,
   useForgotPassword,
   useLogout,
-  useMfaChallenge,
-  useMfaVerification,
   useOtpVerification,
   useResetPassword,
   useSignIn,

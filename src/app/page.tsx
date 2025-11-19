@@ -2,7 +2,6 @@
 
 import { DynamicIconPoster } from '@/features/auth/components/dynamic-icon-poster'
 import { ForgotPasswordCard } from '@/features/auth/components/forgot-password-card'
-import { MfaVerificationCard } from '@/features/auth/components/mfa-verification-card'
 import { OtpVerificationCard } from '@/features/auth/components/otp-verification-card'
 import { ResetPasswordCard } from '@/features/auth/components/reset-password-card'
 import { SignInCard } from '@/features/auth/components/sign-in-card'
@@ -36,8 +35,6 @@ function AuthContent() {
         return <ResetPasswordCard userId={userId} secret={secret} />
       case 'verify-otp':
         return <OtpVerificationCard userId={userId} />
-      case 'verify-mfa':
-        return <MfaVerificationCard />
       default:
         return <SignInCard redirect={redirect} />
     }
