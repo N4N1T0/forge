@@ -83,6 +83,12 @@ export const useSignIn = () => {
             description: 'No account was found with this email address.'
           })
           break
+        case errorMessage.includes('mfa_required'):
+          toast.error('MFA required', {
+            description: 'Multi-factor authentication is required.'
+          })
+          router.push(`/?tab=verify-mfa`)
+          break
         default:
           toast.error('Sign-in error', {
             description: errorMessage
