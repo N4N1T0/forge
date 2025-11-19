@@ -46,7 +46,7 @@ export function WorkspaceDashboard({ workspaceId }: WorkspaceDashboardProps) {
   return (
     <div className='space-y-6'>
       {/* DASHBOARD HEADER */}
-      <header>
+      <header className='border-b pb-4'>
         <h1 className='text-2xl font-bold tracking-tight'>Dashboard</h1>
         <p className='text-muted-foreground'>
           Overview of your workspace activity and metrics
