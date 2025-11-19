@@ -17,10 +17,12 @@ import { ID, Models, OAuthProvider, Query } from 'node-appwrite'
 import z, { ZodError } from 'zod'
 
 // TYPES
+type AuthResponseCurrent =
+  | { success: true; data: string }
+  | { success: false; data: null }
 type AuthResponse =
   | { success: true }
   | { success: false; data: string; userId?: string }
-  | { success: true; data: { url: string } }
 
 // ROUTES
 const app = new Hono()
@@ -28,14 +30,14 @@ const app = new Hono()
   .get('/current', sessionMiddleware, async (c) => {
     try {
       const user = c.get('user')
-      return c.json({
+      return c.json<AuthResponseCurrent>({
         success: true,
-        data: user
+        data: user.$id
       })
-    } catch (error: any) {
-      return c.json<AuthResponse>({
+    } catch (_error) {
+      return c.json<AuthResponseCurrent>({
         success: false,
-        data: error.type
+        data: null
       })
     }
   })
