@@ -6,20 +6,21 @@ import {
   signInSchema,
   signUpSchema,
   updatePasswordSchema
-} from '@/features/auth/schemas/auth-schemas'
+} from '@/features/auth/schemas'
 import { createAdminClient } from '@/lib/appwrite'
 import { adminMiddleware, sessionMiddleware } from '@/lib/middleware'
 import { AdminMiddleWareContext } from '@/types/functions'
 import { zValidator } from '@hono/zod-validator'
 import { Context, Hono } from 'hono'
 import { deleteCookie, setCookie } from 'hono/cookie'
-import { ID, Models, Query } from 'node-appwrite'
-import { ZodError } from 'zod'
+import { ID, Models, OAuthProvider, Query } from 'node-appwrite'
+import z, { ZodError } from 'zod'
 
 // TYPES
 type AuthResponse =
   | { success: true }
   | { success: false; data: string; userId?: string }
+  | { success: true; data: { url: string } }
 
 // ROUTES
 const app = new Hono()
@@ -30,6 +31,31 @@ const app = new Hono()
       data: user
     })
   })
+  // OAUTH LOGIN
+  .get(
+    '/oauth/:provider',
+    zValidator(
+      'param',
+      z.object({ provider: z.enum(Object.values(OAuthProvider)) })
+    ),
+    adminMiddleware,
+    async (c) => {
+      try {
+        const account = c.get('account')
+        const provider = c.req.param('provider') as OAuthProvider
+
+        await account.createOAuth2Token({
+          provider
+        })
+
+        return c.json<AuthResponse>({
+          success: true
+        })
+      } catch (error: any) {
+        return c.json<AuthResponse>({ success: false, data: error.type })
+      }
+    }
+  )
   // SIGN IN
   .post(
     '/sign-in',
