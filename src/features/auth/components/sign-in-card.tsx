@@ -21,11 +21,11 @@ import { Link } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
+import { useSignIn } from '@/features/auth/hooks/use-sign-in'
 import {
   signInSchema,
   type SignInFormData
 } from '@/features/auth/schemas/auth-schemas'
-import { useSignIn } from '@/features/auth/server/use-sign-in'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import { useForm } from 'react-hook-form'

@@ -22,11 +22,11 @@ import { Input } from '@/components/ui/input'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
+import { useSignUp } from '@/features/auth/hooks/use-sign-up'
 import {
   signUpSchema,
   type SignUpFormData
 } from '@/features/auth/schemas/auth-schemas'
-import { useSignUp } from '@/features/auth/server/use-sign-up'
 import { zodResolver } from '@hookform/resolvers/zod'
 import Image from 'next/image'
 import Link from 'next/link'
