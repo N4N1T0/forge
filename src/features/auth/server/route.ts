@@ -24,12 +24,20 @@ type AuthResponse =
 
 // ROUTES
 const app = new Hono()
+  // GET CURRENT USER
   .get('/current', sessionMiddleware, async (c) => {
-    const user = c.get('user')
-    return c.json({
-      success: true,
-      data: user
-    })
+    try {
+      const user = c.get('user')
+      return c.json({
+        success: true,
+        data: user
+      })
+    } catch (error: any) {
+      return c.json<AuthResponse>({
+        success: false,
+        data: error.type
+      })
+    }
   })
   // OAUTH LOGIN
   .get(

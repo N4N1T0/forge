@@ -61,7 +61,7 @@ export const OtpVerificationCard = ({ userId }: OtpVerificationCardProps) => {
     })
   }
 
-  // RENDER
+  // ERROR
   if (isUserIdMissing) {
     return (
       <Card className='w-full max-w-md mx-auto'>

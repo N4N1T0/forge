@@ -3,16 +3,18 @@
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
-import { useGetMemberSummaries } from '@/features/dashboard/server/use-get-member-summaries'
+import { useGetMemberSummaries } from '@/features/dashboard/hooks'
 import { getInitials } from '@/lib/utils'
 import { Users } from 'lucide-react'
 import { DashboardCardError, DashboardCardSkeleton } from '.'
 
+// TYPES
 interface MemberListCardProps {
   workspaceId: string
 }
 
 export function MemberListCard({ workspaceId }: MemberListCardProps) {
+  // HOOKS
   const {
     data: members,
     isLoading,

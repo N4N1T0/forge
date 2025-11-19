@@ -72,7 +72,7 @@ export const ResetPasswordCard = ({
     })
   }
 
-  // RENDER
+  // ERROR
   if (isParamsMissing) {
     return (
       <Card className='w-full max-w-md mx-auto'>

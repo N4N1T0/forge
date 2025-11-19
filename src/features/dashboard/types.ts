@@ -28,7 +28,7 @@ export interface MemberSummary {
   email: string
   role: 'admin' | 'member'
   avatar?: string
-  lastActive?: Date
+  lastActive?: string | undefined
 }
 
 /**

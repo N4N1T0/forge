@@ -37,6 +37,7 @@ const MemberListCard = dynamic(
   }
 )
 
+// TYPES
 interface WorkspaceDashboardProps {
   workspaceId: string
 }
@@ -58,14 +59,17 @@ export function WorkspaceDashboard({ workspaceId }: WorkspaceDashboardProps) {
         role='main'
         aria-label='Dashboard cards'
       >
+        {/* TASK COMPLETION CARD */}
         <div className='md:col-span-1'>
           <TaskCompletionCard workspaceId={workspaceId} />
         </div>
 
+        {/* PROJECT LIST CARD */}
         <div className='md:col-span-1'>
           <ProjectListCard workspaceId={workspaceId} />
         </div>
 
+        {/* MEMBER LIST CARD */}
         <div className='md:col-span-1'>
           <MemberListCard workspaceId={workspaceId} />
         </div>

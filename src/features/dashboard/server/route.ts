@@ -5,37 +5,40 @@ import {
   PROJECTS_COLLECTION_ID,
   TASKS_COLLECTION_ID
 } from '@/config'
+import {
+  MemberSummary,
+  ProjectSummary,
+  TaskStats
+} from '@/features/dashboard/types'
 import { getMember } from '@/features/members/utils'
 import { createAdminClient } from '@/lib/appwrite'
 import { sessionMiddleware } from '@/lib/middleware'
 import { Members, Projects, Status, Tasks } from '@/types/appwrite'
 import { Hono } from 'hono'
 import { AppwriteException, Query } from 'node-appwrite'
-import { DashboardData } from '../types'
 
 // TYPES
-type DashboardResponse =
-  | {
-      success: true
-      data: DashboardData
-    }
-  | {
-      success: false
-      data: string
-    }
+type TaskStatsResponse =
+  | { success: true; data: TaskStats }
+  | { success: false; data: string }
+
+type ProjectSummariesResponse =
+  | { success: true; data: ProjectSummary[] }
+  | { success: false; data: string }
+
+type MemberSummariesResponse =
+  | { success: true; data: MemberSummary[] }
+  | { success: false; data: string }
 
 // ROUTES
-const app = new Hono().get(
-  '/:workspaceId/dashboard',
-  sessionMiddleware,
-  async (c) => {
+const app = new Hono()
+  // GET TASK STATS ONLY
+  .get('/:workspaceId/task-stats', sessionMiddleware, async (c) => {
     const { workspaceId } = c.req.param()
     const databases = c.get('tables')
     const user = c.get('user')
-    const { users } = await createAdminClient()
 
     try {
-      // VERIFY USER
       const member = await getMember({
         databases,
         workspaceId,
@@ -43,16 +46,12 @@ const app = new Hono().get(
       })
 
       if (!member) {
-        return c.json<DashboardResponse>(
-          {
-            success: false,
-            data: 'You are not a member of this workspace'
-          },
+        return c.json<TaskStatsResponse>(
+          { success: false, data: 'You are not a member of this workspace' },
           403
         )
       }
 
-      // FETCH ALL WORKSPACE TASKS
       const tasks = await databases.listRows<Tasks>({
         databaseId: DATABASE_ID,
         tableId: TASKS_COLLECTION_ID,
@@ -64,13 +63,50 @@ const app = new Hono().get(
       ).length
       const totalTasks = tasks.total
 
-      const taskStats = {
+      const taskStats: TaskStats = {
         completed: completedTasks,
         total: totalTasks,
         completionRate: totalTasks > 0 ? (completedTasks / totalTasks) * 100 : 0
       }
 
-      // FETCH ALL WORKSPACE PROJECTS
+      return c.json<TaskStatsResponse>({ success: true, data: taskStats })
+    } catch (error: any) {
+      console.error('Task stats API error:', error)
+      const message =
+        error instanceof AppwriteException
+          ? error.message || 'An Appwrite error occurred'
+          : error.message || 'Failed to fetch task statistics'
+      return c.json<TaskStatsResponse>({ success: false, data: message }, 500)
+    }
+  })
+
+  // GET PROJECT SUMMARIES ONLY
+  .get('/:workspaceId/projects', sessionMiddleware, async (c) => {
+    const { workspaceId } = c.req.param()
+    const databases = c.get('tables')
+    const user = c.get('user')
+
+    try {
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id
+      })
+
+      if (!member) {
+        return c.json<ProjectSummariesResponse>(
+          { success: false, data: 'You are not a member of this workspace' },
+          403
+        )
+      }
+
+      // Fetch tasks once to compute project completion
+      const tasks = await databases.listRows<Tasks>({
+        databaseId: DATABASE_ID,
+        tableId: TASKS_COLLECTION_ID,
+        queries: [Query.equal('workspaceId', workspaceId)]
+      })
+
       const projects = await databases.listRows<Projects>({
         databaseId: DATABASE_ID,
         tableId: PROJECTS_COLLECTION_ID,
@@ -80,36 +116,75 @@ const app = new Hono().get(
         ]
       })
 
-      const projectSummaries = projects.rows.map((project) => {
-        const projectTasks = tasks.rows.filter(
-          (task) => task.projectId === project.$id
-        )
-        const projectCompletedTasks = projectTasks.filter(
-          (task) => task.status === Status.DONE
-        ).length
-        const projectTaskCount = projectTasks.length
+      const projectSummaries: ProjectSummary[] = projects.rows.map(
+        (project) => {
+          const projectTasks = tasks.rows.filter(
+            (task) => task.projectId === project.$id
+          )
+          const projectCompletedTasks = projectTasks.filter(
+            (task) => task.status === Status.DONE
+          ).length
+          const projectTaskCount = projectTasks.length
 
-        return {
-          id: project.$id,
-          name: project.name,
-          completionRate:
-            projectTaskCount > 0
-              ? (projectCompletedTasks / projectTaskCount) * 100
-              : 0,
-          status: 'active' as const,
-          taskCount: projectTaskCount,
-          completedTasks: projectCompletedTasks
+          return {
+            id: project.$id,
+            name: project.name,
+            completionRate:
+              projectTaskCount > 0
+                ? (projectCompletedTasks / projectTaskCount) * 100
+                : 0,
+            status: 'active' as const,
+            taskCount: projectTaskCount,
+            completedTasks: projectCompletedTasks
+          }
         }
+      )
+
+      return c.json<ProjectSummariesResponse>({
+        success: true,
+        data: projectSummaries
+      })
+    } catch (error: any) {
+      console.error('Project summaries API error:', error)
+      const message =
+        error instanceof AppwriteException
+          ? error.message || 'An Appwrite error occurred'
+          : error.message || 'Failed to fetch project summaries'
+      return c.json<ProjectSummariesResponse>(
+        { success: false, data: message },
+        500
+      )
+    }
+  })
+
+  // GET MEMBER SUMMARIES ONLY
+  .get('/:workspaceId/members', sessionMiddleware, async (c) => {
+    const { workspaceId } = c.req.param()
+    const databases = c.get('tables')
+    const user = c.get('user')
+    const { users } = await createAdminClient()
+
+    try {
+      const member = await getMember({
+        databases,
+        workspaceId,
+        userId: user.$id
       })
 
-      // FETCH ALL WORKSPACE MEMBERS
+      if (!member) {
+        return c.json<MemberSummariesResponse>(
+          { success: false, data: 'You are not a member of this workspace' },
+          403
+        )
+      }
+
       const members = await databases.listRows<Members>({
         databaseId: DATABASE_ID,
         tableId: MEMBERS_COLLECTION_ID,
         queries: [Query.equal('workspaceId', workspaceId)]
       })
 
-      const memberSummaries = await Promise.all(
+      const memberSummaries: MemberSummary[] = await Promise.all(
         members.rows.map(async (member) => {
           try {
             const userInfo = await users.get({
@@ -138,46 +213,21 @@ const app = new Hono().get(
         })
       )
 
-      const quickStats = {
-        totalProjects: projects.total,
-        totalTasks: tasks.total,
-        totalMembers: members.total,
-        recentActivity: 0 // TODO: Implement activity tracking
-      }
-
-      const dashboardData: DashboardData = {
-        taskStats,
-        projects: projectSummaries,
-        members: memberSummaries,
-        quickStats
-      }
-
-      return c.json<DashboardResponse>({
+      return c.json<MemberSummariesResponse>({
         success: true,
-        data: dashboardData
+        data: memberSummaries
       })
     } catch (error: any) {
-      console.error('Dashboard API error:', error)
-
-      if (error instanceof AppwriteException) {
-        return c.json<DashboardResponse>(
-          {
-            success: false,
-            data: error.message || 'An Appwrite error occurred'
-          },
-          500
-        )
-      }
-
-      return c.json<DashboardResponse>(
-        {
-          success: false,
-          data: error.message || 'Failed to fetch dashboard data'
-        },
+      console.error('Member summaries API error:', error)
+      const message =
+        error instanceof AppwriteException
+          ? error.message || 'An Appwrite error occurred'
+          : error.message || 'Failed to fetch member summaries'
+      return c.json<MemberSummariesResponse>(
+        { success: false, data: message },
         500
       )
     }
-  }
-)
+  })
 
 export default app

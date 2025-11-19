@@ -3,16 +3,18 @@
 import { Badge } from '@/components/ui/badge'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Progress } from '@/components/ui/progress'
-import { useGetProjectSummaries } from '@/features/dashboard/server/use-get-project-summaries'
+import { useGetProjectSummaries } from '@/features/dashboard/hooks'
 import { Folder } from 'lucide-react'
 import Link from 'next/link'
 import { DashboardCardError, DashboardCardSkeleton } from '.'
 
+// TYPES
 interface ProjectListCardProps {
   workspaceId: string
 }
 
 export function ProjectListCard({ workspaceId }: ProjectListCardProps) {
+  // HOOKS
   const {
     data: projects,
     isLoading,

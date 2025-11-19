@@ -6,11 +6,12 @@ import {
   ChartTooltip,
   ChartTooltipContent
 } from '@/components/ui/chart'
-import { useGetTaskStats } from '@/features/dashboard/server/use-get-task-stats'
+import { useGetTaskStats } from '@/features/dashboard/hooks'
 import { CheckCircle2, Circle } from 'lucide-react'
 import { Cell, Pie, PieChart } from 'recharts'
 import { DashboardCardError, DashboardCardSkeleton } from '.'
 
+// TYPES
 interface TaskCompletionCardProps {
   workspaceId: string
 }
@@ -28,6 +29,7 @@ const chartConfig = {
 }
 
 export function TaskCompletionCard({ workspaceId }: TaskCompletionCardProps) {
+  // HOOKS
   const {
     data: taskStats,
     isLoading,
@@ -62,6 +64,7 @@ export function TaskCompletionCard({ workspaceId }: TaskCompletionCardProps) {
     )
   }
 
+  // CONST
   const { completed, total, completionRate } = taskStats
   const pending = total - completed
 
