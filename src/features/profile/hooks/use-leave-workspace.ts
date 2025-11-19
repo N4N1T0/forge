@@ -67,8 +67,7 @@ export const useLeaveWorkspace = () => {
         queryClient.setQueryData(['profile'], context.previousProfile)
       }
 
-      const errorMessage =
-        error.message || 'Error leaving the workspace'
+      const errorMessage = error.message || 'Error leaving the workspace'
 
       // Handle specific error cases
       if (errorMessage.includes('last admin')) {
