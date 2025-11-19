@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetMembers } from '@/features/members/server/use-get-members'
+import { useGetMembers } from '@/features/members/hooks/use-get-members'
 import { TaskGrid } from '@/features/tasks/components/page/task-grid'
 import { TaskPageNetworkError } from '@/features/tasks/components/page/task-page-errors'
 import { TaskSearchComponent } from '@/features/tasks/components/page/task-search'

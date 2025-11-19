@@ -21,8 +21,11 @@ export default async function WorkspacePage({ params }: WorkspacePageProps) {
   }
 
   return (
-    <div className='size-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8'>
+    <section
+      id='workspace-dashboard'
+      className='size-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8'
+    >
       <WorkspaceDashboard workspaceId={workspaceId} />
-    </div>
+    </section>
   )
 }
