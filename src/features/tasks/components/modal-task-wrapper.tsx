@@ -1,6 +1,6 @@
 'use client'
 
-import { useCurrent } from '@/features/auth/server/use-current'
+import { useCurrent } from '@/features/auth'
 import { useGetMembers } from '@/features/members/server/use-get-members'
 import { useProjectId } from '@/features/projects/hooks/use-project-id'
 import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
