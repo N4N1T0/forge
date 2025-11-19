@@ -1,6 +1,6 @@
 import { getCurrentAction } from '@/features/auth/actions'
 import { getWorkspaceAction } from '@/features/workspaces/actions'
-import EditWorkspacesForm from '@/features/workspaces/components/workspace-edit-form'
+import { PageSettings } from '@/features/workspaces/components/page/page-settings'
 import { Params } from '@/types'
 import { redirect } from 'next/navigation'
 
@@ -32,8 +32,11 @@ export default async function WorkspacePageSettings({
   }
 
   return (
-    <div className='overflow-auto pb-16 size-full'>
-      <EditWorkspacesForm initialValues={initialValues.data} />
-    </div>
+    <section
+      id='workspace-settings'
+      className='size-full max-w-screen-2xl mx-auto px-4 sm:px-6 lg:px-8'
+    >
+      <PageSettings initialValues={initialValues.data} />
+    </section>
   )
 }

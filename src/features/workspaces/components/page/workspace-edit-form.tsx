@@ -20,41 +20,28 @@ import { Icon, IconName, IconPicker } from '@/components/ui/icon-picker'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
-import { useCurrentMember } from '@/features/members'
 import {
   CreateWorkspacesSchema,
   createWorkspacesSchema
 } from '@/features/workspaces/schema'
-import { useDeleteWorkspace } from '@/features/workspaces/server/use-delete-workspace'
 import { useUpdateWorkspace } from '@/features/workspaces/server/use-update-workspace'
-import { useConfirm } from '@/hooks/use-confirm'
-import { checkIsOwner, generateSlug } from '@/lib/utils'
+import { generateSlug } from '@/lib/utils'
 import { FormWithInitialValues } from '@/types'
 import { Workspaces } from '@/types/appwrite'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { LinkIcon, Loader } from 'lucide-react'
-import { useRouter } from 'next/navigation'
+import { LinkIcon } from 'lucide-react'
 import { useRef } from 'react'
 import { useForm } from 'react-hook-form'
 import { toast } from 'sonner'
 
-const EditWorkspacesForm = ({
+export const EditWorkspacesForm = ({
   onCancel,
   initialValues
 }: FormWithInitialValues<Workspaces>) => {
   // HOOKS
-  const router = useRouter()
-  const { data: currentMember, isLoading } = useCurrentMember()
   const { mutate: updateWorkspace, isPending: isUpdating } =
     useUpdateWorkspace()
-  const { mutate: deleteWorkspace, isPending: isDeleting } =
-    useDeleteWorkspace()
   const inputRef = useRef<HTMLInputElement>(null)
-  const [confirmDelete, DeleteWorkspaceModal] = useConfirm(
-    'Eliminar Espacio de Trabajo',
-    '¿Estás seguro de eliminar este espacio de trabajo?',
-    'destructive'
-  )
 
   // FORM
   const form = useForm<CreateWorkspacesSchema>({
@@ -90,22 +77,6 @@ const EditWorkspacesForm = ({
     onCancel?.()
   }
 
-  const handleDelete = async () => {
-    const ok = await confirmDelete()
-    if (!ok) {
-      return null
-    }
-
-    deleteWorkspace(
-      { param: { workspaceId: initialValues?.$id } },
-      {
-        onSuccess: () => {
-          router.replace('/dashboard')
-        }
-      }
-    )
-  }
-
   const handleCopyInviteCode = () => {
     navigator.clipboard.writeText(fullInviteCode).then(() => {
       toast.success('Código de invitación copiado al portapapeles')
@@ -113,7 +84,7 @@ const EditWorkspacesForm = ({
   }
 
   return (
-    <div className='flex flex-col gap-3 max-w-2xl mx-auto'>
+    <div className='flex flex-col gap-3 col-span-3'>
       <Card className='w-full shadow-lg overflow-y-auto'>
         <CardHeader className='space-y-2'>
           <CardTitle className='text-2xl md:text-3xl font-bold text-primary'>
@@ -138,14 +109,14 @@ const EditWorkspacesForm = ({
                       </FormLabel>
                       <IconPicker
                         value={field.value}
-                        disabled={isUpdating || isDeleting}
+                        disabled={isUpdating}
                         onValueChange={(icon) => field.onChange(icon)}
                       >
                         <Button
                           variant='outline'
                           size='icon'
                           className='aspect-square size-12'
-                          disabled={isUpdating || isDeleting}
+                          disabled={isUpdating}
                         >
                           {field.value ? (
                             <Icon name={field.value} />
@@ -173,7 +144,7 @@ const EditWorkspacesForm = ({
                           placeholder='Salamanders'
                           className='h-12 focus:ring-2 w-full'
                           autoComplete='on'
-                          disabled={isUpdating || isDeleting}
+                          disabled={isUpdating}
                         />
                       </FormControl>
                       <FormMessage className='text-red-500' />
@@ -195,7 +166,7 @@ const EditWorkspacesForm = ({
                         {...field}
                         placeholder='Into the fires of battle, unto the anvil of war!'
                         className='h-12 focus:ring-2'
-                        disabled={isUpdating || isDeleting}
+                        disabled={isUpdating}
                       />
                     </FormControl>
                     <FormMessage className='text-red-500' />
@@ -226,7 +197,7 @@ const EditWorkspacesForm = ({
                                 'salamanders')
                             }
                             type='text'
-                            disabled={isUpdating || isDeleting}
+                            disabled={isUpdating}
                           />
                         </div>
                         <Button
@@ -234,7 +205,7 @@ const EditWorkspacesForm = ({
                           variant='secondary'
                           className='h-12 aspect-square w-auto'
                           onClick={handleCopyInviteCode}
-                          disabled={isUpdating || isDeleting}
+                          disabled={isUpdating}
                         >
                           <LinkIcon />
                         </Button>
@@ -253,7 +224,7 @@ const EditWorkspacesForm = ({
                   variant='secondary'
                   size='lg'
                   onClick={handleCancel}
-                  disabled={isUpdating || isDeleting}
+                  disabled={isUpdating}
                   className='flex-1'
                 >
                   Cancel
@@ -261,7 +232,7 @@ const EditWorkspacesForm = ({
                 <Button
                   type='submit'
                   size='lg'
-                  disabled={isUpdating || isDeleting}
+                  disabled={isUpdating}
                   className='flex-1'
                 >
                   {isUpdating ? 'Updating...' : 'Update Workspace'}
@@ -271,44 +242,6 @@ const EditWorkspacesForm = ({
           </Form>
         </CardContent>
       </Card>
-
-      {/* DANGER ZONE */}
-      {checkIsOwner(currentMember, initialValues) && !isLoading && (
-        <>
-          {/* DELETE CARD */}
-          <Card className='max-w-2xl border-destructive'>
-            <CardHeader>
-              <CardTitle>Danger Zone</CardTitle>
-              <CardDescription>
-                Deleting a workspace is irreversible and will remove all
-                associated data.
-              </CardDescription>
-            </CardHeader>
-            <CardContent>
-              <Button
-                type='button'
-                variant='destructive'
-                onClick={handleDelete}
-                disabled={isDeleting || isUpdating}
-              >
-                {isDeleting ? (
-                  <>
-                    <Loader className='mr-2 h-4 w-4 animate-spin' />
-                    Deleting...
-                  </>
-                ) : (
-                  'Delete Workspace'
-                )}
-              </Button>
-            </CardContent>
-          </Card>
-
-          {/* DELETE MODAL */}
-          <DeleteWorkspaceModal />
-        </>
-      )}
     </div>
   )
 }
-
-export default EditWorkspacesForm
