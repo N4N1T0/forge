@@ -2,13 +2,12 @@
 
 import {
   DangerZone,
-  MFASection,
   PasswordChangeForm,
   ProfileHeader,
   ProfileInfoForm,
   WorkspaceList
 } from '@/features/profile/components'
-import { useGetProfile } from '@/features/profile/server/use-get-profile'
+import { useGetProfile } from '@/features/profile/hooks/use-get-profile'
 import { Loader } from 'lucide-react'
 
 export default function ProfilePage() {
@@ -40,10 +39,9 @@ export default function ProfilePage() {
       <ProfileInfoForm initialName={profile.name} initialBio={profile.bio} />
       <div className='col-span-1 md:col-span-2 flex flex-col gap-4'>
         <PasswordChangeForm email={profile.email} />
-        <MFASection mfaEnabled={profile.mfaEnabled} />
+        <DangerZone userEmail={profile.email} />
       </div>
       <WorkspaceList />
-      <DangerZone userEmail={profile.email} />
     </div>
   )
 }
