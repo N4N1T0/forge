@@ -2,6 +2,7 @@
 export {
   DynamicIconPoster,
   ForgotPasswordCard,
+  MfaVerificationCard,
   OtpVerificationCard,
   ResetPasswordCard,
   SignInCard,
@@ -13,11 +14,13 @@ export {
   useCurrent,
   useForgotPassword,
   useLogout,
+  useMfaChallenge,
+  useMfaVerification,
   useOtpVerification,
   useResetPassword,
   useSignIn,
   useSignUp
-} from './server'
+} from './hooks'
 
 // ACTIONS
 export { getCurrentAction } from './actions'
