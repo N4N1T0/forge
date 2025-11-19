@@ -24,7 +24,7 @@ export const EditorToolbar = ({
   disabled: boolean | undefined
 }) => {
   return (
-    <div className='w-fit border-b bg-muted border border-input hidden sm:block'>
+    <div className='w-full border-b bg-muted border border-input hidden sm:block'>
       <ToolbarProvider editor={editor}>
         <TooltipProvider>
           <ScrollArea className='h-fit py-0.5'>
