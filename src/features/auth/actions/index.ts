@@ -1,4 +1,4 @@
-import 'server-only'
+'use server'
 
 import { createSessionClient } from '@/lib/appwrite'
 
