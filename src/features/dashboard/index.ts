@@ -19,8 +19,7 @@ export { WorkspaceDashboard } from './components/workspace-dashboard'
 
 // HOOKS
 export {
-  useGetDashboardData,
   useGetMemberSummaries,
   useGetProjectSummaries,
   useGetTaskStats
-} from './server'
+} from './hooks'
