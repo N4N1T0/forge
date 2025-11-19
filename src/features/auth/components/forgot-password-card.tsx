@@ -20,11 +20,11 @@ import {
 import { Input } from '@/components/ui/input'
 import { Link } from '@/components/ui/link'
 import { Separator } from '@/components/ui/separator'
+import { useForgotPassword } from '@/features/auth/hooks/use-forgot-password'
 import {
   resetPasswordSchema,
   type ResetPasswordFormData
 } from '@/features/auth/schemas/auth-schemas'
-import { useForgotPassword } from '@/features/auth/server/use-forgot-password'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'
