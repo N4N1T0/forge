@@ -34,7 +34,7 @@ export default function ProfilePage() {
   }
 
   return (
-    <div className='size-full max-w-7xl grid grid-cols-5 px-5 gap-5 py-10'>
+    <div className='size-full max-w-screen-2xl grid grid-cols-5 px-2 sm:px-5 md:px-8 gap-5'>
       <ProfileHeader name={profile.name} email={profile.email} />
       <ProfileInfoForm initialName={profile.name} initialBio={profile.bio} />
       <div className='col-span-1 md:col-span-2 flex flex-col gap-4'>

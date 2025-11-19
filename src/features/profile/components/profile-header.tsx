@@ -12,7 +12,7 @@ export function ProfileHeader({ name, email }: ProfileHeaderProps) {
   const initials = getInitials(name)
 
   return (
-    <div className='flex items-center gap-4 col-span-1 md:col-span-5'>
+    <div className='flex items-center gap-4 col-span-1 md:col-span-5 border-b pb-4'>
       <Avatar className='size-16'>
         <AvatarFallback className='text-lg'>{initials}</AvatarFallback>
       </Avatar>
