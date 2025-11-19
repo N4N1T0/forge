@@ -58,8 +58,14 @@ export const otpSchema = z.object({
   secret: z.string().min(4, 'Código demasiado corto').max(10, 'Código inválido')
 })
 
+export const mfaChallengeSchema = z.object({
+  challengeId: z.string().min(1),
+  otp: z.string().min(1)
+})
+
 export type OtpFormData = z.infer<typeof otpSchema>
 export type UpdatePasswordFormData = z.infer<typeof updatePasswordSchema>
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>
 export type SignInFormData = z.infer<typeof signInSchema>
 export type SignUpFormData = z.infer<typeof signUpSchema>
+export type MfaChallengeFormData = z.infer<typeof mfaChallengeSchema>
