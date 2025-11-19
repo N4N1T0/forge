@@ -9,17 +9,15 @@ import {
   deleteAccountSchema,
   DeleteAccountSchema,
   updateProfileSchema,
-  UpdateProfileSchema,
-  verifyMFASchema,
-  VerifyMFASchema
-} from '@/features/profile/schemas/profile-schemas'
+  UpdateProfileSchema
+} from '@/features/profile/schemas'
 import { ProfileData } from '@/features/profile/types'
 import { createAdminClient } from '@/lib/appwrite'
 import { sessionMiddleware } from '@/lib/middleware'
 import { Members, Role, Workspaces } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'
 import { Hono } from 'hono'
-import { AuthenticatorType, Query } from 'node-appwrite'
+import { Query } from 'node-appwrite'
 
 // TYPES
 type ProfileResponse =
@@ -32,18 +30,6 @@ type UpdateResponse =
 
 type PasswordResponse =
   | { success: true; data: { message: string } }
-  | { success: false; data: string }
-
-type MFAResponse =
-  | { success: true; data: { qr: string; challengeId: string } }
-  | { success: false; data: string }
-
-type MFADisableResponse =
-  | { success: true; data: { message: string } }
-  | { success: false; data: string }
-
-type MFAVerifyResponse =
-  | { success: true; data: { message: string; recoveryCodes: string[] } }
   | { success: false; data: string }
 
 type LeaveWorkspaceResponse =
@@ -185,93 +171,6 @@ const app = new Hono()
       }
     }
   )
-  // MFA ENABLE
-  .post('/mfa/enable', sessionMiddleware, async (c) => {
-    try {
-      const account = c.get('account')
-      const avatars = c.get('avatar')
-
-      const mfaChallenge = await account.createMFAAuthenticator({
-        type: AuthenticatorType.Totp
-      })
-
-      const result = await avatars.getQR({
-        text: mfaChallenge.uri,
-        size: 800,
-        margin: 0,
-        download: false
-      })
-
-      const buffer = Buffer.from(result)
-      const base64String = buffer.toString('base64')
-      const dataUrl = `data:image/png;base64,${base64String}`
-
-      return c.json<MFAResponse>({
-        success: true,
-        data: {
-          qr: dataUrl,
-          challengeId: mfaChallenge.secret
-        }
-      })
-    } catch (error) {
-      return c.json<MFAResponse>({
-        success: false,
-        data: error instanceof Error ? error.message : 'Failed to enable MFA'
-      })
-    }
-  })
-  // MFA VERIFY
-  .post(
-    '/mfa/verify',
-    sessionMiddleware,
-    zValidator('json', verifyMFASchema),
-    async (c) => {
-      try {
-        const account = c.get('account')
-        const { otp } = c.req.valid('json') as VerifyMFASchema
-
-        await account.updateMFAAuthenticator({
-          type: AuthenticatorType.Totp,
-          otp
-        })
-
-        const recoveryCodesResponse = await account.createMFARecoveryCodes()
-
-        return c.json<MFAVerifyResponse>({
-          success: true,
-          data: {
-            message: 'MFA verified successfully',
-            recoveryCodes: recoveryCodesResponse.recoveryCodes
-          }
-        })
-      } catch (error) {
-        return c.json<MFAVerifyResponse>({
-          success: false,
-          data: error instanceof Error ? error.message : 'Failed to verify MFA'
-        })
-      }
-    }
-  )
-  // MFA DISABLE
-  .post('/mfa/disable', sessionMiddleware, async (c) => {
-    try {
-      const account = c.get('account')
-
-      await account.deleteMFAAuthenticator({
-        type: AuthenticatorType.Totp
-      })
-
-      return c.json<MFADisableResponse>({
-        success: true,
-        data: { message: 'MFA disabled successfully' }
-      })
-    } catch (error) {
-      return c.json<MFADisableResponse>({
-        success: false,
-        data: error instanceof Error ? error.message : 'Failed to disable MFA'
-      })
-    }
-  })
   // LEAVE WORKSPACES
   .delete('/workspace/:workspaceId', sessionMiddleware, async (c) => {
     try {
