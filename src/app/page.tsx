@@ -2,6 +2,7 @@
 
 import { DynamicIconPoster } from '@/features/auth/components/dynamic-icon-poster'
 import { ForgotPasswordCard } from '@/features/auth/components/forgot-password-card'
+import { MfaVerificationCard } from '@/features/auth/components/mfa-verification-card'
 import { OtpVerificationCard } from '@/features/auth/components/otp-verification-card'
 import { ResetPasswordCard } from '@/features/auth/components/reset-password-card'
 import { SignInCard } from '@/features/auth/components/sign-in-card'
@@ -19,7 +20,10 @@ function AuthContent() {
   const inviteCode = searchParams.get('inviteCode')
   const userId = searchParams.get('userId') || ''
   const secret = searchParams.get('secret') || ''
-  const redirect = `/join?workspaceId=${workspaceId}&icon=${icon}&inviteCode=${inviteCode}&userId=${userId}&secret=${secret}`
+  const redirect =
+    workspaceId && icon && inviteCode && userId && secret
+      ? `/join?workspaceId=${workspaceId}&icon=${icon}&inviteCode=${inviteCode}&userId=${userId}&secret=${secret}`
+      : null
 
   // RENDER
   const renderCard = () => {
@@ -32,6 +36,8 @@ function AuthContent() {
         return <ResetPasswordCard userId={userId} secret={secret} />
       case 'verify-otp':
         return <OtpVerificationCard userId={userId} />
+      case 'verify-mfa':
+        return <MfaVerificationCard />
       default:
         return <SignInCard redirect={redirect} />
     }
@@ -53,7 +59,7 @@ export default function AuthHomePage() {
     <Suspense
       fallback={
         <div className='min-h-screen flex items-center justify-'>
-          Cargando...
+          Loading...
         </div>
       }
     >
