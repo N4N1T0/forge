@@ -20,11 +20,11 @@ import {
 import { Link } from '@/components/ui/link'
 import { PasswordInput } from '@/components/ui/password-input'
 import { Spinner } from '@/components/ui/spinner'
+import { useResetPassword } from '@/features/auth/hooks/use-reset-password'
 import {
   UpdatePasswordFormData,
   updatePasswordSchema
 } from '@/features/auth/schemas/auth-schemas'
-import { useResetPassword } from '@/features/auth/server/use-reset-password'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 
