@@ -50,9 +50,9 @@ export const useSignIn = () => {
       const errorMessage = message || 'Sign-in error'
 
       switch (true) {
-        case errorMessage.includes('suspicious_login_detected'):
-          toast.warning('Invalid credentials', {
-            description: 'A suspicious sign-in attempt was detected.'
+        case errorMessage.includes('mfa_required'):
+          toast.warning('MFA required', {
+            description: 'Multi-factor authentication is required.'
           })
           router.push(`/?tab=verify-otp&userId=${userId}`)
           break
@@ -82,12 +82,6 @@ export const useSignIn = () => {
           toast.error('User not found', {
             description: 'No account was found with this email address.'
           })
-          break
-        case errorMessage.includes('mfa_required'):
-          toast.error('MFA required', {
-            description: 'Multi-factor authentication is required.'
-          })
-          router.push(`/?tab=verify-mfa`)
           break
         default:
           toast.error('Sign-in error', {
