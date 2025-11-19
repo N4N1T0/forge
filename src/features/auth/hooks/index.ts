@@ -2,8 +2,6 @@
 export { useCurrent } from './use-current'
 export { useForgotPassword } from './use-forgot-password'
 export { useLogout } from './use-logout'
-export { useMfaChallenge } from './use-mfa-challenge'
-export { useMfaVerification } from './use-mfa-verification'
 export { useOtpVerification } from './use-otp-verification'
 export { useResetPassword } from './use-reset-password'
 export { useSignIn } from './use-sign-in'
