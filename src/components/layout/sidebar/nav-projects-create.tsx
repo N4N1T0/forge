@@ -8,13 +8,11 @@ export const NavProjectCreate = () => {
     <ModalProjectForm className='w-full'>
       <SidebarMenuButton
         tooltip='Create project'
-        className='w-full flex justify-between'
+        className='w-full'
         variant='outline'
       >
-        <span className='flex gap-2 justify-center items-center w-fit'>
-          <Plus className='size-3' /> Create project
-        </span>
-        <KbdGroup>
+        <Plus className='size-3' /> Create project
+        <KbdGroup className='ml-auto'>
           <Kbd>⌘</Kbd>
           <Kbd>+</Kbd>
         </KbdGroup>
