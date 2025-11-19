@@ -17,11 +17,11 @@ import {
   FormMessage
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
+import { useChangePassword } from '@/features/profile/hooks/use-change-password'
 import {
   changePasswordSchema,
   ChangePasswordSchema
-} from '@/features/profile/schemas/profile-schemas'
-import { useChangePassword } from '@/features/profile/server/use-change-password'
+} from '@/features/profile/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Eye, EyeOff } from 'lucide-react'
 import { useState } from 'react'

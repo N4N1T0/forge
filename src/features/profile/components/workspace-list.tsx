@@ -23,8 +23,8 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { useGetProfile } from '@/features/profile/server/use-get-profile'
-import { useLeaveWorkspace } from '@/features/profile/server/use-leave-workspace'
+import { useGetProfile } from '@/features/profile/hooks/use-get-profile'
+import { useLeaveWorkspace } from '@/features/profile/hooks/use-leave-workspace'
 import { useConfirm } from '@/hooks/use-confirm'
 import { Role } from '@/types/appwrite'
 import { Loader, LogOut } from 'lucide-react'
@@ -49,12 +49,10 @@ export function WorkspaceList() {
 
   if (isLoading) {
     return (
-      <Card className='col-span-1 md:col-span-3'>
+      <Card className='col-span-1 md:col-span-5'>
         <CardHeader>
           <CardTitle>My workspaces</CardTitle>
-          <CardDescription>
-            Manage your workspace memberships
-          </CardDescription>
+          <CardDescription>Manage your workspace memberships</CardDescription>
         </CardHeader>
         <CardContent>
           <div className='flex items-center justify-center py-8'>
@@ -71,13 +69,11 @@ export function WorkspaceList() {
   )
 
   return (
-    <div className='col-span-1 md:col-span-3'>
+    <div className='col-span-1 md:col-span-5'>
       <Card>
         <CardHeader>
           <CardTitle>My workspaces</CardTitle>
-          <CardDescription>
-            Manage your workspace memberships
-          </CardDescription>
+          <CardDescription>Manage your workspace memberships</CardDescription>
         </CardHeader>
         <CardContent>
           {sortedWorkspaces.length === 0 ? (
@@ -104,8 +100,7 @@ export function WorkspaceList() {
                 </TableHeader>
                 <TableBody>
                   {sortedWorkspaces.map(({ workspace, role, isLastAdmin }) => {
-                    const roleLabel =
-                      role === Role.ADMIN ? 'Admin' : 'Member'
+                    const roleLabel = role === Role.ADMIN ? 'Admin' : 'Member'
                     const roleVariant =
                       role === Role.ADMIN ? 'default' : 'secondary'
 

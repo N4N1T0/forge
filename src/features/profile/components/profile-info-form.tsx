@@ -11,11 +11,11 @@ import {
 } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
+import { useUpdateProfile } from '@/features/profile/hooks/use-update-profile'
 import {
   updateProfileSchema,
   UpdateProfileSchema
-} from '@/features/profile/schemas/profile-schemas'
-import { useUpdateProfile } from '@/features/profile/server/use-update-profile'
+} from '@/features/profile/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'

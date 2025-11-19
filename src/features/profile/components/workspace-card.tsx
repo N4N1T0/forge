@@ -15,7 +15,7 @@ import {
   TooltipContent,
   TooltipTrigger
 } from '@/components/ui/tooltip'
-import { useLeaveWorkspace } from '@/features/profile/server/use-leave-workspace'
+import { useLeaveWorkspace } from '@/features/profile/hooks/use-leave-workspace'
 import { useConfirm } from '@/hooks/use-confirm'
 import { Role, Workspaces } from '@/types/appwrite'
 import { LogOut } from 'lucide-react'

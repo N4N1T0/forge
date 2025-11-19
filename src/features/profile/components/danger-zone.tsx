@@ -25,11 +25,11 @@ import {
   DialogHeader,
   DialogTitle
 } from '@/components/ui/modal/dialog'
+import { useDeleteAccount } from '@/features/profile/hooks/use-delete-account'
 import {
   deleteAccountSchema,
   DeleteAccountSchema
-} from '@/features/profile/schemas/profile-schemas'
-import { useDeleteAccount } from '@/features/profile/server/use-delete-account'
+} from '@/features/profile/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { AlertTriangle } from 'lucide-react'
 import { useState } from 'react'
