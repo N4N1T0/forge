@@ -1,9 +1,9 @@
 'use client'
 
 import { useCurrent } from '@/features/auth'
-import { useGetMembers } from '@/features/members/server/use-get-members'
-import { useProjectId } from '@/features/projects/hooks/use-project-id'
-import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
+import { useGetMembers } from '@/features/members'
+import { useProjectId } from '@/features/projects'
+import { useGetCurrentWorkspace } from '@/features/workspaces'
 import { FormattedMembers } from '@/types'
 import { Workspaces } from '@/types/appwrite'
 import { ReactNode } from 'react'
@@ -35,7 +35,7 @@ export const ModalTaskWrapper = ({ children }: ModalTaskWrapperProps) => {
         workspace,
         members,
         projectId,
-        currentUserId: currentUser?.$id,
+        currentUserId: currentUser || '',
         isLoading
       })}
     </>

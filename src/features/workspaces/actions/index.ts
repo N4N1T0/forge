@@ -5,7 +5,7 @@ import {
   MEMBERS_COLLECTION_ID,
   WORKSPACES_COLLECTION_ID
 } from '@/config'
-import { getMembers } from '@/features/members/utils'
+import { getMembers } from '@/features/members'
 import { createSessionClient } from '@/lib/appwrite'
 import { GetWorkspaceActionProps } from '@/types'
 import { Members, Workspaces } from '@/types/appwrite'

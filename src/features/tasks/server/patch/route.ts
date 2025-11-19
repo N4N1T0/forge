@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DATABASE_ID, TASKS_COLLECTION_ID } from '@/config'
-import { getMember } from '@/features/members/utils'
+import { getMember } from '@/features/members'
 import { createTaskSchema } from '@/features/tasks/schema'
 import { sessionMiddleware } from '@/lib/middleware'
 import { Status, Tasks } from '@/types/appwrite'

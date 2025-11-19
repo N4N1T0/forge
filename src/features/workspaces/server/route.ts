@@ -4,7 +4,7 @@ import {
   MEMBERS_COLLECTION_ID,
   WORKSPACES_COLLECTION_ID
 } from '@/config'
-import { getMember } from '@/features/members/utils'
+import { getMember } from '@/features/members'
 import { createWorkspacesSchema } from '@/features/workspaces/schema'
 import { sessionMiddleware } from '@/lib/middleware'
 import { generateSlug } from '@/lib/utils'

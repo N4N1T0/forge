@@ -2,7 +2,7 @@
 
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
-import { useCurrentMember } from '@/features/members/server/use-current-member'
+import { useCurrentMember } from '@/features/members'
 import { useDeleteComment } from '@/features/tasks/server/comments/use-delete-comment'
 import { useConfirm } from '@/hooks/use-confirm'
 import { cn, getInitials } from '@/lib/utils'

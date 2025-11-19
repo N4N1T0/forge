@@ -1,7 +1,7 @@
 'use server'
 
 import { DATABASE_ID, PROJECTS_COLLECTION_ID } from '@/config'
-import { getMember } from '@/features/members/utils'
+import { getMember } from '@/features/members'
 import { createSessionClient } from '@/lib/appwrite'
 import { GetProjectActionProps } from '@/types'
 import { Projects } from '@/types/appwrite'

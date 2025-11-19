@@ -1,6 +1,6 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import { DATABASE_ID, PROJECTS_COLLECTION_ID } from '@/config'
-import { getMember } from '@/features/members/utils'
+import { getMember } from '@/features/members'
 import { sessionMiddleware } from '@/lib/middleware'
 import { Projects, Role } from '@/types/appwrite'
 import { zValidator } from '@hono/zod-validator'

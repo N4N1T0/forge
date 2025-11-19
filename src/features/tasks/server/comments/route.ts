@@ -5,7 +5,7 @@ import {
   TASK_COMMENTS_COLLECTION_ID,
   TASKS_COLLECTION_ID
 } from '@/config'
-import { getMember } from '@/features/members/utils'
+import { getMember } from '@/features/members'
 import { createCommentSchema, getCommentsSchema } from '@/features/tasks/schema'
 import { checkRateLimit, sanitizeContent } from '@/features/tasks/utils'
 import { createAdminClient } from '@/lib/appwrite'

@@ -13,3 +13,6 @@ export {
   useGetMembers,
   useUpdateMember
 } from './hooks'
+
+// UTILS
+export { getMember, getMembers } from './lib/utils'

@@ -10,7 +10,7 @@ import {
   ProjectSummary,
   TaskStats
 } from '@/features/dashboard/types'
-import { getMember } from '@/features/members/utils'
+import { getMember } from '@/features/members'
 import { createAdminClient } from '@/lib/appwrite'
 import { sessionMiddleware } from '@/lib/middleware'
 import { Members, Projects, Status, Tasks } from '@/types/appwrite'

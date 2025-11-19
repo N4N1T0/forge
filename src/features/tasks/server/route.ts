@@ -5,7 +5,7 @@ import {
   PROJECTS_COLLECTION_ID,
   TASKS_COLLECTION_ID
 } from '@/config'
-import { getMember } from '@/features/members/utils'
+import { getMember } from '@/features/members'
 import { createTaskSchema } from '@/features/tasks/schema'
 import { createAdminClient } from '@/lib/appwrite'
 import { sessionMiddleware } from '@/lib/middleware'

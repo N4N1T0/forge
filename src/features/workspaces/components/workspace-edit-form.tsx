@@ -20,7 +20,7 @@ import { Icon, IconName, IconPicker } from '@/components/ui/icon-picker'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
-import { useCurrentMember } from '@/features/members/server/use-current-member'
+import { useCurrentMember } from '@/features/members'
 import {
   CreateWorkspacesSchema,
   createWorkspacesSchema
