@@ -57,11 +57,8 @@ const app = new Hono()
           password
         })
 
-        const isSuspicious = await checkSuspiciousSession(
-          c,
-          user.users[0],
-          session
-        )
+        const isSuspicious = await checkIsSuspicious(c, user.users[0], session)
+
         if (isSuspicious) {
           return c.json<AuthResponse>({
             success: false,
@@ -235,7 +232,7 @@ function setAuthCookie(c: Context, session: Models.Session) {
   })
 }
 
-async function checkSuspiciousSession(
+async function checkIsSuspicious(
   c: Context<AdminMiddleWareContext>,
   user: Models.User,
   currentSession: Models.Session
@@ -257,7 +254,7 @@ async function checkSuspiciousSession(
     const ipChanged = previous.ip !== currentSession.ip
     const countryChanged = previous.countryCode !== currentSession.countryCode
     const deviceChanged = previous.clientName !== currentSession.clientName
-    const tooManySessions = sessions.total > 5
+    const tooManySessions = sessions.total > 10
 
     const isSuspicious =
       ipChanged || countryChanged || deviceChanged || tooManySessions
