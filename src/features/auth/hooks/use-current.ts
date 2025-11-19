@@ -1,13 +1,15 @@
 import { client } from '@/lib/rpc'
 import { useQuery } from '@tanstack/react-query'
-import { InferRequestType } from 'hono'
+import { InferResponseType } from 'hono'
 
 // TYPES
-type RequestType = InferRequestType<(typeof client.api.login.current)['$get']>
+type ResponseType = InferResponseType<
+  typeof client.api.login.current.$get
+>['data']
 
 // HOOK
 export const useCurrent = () => {
-  const query = useQuery<RequestType>({
+  const query = useQuery<ResponseType>({
     queryKey: ['current'],
     queryFn: async () => {
       const response = await client.api.login.current.$get()
@@ -22,7 +24,7 @@ export const useCurrent = () => {
         return null
       }
 
-      return data
+      return data.data
     }
   })
 
