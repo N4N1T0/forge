@@ -1,7 +1,7 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 import { DATABASE_ID, MEMBERS_COLLECTION_ID } from '@/config'
-import { getMember, getMembers } from '@/features/members/utils'
+import { getMember, getMembers } from '@/features/members/lib/utils'
 import { createAdminClient } from '@/lib/appwrite'
 import { sessionMiddleware } from '@/lib/middleware'
 import { FormattedMembers } from '@/types'
@@ -44,6 +44,7 @@ type MemberResponse =
 
 // ROUTES
 const app = new Hono()
+  // GET ALL MEMBERS
   .get(
     '/',
     sessionMiddleware,
@@ -102,6 +103,7 @@ const app = new Hono()
       }
     }
   )
+  // CURRENT MEMBER
   .get('/member', sessionMiddleware, async (c) => {
     try {
       const databases = c.get('tables')
@@ -135,6 +137,7 @@ const app = new Hono()
       })
     }
   })
+  // DELETE MEMBER
   .delete('/:memberId', sessionMiddleware, async (c) => {
     try {
       const databases = c.get('tables')
@@ -199,6 +202,7 @@ const app = new Hono()
       })
     }
   })
+  // UPDATE MEMBER
   .patch(
     '/:memberId',
     sessionMiddleware,

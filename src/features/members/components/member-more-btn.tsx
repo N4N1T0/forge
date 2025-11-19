@@ -6,13 +6,13 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
-import { useDeleteMember } from '@/features/members/server/use-delete-member'
-import { useUpdateMember } from '@/features/members/server/use-update-member'
+import { useDeleteMember } from '@/features/members/hooks/use-delete-member'
+import { useUpdateMember } from '@/features/members/hooks/use-update-member'
 import { useConfirm } from '@/hooks/use-confirm'
 import { Members, Role } from '@/types/appwrite'
 import { MoreVerticalIcon } from 'lucide-react'
 
-const MemberMoreBtn = ({
+export const MemberMoreBtn = ({
   member
 }: {
   member: (Members & { name: string; email: string }) | null
@@ -91,5 +91,3 @@ const MemberMoreBtn = ({
     </>
   )
 }
-
-export default MemberMoreBtn
