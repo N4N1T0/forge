@@ -24,7 +24,7 @@ import { useForgotPassword } from '@/features/auth/hooks/use-forgot-password'
 import {
   resetPasswordSchema,
   type ResetPasswordFormData
-} from '@/features/auth/schemas/auth-schemas'
+} from '@/features/auth/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect, useState } from 'react'
 import { useForm } from 'react-hook-form'

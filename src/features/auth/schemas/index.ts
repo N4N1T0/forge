@@ -1,5 +1,6 @@
 import { z } from 'zod'
 
+// SCHEMAS
 export const signInSchema = z.object({
   email: z.string().min(1, 'El correo electrónico es requerido'),
   password: z
@@ -63,6 +64,7 @@ export const mfaChallengeSchema = z.object({
   otp: z.string().min(1)
 })
 
+// TYPES
 export type OtpFormData = z.infer<typeof otpSchema>
 export type UpdatePasswordFormData = z.infer<typeof updatePasswordSchema>
 export type ResetPasswordFormData = z.infer<typeof resetPasswordSchema>

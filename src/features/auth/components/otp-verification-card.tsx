@@ -25,7 +25,7 @@ import { Link } from '@/components/ui/link'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
 import { useOtpVerification } from '@/features/auth/hooks/use-otp-verification'
-import { OtpFormData, otpSchema } from '@/features/auth/schemas/auth-schemas'
+import { OtpFormData, otpSchema } from '@/features/auth/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { useForm } from 'react-hook-form'
 

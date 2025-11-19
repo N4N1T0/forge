@@ -1,4 +1,3 @@
-import { GitHubIcon, GoogleIcon } from '@/assets/icons'
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -22,13 +21,10 @@ import { PasswordInput } from '@/components/ui/password-input'
 import { Separator } from '@/components/ui/separator'
 import { Spinner } from '@/components/ui/spinner'
 import { useSignIn } from '@/features/auth/hooks/use-sign-in'
-import {
-  signInSchema,
-  type SignInFormData
-} from '@/features/auth/schemas/auth-schemas'
+import { signInSchema, type SignInFormData } from '@/features/auth/schemas'
 import { zodResolver } from '@hookform/resolvers/zod'
-import Image from 'next/image'
 import { useForm } from 'react-hook-form'
+import { OauthSignInBtn } from './oauth-sign-in-btns'
 
 interface SignInCardProps {
   redirect?: string | null | undefined
@@ -130,16 +126,7 @@ export const SignInCard = ({ redirect }: SignInCardProps) => {
 
         <Separator className='my-6' />
 
-        <div className='grid grid-cols-2 gap-3'>
-          <Button variant='outline' disabled={isLoading}>
-            <Image src={GoogleIcon} alt='Google Icon' className='size-5 mr-2' />
-            Google
-          </Button>
-          <Button variant='outline' disabled={isLoading}>
-            <Image src={GitHubIcon} alt='GitHub Icon' className='size-5 mr-2' />
-            GitHub
-          </Button>
-        </div>
+        <OauthSignInBtn isLoading={isLoading} />
 
         <Separator />
 

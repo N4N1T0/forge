@@ -2,6 +2,7 @@
 export {
   DynamicIconPoster,
   ForgotPasswordCard,
+  OauthSignInBtn,
   OtpVerificationCard,
   ResetPasswordCard,
   SignInCard,

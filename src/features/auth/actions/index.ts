@@ -1,7 +1,9 @@
 'use server'
 
 import { createSessionClient } from '@/lib/appwrite'
+import { AppwriteException } from 'node-appwrite'
 
+// CURRENT ACTIONS
 export const getCurrentAction = async () => {
   try {
     const { account } = await createSessionClient()
@@ -13,8 +15,9 @@ export const getCurrentAction = async () => {
       data: user
     }
   } catch (error) {
-    // TODO
-    console.log('🚀 ~ getWorkspaces ~ error:', error)
+    if (error instanceof AppwriteException) {
+      // TODO: Handle AppwriteException
+    }
     return {
       success: false,
       data: null

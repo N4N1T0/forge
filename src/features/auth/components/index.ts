@@ -1,5 +1,6 @@
 export { DynamicIconPoster } from './dynamic-icon-poster'
 export { ForgotPasswordCard } from './forgot-password-card'
+export { OauthSignInBtn } from './oauth-sign-in-btns'
 export { OtpVerificationCard } from './otp-verification-card'
 export { ResetPasswordCard } from './reset-password-card'
 export { SignInCard } from './sign-in-card'
