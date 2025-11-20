@@ -6,3 +6,6 @@ export * from './schema'
 
 // COMPONENTS
 export * from './components'
+
+// ACTIONS
+export * from './actions'

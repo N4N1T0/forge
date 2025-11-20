@@ -1,6 +1,8 @@
-import { getCurrentAction } from '@/features/auth/actions'
-import { getWorkspaceInfoAction } from '@/features/workspaces/actions'
-import JoinWorkspaceForm from '@/features/workspaces/components/join-workspace-form'
+import { getCurrentAction } from '@/features/auth'
+import {
+  getWorkspaceInfoAction,
+  JoinWorkspaceForm
+} from '@/features/workspaces'
 import { Params } from '@/types'
 import { redirect } from 'next/navigation'
 
