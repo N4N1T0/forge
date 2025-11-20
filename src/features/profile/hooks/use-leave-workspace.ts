@@ -35,13 +35,10 @@ export const useLeaveWorkspace = () => {
       return data
     },
     onMutate: async ({ param }) => {
-      // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['profile'] })
 
-      // Snapshot previous value
       const previousProfile = queryClient.getQueryData<ProfileData>(['profile'])
 
-      // Optimistically remove workspace from list
       queryClient.setQueryData<ProfileData>(['profile'], (old) => {
         if (!old) return old
         return {
@@ -62,14 +59,12 @@ export const useLeaveWorkspace = () => {
       queryClient.invalidateQueries({ queryKey: ['workspaces'] })
     },
     onError: (error, _, context) => {
-      // Rollback on error
       if (context?.previousProfile) {
         queryClient.setQueryData(['profile'], context.previousProfile)
       }
 
       const errorMessage = error.message || 'Error leaving the workspace'
 
-      // Handle specific error cases
       if (errorMessage.includes('last admin')) {
         toast.error('You cannot leave the workspace', {
           description:

@@ -32,7 +32,6 @@ export const useChangePassword = () => {
     onError: (error) => {
       const errorMessage = error.message || 'Error changing password'
 
-      // Handle specific error cases
       if (errorMessage.includes('Invalid credentials')) {
         toast.error('Incorrect current password', {
           description: 'The current password you entered is incorrect.'

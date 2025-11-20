@@ -3,12 +3,14 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { getInitials } from '@/lib/utils'
 
+// TYPES
 interface ProfileHeaderProps {
   name: string
   email: string
 }
 
 export function ProfileHeader({ name, email }: ProfileHeaderProps) {
+  // CONST
   const initials = getInitials(name)
 
   return (

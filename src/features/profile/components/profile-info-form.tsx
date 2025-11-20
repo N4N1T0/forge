@@ -9,8 +9,15 @@ import {
   CardHeader,
   CardTitle
 } from '@/components/ui/card'
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage
+} from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
-import { Label } from '@/components/ui/label'
 import { useUpdateProfile } from '@/features/profile/hooks/use-update-profile'
 import {
   updateProfileSchema,
@@ -20,6 +27,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useEffect } from 'react'
 import { useForm } from 'react-hook-form'
 
+// TYPES
 interface ProfileInfoFormProps {
   initialName: string
   initialBio?: string
@@ -29,26 +37,25 @@ export function ProfileInfoForm({
   initialName,
   initialBio
 }: ProfileInfoFormProps) {
+  // HOOKS
   const { mutate: updateProfile, isPending } = useUpdateProfile()
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors, isDirty },
-    setValue,
-    watch,
-    reset
-  } = useForm<UpdateProfileSchema>({
+  // FORM
+  const form = useForm<UpdateProfileSchema>({
     resolver: zodResolver(updateProfileSchema),
     defaultValues: {
       name: initialName,
       bio: initialBio || ''
     }
   })
+  const {
+    handleSubmit,
+    formState: { isDirty },
+    reset,
+    control
+  } = form
 
-  const bioValue = watch('bio')
-
-  // Reset form when initial values change
+  // EFFECT (Reset form when initial values change)
   useEffect(() => {
     reset({
       name: initialName,
@@ -56,6 +63,7 @@ export function ProfileInfoForm({
     })
   }, [initialName, initialBio, reset])
 
+  // HANDLER
   const onSubmit = (data: UpdateProfileSchema) => {
     updateProfile(
       { json: data },
@@ -76,49 +84,63 @@ export function ProfileInfoForm({
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
-          <div className='space-y-2'>
-            <Label htmlFor='name'>Name</Label>
-            <Input
-              id='name'
-              {...register('name')}
-              disabled={isPending}
-              aria-invalid={!!errors.name}
+        <Form {...form}>
+          <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+            {/* NAME FIELD */}
+            <FormField
+              control={control}
+              name='name'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Name</FormLabel>
+                  <FormControl>
+                    <Input
+                      id='name'
+                      {...field}
+                      disabled={isPending}
+                      aria-invalid={!!form.formState.errors.name}
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.name && (
-              <p className='text-destructive text-sm'>{errors.name.message}</p>
-            )}
-          </div>
 
-          <div className='space-y-2'>
-            <Label htmlFor='bio'>Bio</Label>
-            <RichTextEditor
-              value={bioValue}
-              onChange={(value) =>
-                setValue('bio', value, { shouldDirty: true })
-              }
-              disabled={isPending}
-              className='!min-h-[200px] w-full'
+            {/* BIO */}
+            <FormField
+              control={control}
+              name='bio'
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel>Bio</FormLabel>
+                  <FormControl>
+                    <RichTextEditor
+                      value={field.value}
+                      onChange={(value) => field.onChange(value)}
+                      disabled={isPending}
+                      className='!min-h-[200px] w-full'
+                    />
+                  </FormControl>
+                  <FormMessage />
+                </FormItem>
+              )}
             />
-            {errors.bio && (
-              <p className='text-destructive text-sm'>{errors.bio.message}</p>
-            )}
-          </div>
 
-          <div className='flex justify-end gap-2'>
-            <Button
-              type='button'
-              variant='outline'
-              onClick={() => reset()}
-              disabled={!isDirty || isPending}
-            >
-              Cancel
-            </Button>
-            <Button type='submit' disabled={!isDirty || isPending}>
-              {isPending ? 'Saving...' : 'Save changes'}
-            </Button>
-          </div>
-        </form>
+            <div className='flex justify-end gap-2'>
+              <Button
+                type='button'
+                variant='outline'
+                onClick={() => reset()}
+                disabled={!isDirty || isPending}
+              >
+                Cancel
+              </Button>
+              <Button type='submit' disabled={!isDirty || isPending}>
+                {isPending ? 'Saving...' : 'Save changes'}
+              </Button>
+            </div>
+          </form>
+        </Form>
       </CardContent>
     </Card>
   )

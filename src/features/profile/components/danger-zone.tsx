@@ -35,14 +35,17 @@ import { AlertTriangle } from 'lucide-react'
 import { useState } from 'react'
 import { useForm } from 'react-hook-form'
 
+// TYPES
 interface DangerZoneProps {
   userEmail: string
 }
 
 export function DangerZone({ userEmail }: DangerZoneProps) {
+  // STATE & HOOKS
   const [isDialogOpen, setIsDialogOpen] = useState(false)
-  const { mutate: deleteAccount, isPending } = useDeleteAccount()
+  const { mutate: deleteAccount, isPending: isDeleting } = useDeleteAccount()
 
+  // FORM
   const form = useForm<DeleteAccountSchema>({
     resolver: zodResolver(deleteAccountSchema),
     defaultValues: {
@@ -50,7 +53,9 @@ export function DangerZone({ userEmail }: DangerZoneProps) {
       confirmation: ''
     }
   })
+  const { handleSubmit, control, reset } = form
 
+  // HANDLERS
   const onSubmit = (data: DeleteAccountSchema) => {
     deleteAccount({ json: data })
   }
@@ -58,7 +63,7 @@ export function DangerZone({ userEmail }: DangerZoneProps) {
   const handleOpenChange = (open: boolean) => {
     setIsDialogOpen(open)
     if (!open) {
-      form.reset()
+      reset()
     }
   }
 
@@ -97,9 +102,10 @@ export function DangerZone({ userEmail }: DangerZoneProps) {
           </DialogHeader>
 
           <Form {...form}>
-            <form onSubmit={form.handleSubmit(onSubmit)} className='space-y-4'>
+            <form onSubmit={handleSubmit(onSubmit)} className='space-y-4'>
+              {/* EMAIL CONFIRMATION */}
               <FormField
-                control={form.control}
+                control={control}
                 name='email'
                 render={({ field }) => (
                   <FormItem>
@@ -110,7 +116,7 @@ export function DangerZone({ userEmail }: DangerZoneProps) {
                       <Input
                         type='email'
                         placeholder={userEmail}
-                        disabled={isPending}
+                        disabled={isDeleting}
                         {...field}
                       />
                     </FormControl>
@@ -119,8 +125,9 @@ export function DangerZone({ userEmail }: DangerZoneProps) {
                 )}
               />
 
+              {/* CONFIRMATION */}
               <FormField
-                control={form.control}
+                control={control}
                 name='confirmation'
                 render={({ field }) => (
                   <FormItem>
@@ -130,7 +137,7 @@ export function DangerZone({ userEmail }: DangerZoneProps) {
                     <FormControl>
                       <Input
                         placeholder='Delete my account'
-                        disabled={isPending}
+                        disabled={isDeleting}
                         {...field}
                       />
                     </FormControl>
@@ -144,16 +151,16 @@ export function DangerZone({ userEmail }: DangerZoneProps) {
                   type='button'
                   variant='outline'
                   onClick={() => handleOpenChange(false)}
-                  disabled={isPending}
+                  disabled={isDeleting}
                 >
                   Cancel
                 </Button>
                 <Button
                   type='submit'
                   variant='destructive'
-                  disabled={isPending}
+                  disabled={isDeleting}
                 >
-                  {isPending ? 'Deleting...' : 'Delete my account'}
+                  {isDeleting ? 'Deleting...' : 'Delete my account'}
                 </Button>
               </DialogFooter>
             </form>

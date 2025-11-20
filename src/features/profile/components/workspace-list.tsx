@@ -30,16 +30,17 @@ import { Role } from '@/types/appwrite'
 import { Loader, LogOut } from 'lucide-react'
 
 export function WorkspaceList() {
+  // HOOKS
   const { data: profile, isLoading } = useGetProfile()
   const { mutate: leaveWorkspace, isPending: isLeavingWorkspace } =
     useLeaveWorkspace()
-
   const [confirmLeave, LeaveDialog] = useConfirm(
     'Leave workspace',
     'Are you sure you want to leave this workspace? This action cannot be undone.',
     'destructive'
   )
 
+  // HANDLERS
   const handleLeave = async (workspaceId: string) => {
     const confirmed = await confirmLeave()
     if (confirmed) {
@@ -47,6 +48,13 @@ export function WorkspaceList() {
     }
   }
 
+  // CONST
+  const workspaces = profile?.workspaces || []
+  const sortedWorkspaces = [...workspaces].sort((a, b) =>
+    (a.workspace.name || '').localeCompare(b.workspace.name || '')
+  )
+
+  // LOADING
   if (isLoading) {
     return (
       <Card className='col-span-1 md:col-span-5'>
@@ -62,11 +70,6 @@ export function WorkspaceList() {
       </Card>
     )
   }
-
-  const workspaces = profile?.workspaces || []
-  const sortedWorkspaces = [...workspaces].sort((a, b) =>
-    (a.workspace.name || '').localeCompare(b.workspace.name || '')
-  )
 
   return (
     <div className='col-span-1 md:col-span-5'>

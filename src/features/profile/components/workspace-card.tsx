@@ -20,6 +20,7 @@ import { useConfirm } from '@/hooks/use-confirm'
 import { Role, Workspaces } from '@/types/appwrite'
 import { LogOut } from 'lucide-react'
 
+// TYPES
 interface WorkspaceCardProps {
   workspace: Workspaces
   userRole: Role
@@ -31,14 +32,15 @@ export function WorkspaceCard({
   userRole,
   isLastAdmin
 }: WorkspaceCardProps) {
+  // HOOKS
   const { mutate: leaveWorkspace, isPending } = useLeaveWorkspace()
-
   const [confirmLeave, LeaveDialog] = useConfirm(
     'Leave workspace',
     `Are you sure you want to leave "${workspace.name}"? This action cannot be undone.`,
     'destructive'
   )
 
+  // HANDLERS
   const handleLeave = async () => {
     const confirmed = await confirmLeave()
     if (confirmed) {
@@ -46,11 +48,15 @@ export function WorkspaceCard({
     }
   }
 
+  // CONST
   const roleLabel = userRole === Role.ADMIN ? 'Admin' : 'Member'
   const roleVariant = userRole === Role.ADMIN ? 'default' : 'secondary'
 
   return (
     <>
+      {/* MODALS */}
+      <LeaveDialog />
+
       <Card>
         <CardHeader>
           <div className='flex items-center justify-between'>
@@ -112,7 +118,6 @@ export function WorkspaceCard({
           </div>
         </CardContent>
       </Card>
-      <LeaveDialog />
     </>
   )
 }

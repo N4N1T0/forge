@@ -33,13 +33,10 @@ export const useDeleteAccount = () => {
         description: 'Your account has been permanently deleted.'
       })
 
-      // Logout by calling the logout endpoint
       await client.api.login['logout']['$post']()
 
-      // Clear all queries
       queryClient.clear()
 
-      // Redirect to sign-in page
       setTimeout(() => {
         router.push('/sign-in')
         router.refresh()
@@ -48,7 +45,6 @@ export const useDeleteAccount = () => {
     onError: (error) => {
       const errorMessage = error.message || 'Error deleting account'
 
-      // Handle specific error cases
       if (errorMessage.includes('Email does not match')) {
         toast.error('Email does not match', {
           description: 'Please verify that the email is correct.'

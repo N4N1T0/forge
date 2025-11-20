@@ -29,13 +29,10 @@ export const useUpdateProfile = () => {
       return data
     },
     onMutate: async ({ json }) => {
-      // Cancel outgoing refetches
       await queryClient.cancelQueries({ queryKey: ['profile'] })
 
-      // Snapshot previous value
       const previousProfile = queryClient.getQueryData<ProfileData>(['profile'])
 
-      // Optimistically update profile
       queryClient.setQueryData<ProfileData>(['profile'], (old) => {
         if (!old) return old
         return {
@@ -54,7 +51,6 @@ export const useUpdateProfile = () => {
       queryClient.invalidateQueries({ queryKey: ['profile'] })
     },
     onError: (error, _, context) => {
-      // Rollback on error
       if (context?.previousProfile) {
         queryClient.setQueryData(['profile'], context.previousProfile)
       }
