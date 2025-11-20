@@ -2,20 +2,22 @@
 
 import { Button } from '@/components/ui/button'
 import { Textarea } from '@/components/ui/textarea'
-import { useCreateComment } from '@/features/tasks/server/comments/use-create-comment'
+import { useCreateComment } from '@/features/tasks'
 import { cn } from '@/lib/utils'
 import { Loader2, Send } from 'lucide-react'
 import { useRef, useState } from 'react'
 
-interface CommentInputProps {
+// TYPES
+interface Props {
   taskId: string
   onCommentCreated?: () => void
 }
 
-export const CommentInput = ({ taskId }: CommentInputProps) => {
+export const CommentInput = ({ taskId }: Props) => {
   // STATE
   const [content, setContent] = useState('')
   const [isFocused, setIsFocused] = useState(false)
+
   // REFS
   const textareaRef = useRef<HTMLTextAreaElement>(null)
 
@@ -33,8 +35,8 @@ export const CommentInput = ({ taskId }: CommentInputProps) => {
 
     createComment(
       {
-        taskId,
-        content: content.trim()
+        param: { taskId },
+        json: { content: content.trim() }
       },
       {
         onSuccess: () => {

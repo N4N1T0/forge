@@ -1,16 +1,17 @@
 'use client'
 
-import { TaskCard } from '@/features/tasks/components/page/task-card'
 import {
+  LoadingGrid,
   NoSearchResultsEmpty,
-  NoTasksEmpty
-} from '@/features/tasks/components/page/task-page-empty'
+  NoTasksEmpty,
+  TaskCard
+} from '@/features/tasks'
 import { cn } from '@/lib/utils'
 import { FormattedMembers } from '@/types'
 import { Tasks } from '@/types/appwrite'
 import { memo } from 'react'
-import { LoadingGrid } from './task-page-skeleton'
 
+// TYPES
 interface TaskGridProps {
   tasks: Tasks[]
   members: FormattedMembers
@@ -31,11 +32,12 @@ export const TaskGrid = ({
   error,
   className
 }: TaskGridProps) => {
-  // RENDER
+  // LOADING
   if (isLoading) {
     return <LoadingGrid className={className} />
   }
 
+  // EMPTY
   if (!tasks?.length) {
     if (error) return null
 

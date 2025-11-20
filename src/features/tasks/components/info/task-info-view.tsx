@@ -5,9 +5,11 @@ import { Button } from '@/components/ui/button'
 import { Card, CardContent, CardHeader } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
 import { status as statusData } from '@/data'
-import { TaskCommentsSection } from '@/features/tasks/components/comments'
-import { ModalTaskWrapper } from '@/features/tasks/components/modal-task-wrapper'
-import { useDeleteTask } from '@/features/tasks/server/use-delete-task'
+import {
+  ModalTaskWrapper,
+  TaskCommentsSection,
+  useDeleteTask
+} from '@/features/tasks'
 import { formatTaskDate } from '@/features/tasks/utils'
 import { useConfirm } from '@/hooks/use-confirm'
 import { cn } from '@/lib/utils'
@@ -16,6 +18,7 @@ import { Tasks } from '@/types/appwrite'
 import { CalendarDays, Pencil, Share, Trash, X } from 'lucide-react'
 import { toast } from 'sonner'
 
+// TYPES
 interface TaskInfoView extends BaseFormProps {
   task: Tasks
   setIsEdit: (isEdit: boolean) => void

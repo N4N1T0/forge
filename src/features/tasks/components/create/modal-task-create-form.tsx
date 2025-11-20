@@ -1,9 +1,9 @@
 'use client'
 
 import ResponsiveDrawer from '@/components/ui/drawer/responsive-drawer'
+import { TaskCreateForm } from '@/features/tasks'
 import { ResponsiveModalProps } from '@/types'
 import { useState } from 'react'
-import { TaskCreateForm } from './task-create-form'
 
 export const ModalTaskCreateForm = ({
   children,

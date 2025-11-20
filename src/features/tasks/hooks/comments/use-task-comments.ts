@@ -1,29 +1,20 @@
 import { client } from '@/lib/rpc'
-import { TaskComments } from '@/types/appwrite'
 import { useInfiniteQuery } from '@tanstack/react-query'
+import { InferResponseType } from 'hono'
 
-export interface PopulatedComment extends TaskComments {
-  author: {
-    $id: string
-    name: string
-    email: string
-  }
-}
-
-interface CommentsResponse {
-  comments: PopulatedComment[]
-  page: number
-  limit: number
-  total: number
-}
+// TYPES
+type ResponseType = Extract<
+  InferResponseType<(typeof client.api.task)[':taskId']['comments']['$get']>,
+  { success: true }
+>['data']
 
 export const useTaskComments = (taskId: string) => {
-  return useInfiniteQuery({
+  return useInfiniteQuery<ResponseType>({
     queryKey: ['task-comments', taskId],
-    queryFn: async ({ pageParam = 1 }): Promise<CommentsResponse> => {
+    queryFn: async ({ pageParam = 1 }) => {
       const response = await client.api.task[':taskId'].comments.$get({
         param: { taskId },
-        query: { page: pageParam.toString(), limit: '20' }
+        query: { page: (pageParam as number).toString(), limit: '20' }
       })
 
       if (!response.ok) {
@@ -38,7 +29,7 @@ export const useTaskComments = (taskId: string) => {
 
       return result.data
     },
-    getNextPageParam: (lastPage: CommentsResponse) => {
+    getNextPageParam: (lastPage: ResponseType) => {
       const hasMore = lastPage.comments.length === lastPage.limit
       return hasMore ? lastPage.page + 1 : undefined
     },

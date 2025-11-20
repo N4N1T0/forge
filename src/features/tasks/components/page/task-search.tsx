@@ -2,12 +2,13 @@
 
 import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
-import { useTaskFilters } from '@/features/tasks/hooks'
+import { useTaskFilters } from '@/features/tasks'
 import { useDebounce } from '@/hooks/use-debounce'
 import { cn } from '@/lib/utils'
 import { SearchIcon, XIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'
 
+// TYPES
 interface TaskSearchProps {
   placeholder?: string
   className?: string

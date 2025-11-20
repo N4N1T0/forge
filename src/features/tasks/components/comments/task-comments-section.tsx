@@ -3,21 +3,20 @@
 import { Separator } from '@/components/ui/separator'
 import { Skeleton } from '@/components/ui/skeleton'
 import {
+  CommentInput,
+  CommentThread,
   useTaskComments,
   type PopulatedComment
-} from '@/features/tasks/server/comments/use-task-comments'
+} from '@/features/tasks'
 import { useCallback, useMemo } from 'react'
-import { CommentInput, CommentThread } from '.'
 
-interface TaskCommentsSectionProps {
+// TYPES
+interface Props {
   taskId: string
   currentUserId: string
 }
 
-export const TaskCommentsSection = ({
-  taskId,
-  currentUserId
-}: TaskCommentsSectionProps) => {
+export const TaskCommentsSection = ({ taskId, currentUserId }: Props) => {
   // HOOKS
   const { data, isPending, fetchNextPage, hasNextPage, isFetchingNextPage } =
     useTaskComments(taskId)

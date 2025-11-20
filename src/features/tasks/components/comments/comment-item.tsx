@@ -3,28 +3,20 @@
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Button } from '@/components/ui/button'
 import { useCurrentMember } from '@/features/members'
-import { useDeleteComment } from '@/features/tasks/server/comments/use-delete-comment'
+import { useDeleteComment, type PopulatedComment } from '@/features/tasks'
 import { useConfirm } from '@/hooks/use-confirm'
 import { cn, getInitials } from '@/lib/utils'
-import { TaskComments } from '@/types/appwrite'
 import { formatDistanceToNow } from 'date-fns'
 import { Trash2 } from 'lucide-react'
 
-interface PopulatedComment extends TaskComments {
-  author: {
-    $id: string
-    name: string
-    email: string
-  }
-}
-
-interface CommentItemProps {
+// TYPES
+interface Props {
   comment: PopulatedComment
   isFirst?: boolean
   isLast?: boolean
 }
 
-export const CommentItem = ({ comment, isFirst, isLast }: CommentItemProps) => {
+export const CommentItem = ({ comment, isFirst, isLast }: Props) => {
   // HOOKS
   const { data: currentMember } = useCurrentMember()
   const { mutate: deleteComment, isPending: isDeleting } = useDeleteComment()
@@ -49,7 +41,7 @@ export const CommentItem = ({ comment, isFirst, isLast }: CommentItemProps) => {
     const ok = await confirmDelete()
     if (!ok) return
 
-    deleteComment({ taskId: comment.taskId, commentId: comment.$id })
+    deleteComment({ param: { taskId: comment.taskId, commentId: comment.$id } })
   }
 
   // RENDER

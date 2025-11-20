@@ -3,20 +3,19 @@
 import { Button } from '@/components/ui/button'
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs'
 import { TooltipProvider } from '@/components/ui/tooltip'
-import ModalProjectConfig from '@/features/projects/components/modal-project-config'
-import { useProjectParams } from '@/features/projects/hooks/use-project-id'
-import { TaskFilters } from '@/features/tasks/components/task-filters'
-import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters'
-import { useGetTasks } from '@/features/tasks/server/use-get-tasks'
-import { Projects } from '@/types/appwrite'
-import { MoreHorizontal } from 'lucide-react'
-import { useQueryState } from 'nuqs'
+import { ModalProjectConfig, useProjectParams } from '@/features/projects'
 import {
   DataCalendarView,
   DataGanttView,
   DataKanban,
-  TaskTableView
-} from './index'
+  TaskFilters,
+  TaskTableView,
+  useGetTasks,
+  useTaskFilters
+} from '@/features/tasks'
+import { Projects } from '@/types/appwrite'
+import { MoreHorizontal } from 'lucide-react'
+import { useQueryState } from 'nuqs'
 
 export const TaskViewSwitcher = ({
   initialValues

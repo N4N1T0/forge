@@ -8,6 +8,7 @@ import { FormattedMembers } from '@/types'
 import { Workspaces } from '@/types/appwrite'
 import { ReactNode } from 'react'
 
+// TYPES
 interface ModalTaskWrapperProps {
   children: (props: {
     workspace: Partial<Workspaces> | undefined
@@ -27,6 +28,7 @@ export const ModalTaskWrapper = ({ children }: ModalTaskWrapperProps) => {
     workspaceId: workspace?.$id as string
   })
 
+  // CONST
   const isLoading = isLoadingWorkspace || isLoadingMembers || isLoadingUser
 
   return (

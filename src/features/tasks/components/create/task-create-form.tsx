@@ -34,8 +34,12 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { status } from '@/data'
-import { createTaskSchema, CreateTaskSchema } from '@/features/tasks/schema'
-import { useCreateTask } from '@/features/tasks/server/use-create-task'
+import {
+  createTaskSchema,
+  CreateTaskSchema,
+  ModalTaskWrapper,
+  useCreateTask
+} from '@/features/tasks'
 import { cn } from '@/lib/utils'
 import { BaseFormProps, FormattedMembers } from '@/types'
 import { Status, Workspaces } from '@/types/appwrite'
@@ -44,8 +48,8 @@ import { format } from 'date-fns'
 import { CalendarIcon, Loader, X } from 'lucide-react'
 import { useCallback } from 'react'
 import { useForm } from 'react-hook-form'
-import { ModalTaskWrapper } from '../modal-task-wrapper'
 
+// TYPES
 interface TaskCreateFormProps extends BaseFormProps {
   projectId: string
 }
@@ -152,8 +156,8 @@ const TaskCreateFormContent = ({
           className='flex-1'
         >
           <CardContent className='space-y-4'>
-            {/* NAME & STATUS */}
             <fieldset className='w-full flex gap-4'>
+              {/* NAME */}
               <FormField
                 control={form.control}
                 name='name'
@@ -172,6 +176,7 @@ const TaskCreateFormContent = ({
                 )}
               />
 
+              {/* STATUS */}
               <FormField
                 control={form.control}
                 name='status'
@@ -234,7 +239,7 @@ const TaskCreateFormContent = ({
               )}
             />
 
-            {/* ASSIGNEE  & DUE DATE */}
+            {/* ASSIGNEE */}
             <fieldset className='w-full flex gap-6'>
               <FormField
                 control={form.control}
@@ -284,6 +289,7 @@ const TaskCreateFormContent = ({
                 )}
               />
 
+              {/* DUE DATE */}
               <FormField
                 control={form.control}
                 name='dueDate'

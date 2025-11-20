@@ -1,6 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 
-export function DataCalendarSkeleton() {
+export const DataCalendarSkeleton = () => {
+  // CONST
   const weekdayHeaders = Array.from({ length: 7 }).map((_, i) => (
     <div key={`weekday-${i}`} className='px-2 py-2'>
       <Skeleton className='h-4 w-16' />

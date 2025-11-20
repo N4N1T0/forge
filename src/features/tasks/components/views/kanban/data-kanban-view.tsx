@@ -10,21 +10,25 @@ import {
   KanbanHeader,
   KanbanProvider
 } from '@/components/ui/kanban'
-import { Tooltip, TooltipContent } from '@/components/ui/tooltip'
-import { status } from '@/data'
-import { TaskAction, TaskViewError } from '@/features/tasks/components/views'
 import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger
+} from '@/components/ui/tooltip'
+import { status } from '@/data'
+import {
+  formatTaskDate,
+  TaskAction,
   TaskEmptySearchView,
-  TaskEmptyView
-} from '@/features/tasks/components/views/empty'
-import { TaskKanbanSkeleton } from '@/features/tasks/components/views/kanban'
-import { useTaskFilters } from '@/features/tasks/hooks'
-import { useChangeTaskStatus } from '@/features/tasks/server/patch/use-change-task-status'
-import { formatTaskDate } from '@/features/tasks/utils'
+  TaskEmptyView,
+  TaskKanbanSkeleton,
+  TaskViewError,
+  useChangeTaskStatus,
+  useTaskFilters
+} from '@/features/tasks'
 import { cn, sanitizeHtml } from '@/lib/utils'
 import { DataViewProps } from '@/types'
 import { Status } from '@/types/appwrite'
-import { TooltipTrigger } from '@radix-ui/react-tooltip'
 import { MoreVertical } from 'lucide-react'
 import { useCallback, useState } from 'react'
 

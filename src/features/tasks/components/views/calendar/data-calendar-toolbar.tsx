@@ -3,6 +3,7 @@ import { format } from 'date-fns'
 import { CalendarIcon, ChevronLeftIcon, ChevronRightIcon } from 'lucide-react'
 import { NavigateAction } from 'react-big-calendar'
 
+// TYPES
 interface DataCalendarToolbarProps {
   date: Date
   onNavigate: (navigate: NavigateAction, date?: Date) => void

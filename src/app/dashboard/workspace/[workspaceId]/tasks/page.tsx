@@ -5,7 +5,7 @@ import { TaskGrid } from '@/features/tasks/components/page/task-grid'
 import { TaskPageNetworkError } from '@/features/tasks/components/page/task-page-errors'
 import { TaskSearchComponent } from '@/features/tasks/components/page/task-search'
 import { useTaskFilters } from '@/features/tasks/hooks'
-import { useGetTasks } from '@/features/tasks/server/use-get-tasks'
+import { useGetTasks } from '@/features/tasks/hooks/use-get-tasks'
 import { Params } from '@/types'
 import { use } from 'react'
 

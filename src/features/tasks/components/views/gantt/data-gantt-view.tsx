@@ -12,17 +12,17 @@ import {
 } from '@/components/ui/gantt'
 import { status as statusData } from '@/data'
 import {
+  DataGanttSkeleton,
+  TaskContextMenu,
   TaskEmptySearchView,
-  TaskEmptyView
-} from '@/features/tasks/components/views/empty'
-import { TaskContextMenu } from '@/features/tasks/components/views/task-context-menu'
-import { useTaskFilters } from '@/features/tasks/hooks'
-import { useChangeTaskDueDate } from '@/features/tasks/server/patch/use-change-task-due-date'
+  TaskEmptyView,
+  TaskViewError,
+  useChangeTaskDueDate,
+  useTaskFilters
+} from '@/features/tasks'
 import { cn } from '@/lib/utils'
 import { DataViewProps } from '@/types'
 import { useMemo } from 'react'
-import { TaskViewError } from '../task-view-error'
-import { DataGanttSkeleton } from './data-gantt-skeleton'
 
 type DataGanttViewProps = DataViewProps
 
@@ -106,6 +106,7 @@ export const DataGanttView = ({
   if ((!data || data.length === 0) && isAnyFilterActive) {
     return <TaskEmptySearchView />
   }
+
   return (
     <GanttProvider className='border mt-2' range='monthly' zoom={100}>
       <GanttTimeline>

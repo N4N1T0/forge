@@ -6,7 +6,7 @@ import {
   EmptyHeader,
   EmptyTitle
 } from '@/components/ui/empty'
-import { ModalTaskCreateForm } from '@/features/tasks/components/create'
+import { ModalTaskCreateForm } from '@/features/tasks'
 
 export const TaskEmptyView = () => {
   return (

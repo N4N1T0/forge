@@ -12,18 +12,18 @@ import {
   Select,
   SelectContent,
   SelectItem,
+  SelectSeparator,
   SelectTrigger,
   SelectValue
 } from '@/components/ui/select'
 import { Skeleton } from '@/components/ui/skeleton'
 import { status as statusData } from '@/data'
 import { useGetMembers } from '@/features/members'
-import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters'
+import { useTaskFilters } from '@/features/tasks'
 import { useWorkspaceId } from '@/features/workspaces'
 import { useDebounce } from '@/hooks/use-debounce'
 import { cn } from '@/lib/utils'
 import { Status } from '@/types/appwrite'
-import { SelectSeparator } from '@radix-ui/react-select'
 import { format } from 'date-fns'
 import { CalendarIcon, XIcon } from 'lucide-react'
 import { useEffect, useState } from 'react'

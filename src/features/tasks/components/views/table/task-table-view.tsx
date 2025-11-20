@@ -1,16 +1,14 @@
 'use client'
 
-import { TaskViewError } from '@/features/tasks/components/views'
-import {
-  TaskEmptySearchView,
-  TaskEmptyView
-} from '@/features/tasks/components/views/empty'
 import {
   DataTable,
+  TaskEmptySearchView,
+  TaskEmptyView,
   TaskTableColumns,
-  TaskTableSkeleton
-} from '@/features/tasks/components/views/table'
-import { useTaskFilters } from '@/features/tasks/hooks'
+  TaskTableSkeleton,
+  TaskViewError,
+  useTaskFilters
+} from '@/features/tasks'
 import { DataViewProps } from '@/types'
 
 // TYPES

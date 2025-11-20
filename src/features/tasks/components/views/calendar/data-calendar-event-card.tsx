@@ -2,6 +2,7 @@ import { status } from '@/data'
 import { cn } from '@/lib/utils'
 import { DataCalendarFormattedEvents } from '@/types'
 
+// TYPES
 interface DataCalendarEventCardProps {
   event: DataCalendarFormattedEvents
 }
@@ -9,6 +10,7 @@ interface DataCalendarEventCardProps {
 export const DataCalendarEventCard = ({
   event
 }: DataCalendarEventCardProps) => {
+  // CONST
   const { title, status: statusValue } = event
 
   return (

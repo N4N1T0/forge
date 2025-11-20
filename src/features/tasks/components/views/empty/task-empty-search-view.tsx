@@ -8,8 +8,7 @@ import {
   EmptyHeader,
   EmptyTitle
 } from '@/components/ui/empty'
-import { ModalTaskCreateForm } from '@/features/tasks/components/create'
-import { useTaskFilters } from '@/features/tasks/hooks/use-task-filters'
+import { ModalTaskCreateForm, useTaskFilters } from '@/features/tasks'
 
 export const TaskEmptySearchView = () => {
   // HOOKS

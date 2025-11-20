@@ -1,6 +1,7 @@
 import { Skeleton } from '@/components/ui/skeleton'
 import { cn } from '@/lib/utils'
 
+// SKELETON (TASK CARD)
 export const TaskCardSkeleton = () => (
   <div className='space-y-3 p-6 border rounded-lg'>
     <div className='flex items-start justify-between'>
@@ -23,6 +24,7 @@ export const TaskCardSkeleton = () => (
   </div>
 )
 
+// SKELETON (LOADING GRID)
 export const LoadingGrid = ({ className }: { className?: string }) => (
   <div
     className={cn(

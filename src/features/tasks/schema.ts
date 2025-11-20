@@ -1,6 +1,7 @@
 import { Status } from '@/types/appwrite'
 import z from 'zod'
 
+// SCHEMAS
 export const createTaskSchema = z.object({
   name: z.string().min(1, 'Task name is required'),
   description: z.string().optional(),
@@ -24,6 +25,7 @@ export const getCommentsSchema = z.object({
   limit: z.coerce.number().min(1).max(50).optional().default(20)
 })
 
+// TYPES
 export type CreateCommentSchema = z.infer<typeof createCommentSchema>
 export type GetCommentsSchema = z.infer<typeof getCommentsSchema>
 export type CreateTaskSchema = z.infer<typeof createTaskSchema>

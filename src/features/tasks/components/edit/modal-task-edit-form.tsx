@@ -1,12 +1,12 @@
 'use client'
 
 import ResponsiveDrawer from '@/components/ui/drawer/responsive-drawer'
-import { useTaskEditModal } from '@/features/tasks/hooks/use-task-edit-modal'
+import { TaskEditForm, useTaskEditModal } from '@/features/tasks'
 import { ResponsiveModalProps } from '@/types'
 import { Tasks } from '@/types/appwrite'
 import { ReactNode } from 'react'
-import { TaskEditForm } from './task-edit-form'
 
+// TYPES
 interface ModalTaskFormProps extends Omit<ResponsiveModalProps, 'children'> {
   task: Tasks
   children?: ReactNode

@@ -2,20 +2,12 @@
 
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import { TaskComments } from '@/types/appwrite'
+import { CommentItem, PopulatedComment } from '@/features/tasks'
 import { Loader2 } from 'lucide-react'
 import { useEffect, useRef } from 'react'
-import { CommentItem } from '.'
 
-interface PopulatedComment extends TaskComments {
-  author: {
-    $id: string
-    name: string
-    email: string
-  }
-}
-
-interface CommentThreadProps {
+// TYPES
+interface Props {
   comments: PopulatedComment[]
   currentUserId: string
   hasNextPage?: boolean
@@ -28,7 +20,7 @@ export const CommentThread = ({
   hasNextPage,
   onLoadMore,
   isLoadingMore
-}: CommentThreadProps) => {
+}: Props) => {
   // CONST
   const scrollRef = useRef<HTMLDivElement>(null)
   const loadMoreRef = useRef<HTMLDivElement>(null)

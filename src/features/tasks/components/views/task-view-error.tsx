@@ -10,6 +10,7 @@ import {
 import { DataViewProps } from '@/types'
 import { CheckSquare, RefreshCcw } from 'lucide-react'
 
+// TYPES
 interface TaskViewErrorProps {
   handleRetry: DataViewProps['refetch']
 }

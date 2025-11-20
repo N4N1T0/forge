@@ -9,6 +9,7 @@ import {
 } from '@/components/ui/empty'
 import { CheckSquare, RefreshCcw } from 'lucide-react'
 
+// TYPES
 interface Props {
   handleRetry: () => void
 }

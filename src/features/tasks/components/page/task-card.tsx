@@ -10,9 +10,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { status as statusData } from '@/data'
-import { TaskAction } from '@/features/tasks/components/views/task-action'
-import { useTaskViewModal } from '@/features/tasks/hooks'
-import { formatTaskDate } from '@/features/tasks/utils'
+import { formatTaskDate, TaskAction, useTaskViewModal } from '@/features/tasks'
 import { cn } from '@/lib/utils'
 import { FormattedMembers } from '@/types'
 import { Tasks } from '@/types/appwrite'

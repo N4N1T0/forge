@@ -34,8 +34,12 @@ import {
 } from '@/components/ui/select'
 import { Separator } from '@/components/ui/separator'
 import { status } from '@/data'
-import { createTaskSchema, CreateTaskSchema } from '@/features/tasks/schema'
-import { useEditTask } from '@/features/tasks/server/patch/use-edit-task'
+import {
+  createTaskSchema,
+  CreateTaskSchema,
+  ModalTaskWrapper,
+  useEditTask
+} from '@/features/tasks'
 import { cn } from '@/lib/utils'
 import { BaseFormProps, FormattedMembers } from '@/types'
 import { Tasks, Workspaces } from '@/types/appwrite'
@@ -44,7 +48,6 @@ import { format } from 'date-fns'
 import { CalendarIcon, Loader, X } from 'lucide-react'
 import { useCallback, useEffect } from 'react'
 import { useForm } from 'react-hook-form'
-import { ModalTaskWrapper } from '../modal-task-wrapper'
 
 interface TaskEditFormProps extends BaseFormProps {
   task: Tasks

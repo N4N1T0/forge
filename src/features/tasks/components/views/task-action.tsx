@@ -14,11 +14,14 @@ import {
   DropdownMenuTrigger
 } from '@/components/ui/dropdown-menu'
 import { status } from '@/data'
-import { ModalTaskEditForm } from '@/features/tasks/components/edit'
-import { ModalTaskInfo } from '@/features/tasks/components/info/modal-task-info'
-import { useTaskEditModal, useTaskViewModal } from '@/features/tasks/hooks'
-import { useChangeTaskStatus } from '@/features/tasks/server/patch/use-change-task-status'
-import { useDeleteTask } from '@/features/tasks/server/use-delete-task'
+import {
+  ModalTaskEditForm,
+  ModalTaskInfo,
+  useChangeTaskStatus,
+  useDeleteTask,
+  useTaskEditModal,
+  useTaskViewModal
+} from '@/features/tasks'
 import { useConfirm } from '@/hooks/use-confirm'
 import { Status, Tasks } from '@/types/appwrite'
 

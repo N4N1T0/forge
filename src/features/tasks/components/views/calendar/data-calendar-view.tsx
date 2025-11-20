@@ -1,16 +1,16 @@
 'use client'
 
-import { ModalTaskInfo } from '@/features/tasks/components/info'
 import {
   DataCalendarEventCard,
   DataCalendarSkeleton,
-  DataCalendarToolbar
-} from '@/features/tasks/components/views/calendar'
-import {
+  DataCalendarToolbar,
+  ModalTaskInfo,
   TaskEmptySearchView,
-  TaskEmptyView
-} from '@/features/tasks/components/views/empty'
-import { useTaskFilters, useTaskViewModal } from '@/features/tasks/hooks'
+  TaskEmptyView,
+  TaskViewError,
+  useTaskFilters,
+  useTaskViewModal
+} from '@/features/tasks'
 import { DataCalendarFormattedEvents, DataViewProps } from '@/types'
 import { Tasks } from '@/types/appwrite'
 import {
@@ -25,10 +25,11 @@ import { enUS } from 'date-fns/locale'
 import { useCallback, useState } from 'react'
 import { Calendar, dateFnsLocalizer, NavigateAction } from 'react-big-calendar'
 import 'react-big-calendar/lib/css/react-big-calendar.css'
-import { TaskViewError } from '../task-view-error'
 
+// TYPES
 type DataCalendarViewProps = DataViewProps
 
+// CALENDAR CONFIG
 const locales = {
   'en-US': enUS
 }

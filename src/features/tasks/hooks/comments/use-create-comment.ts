@@ -1,17 +1,22 @@
 import { client } from '@/lib/rpc'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { InferRequestType, InferResponseType } from 'hono'
 import { toast } from 'sonner'
 
-interface CreateCommentData {
-  taskId: string
-  content: string
-}
+// TYPES
+type ResponseType = Extract<
+  InferResponseType<(typeof client.api.task)[':taskId']['comments']['$post']>,
+  { success: true }
+>['data']
+type RequestType = InferRequestType<
+  (typeof client.api.task)[':taskId']['comments']['$post']
+>
 
 export const useCreateComment = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: async ({ taskId, content }: CreateCommentData) => {
+  return useMutation<ResponseType, Error, RequestType>({
+    mutationFn: async ({ param: { taskId }, json: { content } }) => {
       const response = await client.api.task[':taskId'].comments.$post({
         param: { taskId },
         json: { content }
@@ -29,7 +34,7 @@ export const useCreateComment = () => {
 
       return result.data
     },
-    onSuccess: (_, { taskId }) => {
+    onSuccess: ({ taskId }) => {
       queryClient.invalidateQueries({ queryKey: ['task-comments', taskId] })
       toast.success('Comment added successfully')
     },

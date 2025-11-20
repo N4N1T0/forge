@@ -1,17 +1,24 @@
 import { client } from '@/lib/rpc'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
+import { InferRequestType, InferResponseType } from 'hono'
 import { toast } from 'sonner'
 
-interface DeleteCommentData {
-  taskId: string
-  commentId: string
-}
+// TYPES
+type ResponseType = Extract<
+  InferResponseType<
+    (typeof client.api.task)[':taskId']['comments'][':commentId']['$delete']
+  >,
+  { success: true }
+>['data']
+type RequestType = InferRequestType<
+  (typeof client.api.task)[':taskId']['comments'][':commentId']['$delete']
+>
 
 export const useDeleteComment = () => {
   const queryClient = useQueryClient()
 
-  return useMutation({
-    mutationFn: async ({ taskId, commentId }: DeleteCommentData) => {
+  return useMutation<ResponseType, Error, RequestType>({
+    mutationFn: async ({ param: { taskId, commentId } }) => {
       const response = await client.api.task[':taskId'].comments[':commentId'][
         '$delete'
       ]({
@@ -30,7 +37,7 @@ export const useDeleteComment = () => {
 
       return result.data
     },
-    onSuccess: (_data, { taskId }) => {
+    onSuccess: ({ taskId }) => {
       queryClient.invalidateQueries({ queryKey: ['task-comments', taskId] })
       toast.success('Comment deleted successfully')
     },

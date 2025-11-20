@@ -7,9 +7,10 @@ import {
   EmptyMedia,
   EmptyTitle
 } from '@/components/ui/empty'
+import { useTaskFilters } from '@/features/tasks'
 import { CheckSquare, Search, SearchSlash } from 'lucide-react'
-import { useTaskFilters } from '../../hooks'
 
+// EMPTY STATES (NO TASKS)
 export const NoTasksEmpty = () => (
   <Empty className='size-full'>
     <EmptyHeader>
@@ -24,6 +25,7 @@ export const NoTasksEmpty = () => (
   </Empty>
 )
 
+// EMPTY STATES (NO SEARCH RESULTS)
 export const NoSearchResultsEmpty = ({
   searchQuery
 }: {
