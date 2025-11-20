@@ -11,8 +11,10 @@ import { useSpacemanTheme } from '@space-man/react-theme-animation'
 import { Moon, Sun } from 'lucide-react'
 
 export function ThemeSwitcher() {
+  // HOOKS
   const { switchThemeFromElement } = useSpacemanTheme()
 
+  // HANDLERS
   const handleCustomThemeSwitch = (
     event: React.MouseEvent<HTMLButtonElement, MouseEvent>,
     theme: 'light' | 'dark' | 'system'

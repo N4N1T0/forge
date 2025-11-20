@@ -1,6 +1,6 @@
 import { Kbd, KbdGroup } from '@/components/ui/kbd'
 import { SidebarMenuButton } from '@/components/ui/sidebar'
-import ModalProjectForm from '@/features/projects/components/modal-project-form'
+import { ModalProjectForm } from '@/features/projects'
 import { Plus } from 'lucide-react'
 
 export const NavProjectCreate = () => {

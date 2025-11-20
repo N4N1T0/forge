@@ -9,9 +9,8 @@ import {
   SidebarMenuItem
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { useGetProjects } from '@/features/projects/hooks/use-get-projects'
-import { useProjectShortcuts } from '@/features/projects/hooks/use-project-shortcuts'
-import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
+import { useGetProjects, useProjectShortcuts } from '@/features/projects'
+import { useGetCurrentWorkspace } from '@/features/workspaces'
 import { Command, Folder } from 'lucide-react'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'

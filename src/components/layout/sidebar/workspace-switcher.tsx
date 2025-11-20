@@ -15,9 +15,11 @@ import {
   useSidebar
 } from '@/components/ui/sidebar'
 import { Skeleton } from '@/components/ui/skeleton'
-import { ModalWorkspaceForm } from '@/features/workspaces/components/modal-workspace-form'
-import { useGetWorkspaces } from '@/features/workspaces/hooks/use-current-workspace'
-import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
+import {
+  ModalWorkspaceForm,
+  useGetWorkspaces,
+  useWorkspaceId
+} from '@/features/workspaces'
 import { Workspaces } from '@/types/appwrite'
 import { ChevronsUpDown, Plus } from 'lucide-react'
 import { DynamicIcon, IconName } from 'lucide-react/dynamic'

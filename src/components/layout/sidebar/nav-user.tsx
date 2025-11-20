@@ -1,7 +1,5 @@
 'use client'
 
-import { BadgeCheck, ChevronsUpDown, Coffee, LogOut } from 'lucide-react'
-
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import {
   DropdownMenu,
@@ -18,10 +16,11 @@ import {
   SidebarMenuItem,
   useSidebar
 } from '@/components/ui/sidebar'
-import { useLogout } from '@/features/auth/hooks/use-logout'
-import { useCurrentMember } from '@/features/members/hooks/use-current-member'
-import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
+import { useLogout } from '@/features/auth'
+import { useCurrentMember } from '@/features/members'
+import { useWorkspaceId } from '@/features/workspaces'
 import { getInitials } from '@/lib/utils'
+import { BadgeCheck, ChevronsUpDown, Coffee, LogOut } from 'lucide-react'
 import Link from 'next/link'
 
 export function NavUser() {

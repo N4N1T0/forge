@@ -2,7 +2,7 @@
 
 import { buttonVariants } from '@/components/ui/button'
 import { routes } from '@/data'
-import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
+import { useWorkspaceId } from '@/features/workspaces'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 

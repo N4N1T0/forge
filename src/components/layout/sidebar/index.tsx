@@ -3,6 +3,7 @@
 import * as React from 'react'
 
 import { NavMain } from '@/components/layout/sidebar/nav-main'
+import { Projects } from '@/components/layout/sidebar/nav-projects'
 import { NavUser } from '@/components/layout/sidebar/nav-user'
 import { WorkspaceSwitcher } from '@/components/layout/sidebar/workspace-switcher'
 import {
@@ -13,7 +14,6 @@ import {
   SidebarRail,
   SidebarSeparator
 } from '@/components/ui/sidebar'
-import { Projects } from './nav-projects'
 
 export function AppSidebar({ ...props }: React.ComponentProps<typeof Sidebar>) {
   return (

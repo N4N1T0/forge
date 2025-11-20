@@ -7,7 +7,7 @@ import {
   SidebarMenuButton
 } from '@/components/ui/sidebar'
 import { routes } from '@/data'
-import { useWorkspaceId } from '@/features/workspaces/hooks/use-workspace-id'
+import { useWorkspaceId } from '@/features/workspaces'
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
 
@@ -16,7 +16,6 @@ export function NavMain() {
   const workspaceId = useWorkspaceId()
   const pathname = usePathname()
 
-  // RENDERS
   return (
     <SidebarGroup>
       <SidebarGroupLabel>Workspace</SidebarGroupLabel>
