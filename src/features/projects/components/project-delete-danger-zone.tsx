@@ -1,9 +1,5 @@
 'use client'
 
-import { Trash2 } from 'lucide-react'
-import { useRouter } from 'next/navigation'
-import { useState } from 'react'
-
 import { Button } from '@/components/ui/button'
 import {
   Card,
@@ -15,23 +11,32 @@ import {
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import { Separator } from '@/components/ui/separator'
-
-import { useDeleteProject } from '@/features/projects/server/use-delete-project'
+import { useDeleteProject } from '@/features/projects'
 import { Projects } from '@/types/appwrite'
+import { Trash2 } from 'lucide-react'
+import { useRouter } from 'next/navigation'
+import { useState } from 'react'
 
+// TYPES
 interface ProjectDeleteDangerZoneProps {
   project: Projects
   onCancel?: () => void
 }
 
-const ProjectDeleteDangerZone = ({ project, onCancel }: ProjectDeleteDangerZoneProps) => {
+export const ProjectDeleteDangerZone = ({
+  project,
+  onCancel
+}: ProjectDeleteDangerZoneProps) => {
+  // HOOKS
   const router = useRouter()
   const [confirmationText, setConfirmationText] = useState('')
   const { mutate: deleteProject, isPending } = useDeleteProject()
 
+  // CONST
   const requiredText = `${project.name.toLowerCase().split(' ').join('-')}-delete-project`
   const isConfirmationValid = confirmationText === requiredText
 
+  // HANDLERS
   const handleDelete = () => {
     if (!isConfirmationValid) return
 
@@ -55,6 +60,7 @@ const ProjectDeleteDangerZone = ({ project, onCancel }: ProjectDeleteDangerZoneP
       </CardHeader>
       <Separator className='bg-destructive/50' />
       <CardContent className='pt-2.5 flex flex-col gap-y-5'>
+        {/* CONFIRMATION (required text) */}
         <div className='space-y-2'>
           <Label htmlFor='confirmation' className='text-sm font-medium'>
             To confirm deletion, type{' '}
@@ -100,5 +106,3 @@ const ProjectDeleteDangerZone = ({ project, onCancel }: ProjectDeleteDangerZoneP
     </Card>
   )
 }
-
-export default ProjectDeleteDangerZone

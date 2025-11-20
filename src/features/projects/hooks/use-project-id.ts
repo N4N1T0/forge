@@ -1,6 +1,6 @@
 'use client'
 
-import { useGetProject } from '@/features/projects/server/use-get-project'
+import { useGetProject } from '@/features/projects/hooks/use-get-project'
 import { useParams, usePathname } from 'next/navigation'
 
 /**

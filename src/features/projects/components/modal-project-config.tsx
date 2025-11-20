@@ -2,17 +2,20 @@
 
 import ResponsiveDrawer from '@/components/ui/drawer/responsive-drawer'
 import { Separator } from '@/components/ui/separator'
+import {
+  EditarProyectoForm,
+  ProjectDeleteDangerZone
+} from '@/features/projects'
 import { ResponsiveModalProps } from '@/types'
 import { Projects } from '@/types/appwrite'
 import { useState } from 'react'
-import ProjectDeleteDangerZone from './project-delete-danger-zone'
-import EditarProyectoForm from './project-edit-form'
 
+// TYPES
 interface ModalProjectConfigProps extends ResponsiveModalProps {
   project: Projects
 }
 
-const ModalProjectConfig = ({
+export const ModalProjectConfig = ({
   children,
   project,
   className
@@ -49,5 +52,3 @@ const ModalProjectConfig = ({
     </>
   )
 }
-
-export default ModalProjectConfig

@@ -36,9 +36,7 @@ export const getProjectAction = async ({
       success: true,
       data: project
     }
-  } catch (error) {
-    // TODO
-    console.log('🚀 ~ getWorkspaces ~ error:', error)
+  } catch (_error) {
     return {
       success: false,
       data: null

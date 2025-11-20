@@ -21,17 +21,17 @@ import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
 import {
   CreateProjectSchema,
-  createProjectSchema
-} from '@/features/projects/schema'
-import { useCreateProject } from '@/features/projects/server/use-create-project'
-import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
+  createProjectSchema,
+  useCreateProject
+} from '@/features/projects/'
+import { useGetCurrentWorkspace } from '@/features/workspaces'
 import { BaseFormProps } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
-const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
+export const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
   // HOOKS
   const router = useRouter()
   const { workspace } = useGetCurrentWorkspace()
@@ -88,6 +88,7 @@ const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
           </CardDescription>
         </div>
 
+        {/* CLOSE BTN */}
         <div>
           <Button
             type='button'
@@ -104,6 +105,7 @@ const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
         <Form {...form}>
           <form onSubmit={handleSubmit(onSubmit)} className='space-y-6'>
             <fieldset className='flex gap-4 items-center w-full'>
+              {/* NAME */}
               <FormField
                 control={control}
                 name='name'
@@ -127,6 +129,7 @@ const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
                 )}
               />
 
+              {/* SHORTCUT */}
               <FormField
                 control={control}
                 name='shortcut'
@@ -208,5 +211,3 @@ const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
     </Card>
   )
 }
-
-export default CreateProjectForm

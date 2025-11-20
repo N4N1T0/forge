@@ -1,2 +1,8 @@
 // HOOKS
-export { useProjectId, useProjectShortcuts } from './hooks'
+export * from './hooks'
+
+// COMPONENTS
+export * from './components'
+
+// SCHEMA
+export * from './schema'

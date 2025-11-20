@@ -19,20 +19,19 @@ import {
 } from '@/components/ui/form'
 import { Input } from '@/components/ui/input'
 import { Separator } from '@/components/ui/separator'
-import { zodResolver } from '@hookform/resolvers/zod'
-import { useForm } from 'react-hook-form'
-
 import {
   createProjectSchema,
-  CreateProjectSchema
-} from '@/features/projects/schema'
-import { useUpdateProject } from '@/features/projects/server/use-update-project'
-import { useGetCurrentWorkspace } from '@/features/workspaces/hooks/use-workspace-id'
+  CreateProjectSchema,
+  useUpdateProject
+} from '@/features/projects'
+import { useGetCurrentWorkspace } from '@/features/workspaces'
 import { FormWithInitialValues } from '@/types'
 import { Projects } from '@/types/appwrite'
+import { zodResolver } from '@hookform/resolvers/zod'
 import { X } from 'lucide-react'
+import { useForm } from 'react-hook-form'
 
-const EditarProyectoForm = ({
+export const EditarProyectoForm = ({
   onCancel,
   initialValues
 }: FormWithInitialValues<Projects>) => {
@@ -94,6 +93,7 @@ const EditarProyectoForm = ({
           </CardDescription>
         </div>
 
+        {/* CLOSE BTN */}
         <div>
           <Button
             type='button'
@@ -110,6 +110,7 @@ const EditarProyectoForm = ({
         <Form {...form}>
           <form onSubmit={handleSubmit(alEnviar)} className='space-y-6'>
             <fieldset className='flex gap-4 items-center w-full'>
+              {/* NAME FIELD */}
               <FormField
                 control={control}
                 name='name'
@@ -133,6 +134,7 @@ const EditarProyectoForm = ({
                 )}
               />
 
+              {/* SHORCUT */}
               <FormField
                 control={control}
                 name='shortcut'
@@ -208,5 +210,3 @@ const EditarProyectoForm = ({
     </Card>
   )
 }
-
-export default EditarProyectoForm

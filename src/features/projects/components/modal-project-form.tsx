@@ -3,15 +3,16 @@
 import ResponsiveDrawer from '@/components/ui/drawer/responsive-drawer'
 import { ResponsiveModalProps } from '@/types'
 import { useEffect, useState } from 'react'
-import CreateProjectForm from './project-form'
+import { CreateProjectForm } from '.'
 
 export function ModalProjectForm({
   children,
   className
 }: ResponsiveModalProps) {
+  // STATE
   const [isOpen, setIsOpen] = useState(false)
 
-  // Listen to global event to open via keyboard: Cmd/Ctrl + +
+  // EFFECT (Listen to global event to open via keyboard: Cmd/Ctrl + +)
   useEffect(() => {
     const handler = () => setIsOpen(true)
     window.addEventListener(
@@ -25,6 +26,7 @@ export function ModalProjectForm({
       )
   }, [])
 
+  // HANDLERS
   const handleClose = () => {
     setIsOpen(false)
   }

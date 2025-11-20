@@ -6,7 +6,10 @@ interface UseGetProjectProps {
   enabled?: boolean
 }
 
-export const useGetProject = ({ projectId, enabled = true }: UseGetProjectProps) => {
+export const useGetProject = ({
+  projectId,
+  enabled = true
+}: UseGetProjectProps) => {
   const query = useQuery({
     queryKey: ['project', projectId],
     enabled: enabled && !!projectId,
