@@ -14,7 +14,9 @@ import { JoinWorkspaceFormProps } from '@/types'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
 
-const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
+export const JoinWorkspaceForm = ({
+  initialValues
+}: JoinWorkspaceFormProps) => {
   // CONST
   const { name, inviteCode, workspaceId } = initialValues
 
@@ -72,5 +74,3 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
     </Card>
   )
 }
-
-export default JoinWorkspaceForm

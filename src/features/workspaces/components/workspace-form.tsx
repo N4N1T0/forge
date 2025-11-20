@@ -31,7 +31,7 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { useRouter } from 'next/navigation'
 import { useForm } from 'react-hook-form'
 
-const CreateWorkspacesForm = ({ onCancel }: BaseFormProps) => {
+export const CreateWorkspacesForm = ({ onCancel }: BaseFormProps) => {
   // HOOKS
   const router = useRouter()
   const { mutate: createWorkspace, isPending } = useCreateWorkspace()
@@ -229,5 +229,3 @@ const CreateWorkspacesForm = ({ onCancel }: BaseFormProps) => {
     </Card>
   )
 }
-
-export default CreateWorkspacesForm

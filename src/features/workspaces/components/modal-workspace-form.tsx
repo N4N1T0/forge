@@ -1,9 +1,11 @@
-import ResponsiveModal from '@/components/ui/modal/responsive-modal'
-import { ResponsiveModalProps } from '@/types'
-import React, { Ref, useState } from 'react'
-import CreateWorkspacesForm from './workspace-form'
+'use client'
 
-export const ModalWorkspaceForm = React.forwardRef(
+import ResponsiveModal from '@/components/ui/modal/responsive-modal'
+import { CreateWorkspacesForm } from '@/features/workspaces'
+import { ResponsiveModalProps } from '@/types'
+import { forwardRef, Ref, useState } from 'react'
+
+export const ModalWorkspaceForm = forwardRef(
   ({ children, className }: ResponsiveModalProps, ref: Ref<HTMLDivElement>) => {
     // STATES
     const [isOpen, setIsOpen] = useState(false)
