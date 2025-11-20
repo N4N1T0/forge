@@ -1,5 +1,5 @@
 import { Navbar } from '@/components/layout/navbar'
-import { AppSidebar } from '@/components/layout/sidebar/app-sidebar'
+import { AppSidebar } from '@/components/layout/sidebar'
 import { SpacemanThemeProviderClient } from '@/components/layout/spaceman-theme-provider'
 import { SidebarInset, SidebarProvider } from '@/components/ui/sidebar'
 import { Layouts } from '@/types'
