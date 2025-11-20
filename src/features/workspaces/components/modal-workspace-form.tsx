@@ -5,8 +5,10 @@ import CreateWorkspacesForm from './workspace-form'
 
 export const ModalWorkspaceForm = React.forwardRef(
   ({ children, className }: ResponsiveModalProps, ref: Ref<HTMLDivElement>) => {
+    // STATES
     const [isOpen, setIsOpen] = useState(false)
 
+    // HANDLERS
     const handleClose = () => {
       setIsOpen(false)
     }

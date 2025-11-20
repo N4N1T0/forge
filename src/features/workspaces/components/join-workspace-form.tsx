@@ -9,7 +9,7 @@ import {
   CardTitle
 } from '@/components/ui/card'
 import { Separator } from '@/components/ui/separator'
-import { useJoinWorkspace } from '@/features/workspaces/server/use-join-workspace'
+import { useJoinWorkspace } from '@/features/workspaces/hooks/use-join-workspace'
 import { JoinWorkspaceFormProps } from '@/types'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'

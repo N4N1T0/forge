@@ -1,6 +1,5 @@
+import { EditWorkspacesForm, WorkspaceDangerZone } from '@/features/workspaces'
 import { Workspaces } from '@/types/appwrite'
-import { WorkspaceDangerZone } from './workspace-danger-zone'
-import { EditWorkspacesForm } from './workspace-edit-form'
 
 // TYPES
 interface PageSettingsProps {

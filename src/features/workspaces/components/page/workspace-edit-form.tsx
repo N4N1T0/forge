@@ -23,9 +23,9 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import {
   CreateWorkspacesSchema,
-  createWorkspacesSchema
-} from '@/features/workspaces/schema'
-import { useUpdateWorkspace } from '@/features/workspaces/server/use-update-workspace'
+  createWorkspacesSchema,
+  useUpdateWorkspace
+} from '@/features/workspaces'
 import { generateSlug } from '@/lib/utils'
 import { FormWithInitialValues } from '@/types'
 import { Workspaces } from '@/types/appwrite'

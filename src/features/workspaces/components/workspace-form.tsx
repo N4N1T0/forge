@@ -22,9 +22,9 @@ import { Separator } from '@/components/ui/separator'
 import { Textarea } from '@/components/ui/textarea'
 import {
   CreateWorkspacesSchema,
-  createWorkspacesSchema
-} from '@/features/workspaces/schema'
-import { useCreateWorkspace } from '@/features/workspaces/server/use-create-workspace'
+  createWorkspacesSchema,
+  useCreateWorkspace
+} from '@/features/workspaces'
 import { generateSlug } from '@/lib/utils'
 import { BaseFormProps } from '@/types'
 import { zodResolver } from '@hookform/resolvers/zod'

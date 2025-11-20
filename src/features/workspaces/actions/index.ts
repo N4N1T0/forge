@@ -47,9 +47,7 @@ export const getWorkspacesAction = async () => {
       success: true,
       data: workspaces.rows
     }
-  } catch (error) {
-    // TODO
-    console.log('🚀 ~ getWorkspaces ~ error:', error)
+  } catch (_error) {
     return {
       success: false,
       data: null
@@ -87,9 +85,7 @@ export const getWorkspaceAction = async ({
       success: true,
       data: workspaces
     }
-  } catch (error) {
-    // TODO
-    console.log('🚀 ~ getWorkspaces ~ error:', error)
+  } catch (_error) {
     return {
       success: false,
       data: null
@@ -115,9 +111,7 @@ export const getWorkspaceInfoAction = async ({
         name: workspaces.name
       }
     }
-  } catch (error) {
-    // TODO
-    console.log('🚀 ~ getWorkspaces ~ error:', error)
+  } catch (_error) {
     return {
       success: false,
       data: null

@@ -10,7 +10,7 @@ import {
 } from '@/components/ui/card'
 import { Spinner } from '@/components/ui/spinner'
 import { useCurrentMember } from '@/features/members'
-import { useDeleteWorkspace } from '@/features/workspaces/server/use-delete-workspace'
+import { useDeleteWorkspace } from '@/features/workspaces'
 import { useConfirm } from '@/hooks/use-confirm'
 import { checkIsOwner } from '@/lib/utils'
 import { Workspaces } from '@/types/appwrite'

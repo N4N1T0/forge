@@ -1,6 +1,6 @@
 'use client'
 
-import { useCurrentWorkspace } from '@/features/workspaces/server/use-current-workspace'
+import { useCurrentWorkspace } from '@/features/workspaces/hooks/use-current-workspace'
 import { Workspaces } from '@/types/appwrite'
 import { useParams } from 'next/navigation'
 
