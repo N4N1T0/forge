@@ -1,3 +1,5 @@
+'use client'
+
 import { client } from '@/lib/rpc'
 import { useMutation } from '@tanstack/react-query'
 import type { InferRequestType, InferResponseType } from 'hono/client'
