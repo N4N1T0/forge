@@ -76,7 +76,7 @@ export function ProjectListCard({ workspaceId }: ProjectListCardProps) {
             {projects.map((project) => (
               <li key={project.id}>
                 <Link
-                  href={`/dashboard/workspace/${workspaceId}/projects/${project.id}`}
+                  href={`/workspace/${workspaceId}/projects/${project.id}`}
                   className='block group focus:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 rounded-lg'
                   aria-label={`${project.name} project, ${project.completionRate.toFixed(0)}% complete, ${project.status} status`}
                 >

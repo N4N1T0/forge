@@ -13,7 +13,7 @@ export default function SidebarNavigation() {
   return (
     <ul className='flex flex-col gap-3'>
       {routes.map(({ href, icon, name }) => {
-        const formattedHref = `/dashboard/workspace/${workspaceId}${href}`
+        const formattedHref = `/workspace/${workspaceId}${href}`
         const isActive = pathname === formattedHref
         const Icon = icon
 

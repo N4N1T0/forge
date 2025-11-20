@@ -1,7 +1,7 @@
 'use client'
 
+import { DashboardCardSkeleton } from '@/features/dashboard'
 import dynamic from 'next/dynamic'
-import { DashboardCardSkeleton } from './dashboard-card-skeleton'
 
 // CODE SPLITTING
 const TaskCompletionCard = dynamic(

@@ -44,7 +44,7 @@ export const ProjectDeleteDangerZone = ({
       { param: { projectId: project.$id } },
       {
         onSuccess: () => {
-          router.push(`/dashboard/workspace/${project.workspaceId}`)
+          router.push(`/workspace/${project.workspaceId}`)
           onCancel?.()
         }
       }

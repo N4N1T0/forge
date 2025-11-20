@@ -48,7 +48,7 @@ export function Projects() {
       <SidebarGroupLabel>Projects</SidebarGroupLabel>
       <SidebarMenu>
         {projects?.rows.map(({ $id, name, shortcut }) => {
-          const href = `/dashboard/workspace/${workspace?.$id}/projects/${$id}`
+          const href = `/workspace/${workspace?.$id}/projects/${$id}`
           const isActive = pathname.includes(href)
 
           return (

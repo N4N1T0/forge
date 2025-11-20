@@ -57,8 +57,7 @@ const CreateWorkspacesForm = ({ onCancel }: BaseFormProps) => {
         onSuccess: (data) => {
           reset()
           onCancel?.()
-          if (data.success)
-            return router.push(`/dashboard/workspace/${data.data.$id}`)
+          if (data.success) return router.push(`/workspace/${data.data.$id}`)
         }
       }
     )

@@ -48,7 +48,7 @@ export function WorkspaceSwitcher() {
     setSelectedWorkspace(
       workspaces?.find((workspace) => workspace.$id === value)
     )
-    router.push(`/dashboard/workspace/${value}`)
+    router.push(`/workspace/${value}`)
   }
 
   if (isLoading) {

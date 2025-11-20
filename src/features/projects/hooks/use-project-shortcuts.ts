@@ -20,7 +20,7 @@ export const useProjectShortcuts = ({
       const isMeta = event.metaKey || event.ctrlKey
       if (!isMeta) return
 
-      // Don't trigger when typing in inputs or editable content
+      // DONT TRIGGER WHEN TYPING IN INPUTS OR EDITABLE CONTENT
       const target = event.target as HTMLElement | null
       if (target) {
         const tag = target.tagName?.toLowerCase()
@@ -31,7 +31,7 @@ export const useProjectShortcuts = ({
 
       const key = event.key.toLowerCase()
 
-      // Open Create Project Drawer on Cmd/Ctrl + '+' or Shift+='='
+      // OPEN CREATE PROJECT DRAWER ON CMD/CTRL + '+' OR SHIFT+='='
       const isPlus = key === '+' || (event.shiftKey && key === '=')
       if (isPlus) {
         event.preventDefault()
@@ -39,14 +39,12 @@ export const useProjectShortcuts = ({
         return
       }
 
-      // Navigate to project by shortcut
+      // NAVIGATE TO PROJECT BY SHORTCUT
       if (!projects || !workspaceId) return
       const matched = projects.find((p) => p.shortcut?.toLowerCase() === key)
       if (matched) {
         event.preventDefault()
-        router.push(
-          `/dashboard/workspace/${workspaceId}/projects/${matched.$id}`
-        )
+        router.push(`/workspace/${workspaceId}/projects/${matched.$id}`)
       }
     }
 

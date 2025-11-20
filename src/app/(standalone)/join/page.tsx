@@ -25,7 +25,7 @@ export default async function JoinWorkspacePage({
 
   // VALIDATE INVITE CODE AND WORKSPACE ID
   if (!inviteCode || !workspaceId) {
-    return redirect('/dashboard')
+    return redirect('/workspace')
   }
 
   const workspaceInfo = await getWorkspaceInfoAction({
@@ -33,7 +33,7 @@ export default async function JoinWorkspacePage({
   })
 
   if (!workspaceInfo.success || !workspaceInfo.data) {
-    return redirect('/dashboard')
+    return redirect('/workspace')
   }
 
   const initialValues = {

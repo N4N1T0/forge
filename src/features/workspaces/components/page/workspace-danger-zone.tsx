@@ -47,7 +47,7 @@ export const WorkspaceDangerZone = ({
       { param: { workspaceId: initialValues?.$id } },
       {
         onSuccess: () => {
-          router.replace('/dashboard')
+          router.replace('/workspace')
         }
       }
     )

@@ -31,7 +31,7 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
       },
       {
         onSuccess: () => {
-          router.push(`/dashboard/workspace/${workspaceId}`)
+          router.push(`/workspace/${workspaceId}`)
         }
       }
     )
@@ -57,7 +57,7 @@ const JoinWorkspaceForm = ({ initialValues }: JoinWorkspaceFormProps) => {
             disabled={isPending}
             asChild
           >
-            <Link href='/dashboard'>Cancel</Link>
+            <Link href={`/workspace/${workspaceId}`}>Cancel</Link>
           </Button>
           <Button
             className='w-full md:w-fit'

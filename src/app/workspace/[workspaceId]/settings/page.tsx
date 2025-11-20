@@ -28,7 +28,7 @@ export default async function WorkspacePageSettings({
   })
 
   if (!initialValues.success || !initialValues.data) {
-    return redirect(`/dashboard/workspace/${workspaceId}`)
+    return redirect(`/workspace/${workspaceId}`)
   }
 
   return (

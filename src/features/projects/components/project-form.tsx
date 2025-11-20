@@ -62,7 +62,7 @@ export const CreateProjectForm = ({ onCancel }: BaseFormProps) => {
           reset()
           if (data.success) {
             router.push(
-              `/dashboard/workspaces/${workspace?.$id}/projects/${data.data.$id}`
+              `/workspaces/${workspace?.$id}/projects/${data.data.$id}`
             )
           }
           onCancel?.()

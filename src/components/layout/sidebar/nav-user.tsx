@@ -93,7 +93,7 @@ export function NavUser() {
             <DropdownMenuSeparator />
             <DropdownMenuGroup>
               <DropdownMenuItem asChild>
-                <Link href={`/dashboard/workspace/${workspaceId}/profile`}>
+                <Link href={`/workspace/${workspaceId}/profile`}>
                   <BadgeCheck />
                   Account
                 </Link>

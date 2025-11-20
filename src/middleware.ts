@@ -8,14 +8,14 @@ export default async function name(req: NextRequest) {
   const { pathname, origin } = req.nextUrl
 
   const isRoot = pathname === '/'
-  const isDashboard = pathname.startsWith('/dashboard')
+  const isWorkspace = pathname.startsWith('/workspace')
 
-  if (!session && isDashboard) {
+  if (!session && isWorkspace) {
     return NextResponse.redirect(new URL('/', origin))
   }
 
   if (session && isRoot) {
-    return NextResponse.redirect(new URL('/dashboard', origin))
+    return NextResponse.redirect(new URL('/workspace', origin))
   }
 }
 

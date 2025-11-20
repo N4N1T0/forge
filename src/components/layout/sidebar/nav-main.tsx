@@ -21,9 +21,9 @@ export function NavMain() {
       <SidebarGroupLabel>Workspace</SidebarGroupLabel>
       <SidebarMenu>
         {routes.map(({ href, icon, name }) => {
-          const formattedHref = `/dashboard/workspace/${workspaceId}${href}`
+          const formattedHref = `/workspace/${workspaceId}${href}`
           const isActive =
-            href === '/dashboard'
+            href === '/workspace'
               ? pathname === formattedHref
               : pathname.startsWith(formattedHref)
           const Icon = icon
