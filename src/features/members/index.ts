@@ -1,18 +1,8 @@
 // COMPONENTS
-export {
-  MemberAvatar,
-  MemberItem,
-  MemberMoreBtn,
-  MembersList
-} from './components'
+export * from './components'
 
 // HOOKS
-export {
-  useCurrentMember,
-  useDeleteMember,
-  useGetMembers,
-  useUpdateMember
-} from './hooks'
+export * from './hooks'
 
 // UTILS
-export { getMember, getMembers } from './lib/utils'
+export * from './lib/utils'

@@ -1,17 +1,5 @@
 // COMPONENTS
-export {
-  DangerZone,
-  PasswordChangeForm,
-  ProfileHeader,
-  ProfileInfoForm,
-  WorkspaceList
-} from './components'
+export * from './components'
 
 // HOOKS
-export {
-  useChangePassword,
-  useDeleteAccount,
-  useGetProfile,
-  useLeaveWorkspace,
-  useUpdateProfile
-} from './hooks'
+export * from './hooks'
