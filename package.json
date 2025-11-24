@@ -1,7 +1,24 @@
 {
   "name": "forge",
   "version": "1.1.0",
-  "private": true,
+  "description": "Modern workspace management boilerplate with Next.js and Appwrite",
+  "author": {
+    "name": "Adrián Álvarez Alonso",
+    "email": "adrian.alvarezalonso1991@gmail.com"
+  },
+  "funding": "https://buymeacoffee.com/n4n1t0",
+  "keywords": [
+    "react",
+    "community",
+    "nextjs",
+    "pms",
+    "appwrite",
+    "reactquery",
+    "honojs",
+    "shadcn"
+  ],
+  "packageManager": "pnpm@10.17.1",
+  "private": false,
   "scripts": {
     "dev": "next dev",
     "turbo": "next dev --turbopack",
@@ -110,6 +127,5 @@
     "tsx": "^4.20.6",
     "tw-animate-css": "^1.3.6",
     "typescript": "^5"
-  },
-  "packageManager": "pnpm@10.17.1"
+  }
 }
