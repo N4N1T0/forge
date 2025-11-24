@@ -52,9 +52,9 @@ export const useSignIn = () => {
       const errorMessage = message || 'Sign-in error'
 
       switch (true) {
-        case errorMessage.includes('mfa_required'):
-          toast.warning('MFA required', {
-            description: 'Multi-factor authentication is required.'
+        case errorMessage.includes('suspicious_login_detected'):
+          toast.warning('Suspicious login detected', {
+            description: 'Your login attempt was flagged as suspicious.'
           })
           router.push(`/?tab=verify-otp&userId=${userId}`)
           break
