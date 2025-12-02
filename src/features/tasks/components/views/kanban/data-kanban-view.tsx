@@ -134,6 +134,7 @@ export const DataKanban = ({
                   data
                 const formattedDescription = sanitizeHtml(description)
                 const { formattedDate, textColor } = formatTaskDate(dueDate)
+                // TODO: FIX PROPAGATION
 
                 return (
                   <KanbanCard
