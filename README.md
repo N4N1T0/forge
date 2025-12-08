@@ -18,6 +18,8 @@
 
 Forge is a modern, modular workspace management starter built with Next.js and Appwrite. It provides a solid foundation for building collaborative, feature-rich applications with workspaces, projects, tasks, comments, profiles, and role-based access. Use it as a base to accelerate development of SaaS-style productivity tools.
 
+Contributing: see the [CONTRIBUTING.md](CONTRIBUTING.md) guide for clone, run, and PR steps.
+
 > Status: The app is ~95% complete. It’s a robust boilerplate for building better apps and deeper customizations.
 
 ## Project Overview
