@@ -1,0 +1,54 @@
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  checks:
+    runs-on: ubuntu-latest
+
+    # the build only needs the variables to exist; it never calls Appwrite
+    env:
+      NEXT_PUBLIC_APP_URL: http://localhost:3000
+      NEXT_PUBLIC_API_URL: http://localhost:3000/api
+      NEXT_PUBLIC_APPWRITE_ENDPOINT: https://cloud.appwrite.io/v1
+      NEXT_PUBLIC_APPWRITE_PROJECT_ID: ci
+      NEXT_PUBLIC_APPWRITE_IMAGES_BUCKET_ID: ci
+      NEXT_PUBLIC_APPWRITE_WORKSPACES_COLLECTION_ID: ci
+      NEXT_PUBLIC_APPWRITE_MEMBERS_COLLECTION_ID: ci
+      NEXT_PUBLIC_APPWRITE_PROJECTS_COLLECTION_ID: ci
+      NEXT_PUBLIC_APPWRITE_TASKS_COLLECTION_ID: ci
+      NEXT_PUBLIC_APPWRITE_TASK_COMMENTS_COLLECTION_ID: ci
+      NEXT_PUBLIC_APPWRITE_DATABASE_ID: ci
+      NEXT_APPWRITE_KEY: ci
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup pnpm
+        uses: pnpm/action-setup@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm exec next lint
+
+      # the build generates next-env.d.ts, which the type check needs
+      - name: Build
+        run: pnpm run build
+
+      - name: Type check
+        run: pnpm run typecheck
