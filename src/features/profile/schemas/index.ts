@@ -32,9 +32,11 @@ export const changePasswordSchema = z
 
 export const deleteAccountSchema = z.object({
   email: z.string().min(1, { error: 'Enter a valid email address' }),
-  confirmation: z.string().refine((val) => val === 'Delete my account', {
-    message: 'You must type "Delete my account" to confirm'
-  })
+  confirmation: z
+    .string()
+    .refine((val): boolean => val === 'Delete my account', {
+      message: 'You must type "Delete my account" to confirm'
+    })
 })
 
 export const verifyMFASchema = z.object({
