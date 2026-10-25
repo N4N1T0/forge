@@ -1,6 +1,6 @@
 <h1 align="center" style="border-bottom: none;">The Forge</h1>
 <p align="center">
-  <img alt="Join the community on GitHub Discussions" src="https://img.shields.io/badge/Join%20the%20community-on%20GitHub%20Discussions-blue">
+  <a href="LICENSE"><img alt="License: MIT" src="https://img.shields.io/badge/License-MIT-green.svg"></a>
   <a href="https://nodejs.org"><img alt="Node >= 18" src="https://img.shields.io/badge/Node-%3E%3D18-43853D?logo=nodedotjs&logoColor=white"></a>
   <a href="https://nextjs.org"><img alt="Next.js 15" src="https://img.shields.io/badge/Next.js-15-black?logo=nextdotjs"></a>
   <a href="https://react.dev"><img alt="React 19" src="https://img.shields.io/badge/React-19-61DAFB?logo=react&logoColor=white"></a>
@@ -20,7 +20,7 @@ Forge is a modern, modular workspace management starter built with Next.js and A
 
 Contributing: see the [CONTRIBUTING.md](CONTRIBUTING.md) guide for clone, run, and PR steps.
 
-> Status: The app is ~95% complete. It’s a robust boilerplate for building better apps and deeper customizations.
+![Dashboard Overview](https://github.com/N4N1T0/hosted-assets/raw/a424637d7150eb6ea76cdc5043e8b44e800822fe/Captura%20de%20pantalla%202025-11-24%20153656.png)
 
 ## Project Overview
 
@@ -342,6 +342,10 @@ src/
     middleware.ts
     rpc.ts
 ```
+
+## License
+
+[MIT](LICENSE)
 
 ---
 
